@@ -7,11 +7,17 @@ import {
   View
 } from 'react-native';
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth, database } from '../firebase';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  function writeUserData(userId, name) {
+    database.ref('users/' + userId).set({
+      username: name
+    });
+  }
 
   const handleSignup = () => {
     auth
@@ -19,6 +25,8 @@ const LoginScreen = () => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         console.log('Registered with:', user.email);
+        console.log('UID', user.uid);
+        writeUserData(user.uid, user.email);
       })
       .catch((error) => alert(error.message));
   };
