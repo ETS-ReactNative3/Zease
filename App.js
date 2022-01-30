@@ -3,49 +3,71 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
-import * as V from "victory";
-import LoginScreen from "./screens/LoginScreen";
-import HomeScreen from "./screens/HomeScreen";
-import Chart from "./screens/Chart";
-import { database } from "../firebase";
+import { VictoryChart, VictoryScatter } from "victory";
+// import LoginScreen from "./screens/LoginScreen";
+// import HomeScreen from "./screens/HomeScreen";
+// import Chart from "./screens/Chart";
+import { database } from "./firebase";
 const Stack = createNativeStackNavigator();
+
+const dummyData = [
+  {
+    date: new Date(2022, 1, 1),
+    sleepLength: 420,
+    quality: "poor",
+    factors: ["screentime", "caffeine"],
+  },
+  {
+    date: new Date(2022, 1, 2),
+    sleepLength: 430,
+    quality: "ok",
+    factors: ["screentime", "caffeine"],
+  },
+  {
+    date: new Date(2022, 1, 3),
+    sleepLength: 440,
+    quality: "ok",
+    factors: ["caffeine"],
+  },
+];
 
 export default function App() {
   //make it so we store data from firebase in our local state.
   const [data, setData] = useState([]);
-  console.log("hello world");
-  //I tried putting this inside useEffect and it didn't run.
-  //so I made it a function to run when a button is pressed.  That didn't work either because the button isn't appearing.
-  const getDataOnPress = () => {
-    console.log("hello world");
-    //get data from firebase
-    const sleepEntriesRef = database.ref("simpleSleepEntries/");
+
+  useEffect(() => {
+    console.log("hello world from inside useEffect");
+
+    //get data from firebase.  the reference for the data was established when it was written into the database.  This is getting a "snapshot" of the data
+    const sleepEntriesRef = database.ref("simplesleepEntries");
+
+    //this on method gets the value of the data at that reference.
     sleepEntriesRef.on("value", (snapshot) => {
       const sleepEntryData = snapshot.val();
+      //Im trying to put the data on local state so that it can be passed to the chart view.  this isn't working.  I'm not sure why.
       setData(sleepEntryData);
+      console.log(" sleepEntryData ", sleepEntryData);
     });
+  }, []);
 
-    console.log("local state data", data);
+  const reformatDataForChart = (dbData) => {
+    return dbData.map((dbSleepEntry) => {
+      return {
+        SleepLength: dbSleepEntry.sleepLength,
+        SleepQuality: dbSleepEntry.quality,
+      };
+    });
   };
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={LoginScreen}
+      <VictoryChart>
+        <VictoryScatter
+          data={reformatDataForChart(dummyData)}
+          x="SleepLength"
+          y="SleepQuality"
         />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Button
-          onPress={() => {
-            getDataOnPress();
-          }}
-          title="Get Data"
-          accessibilityLabel="Get Data"
-        />
-        <Stack.Screen name="Chart" component={Chart} />
-      </Stack.Navigator>
+      </VictoryChart>
     </NavigationContainer>
   );
 }
