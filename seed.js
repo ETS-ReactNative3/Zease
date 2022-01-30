@@ -1,4 +1,4 @@
-import { database } from "./firebase.mjs";
+import { database } from "./firebase.js";
 // const { database } = require("./firebase");
 const date1 = new Date(2022, 1, 1);
 console.log("date1", date1);

@@ -1,4 +1,4 @@
-import firebaseConfig from "./firebaseConfig.mjs";
+import firebaseConfig from "./firebaseConfig.js";
 import firebase from "firebase/app/dist/index.cjs.js";
 import "firebase/database/dist/index.cjs.js"; // If using Firebase database
 import "firebase/auth/dist/index.cjs.js"; // If using Firebase storage
