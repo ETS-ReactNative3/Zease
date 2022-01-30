@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
-import { VictoryChart, VictoryScatter } from "victory";
+import { VictoryChart, VictoryScatter } from "victory-native";
 // import LoginScreen from "./screens/LoginScreen";
 // import HomeScreen from "./screens/HomeScreen";
 // import Chart from "./screens/Chart";
