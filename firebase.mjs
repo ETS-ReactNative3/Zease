@@ -1,7 +1,7 @@
-import firebaseConfig from "./firebaseConfig";
-import firebase from "firebase/app";
-import "firebase/database"; // If using Firebase database
-import "firebase/auth"; // If using Firebase storage
+import firebaseConfig from "./firebaseConfig.mjs";
+import firebase from "firebase/app/dist/index.cjs.js";
+import "firebase/database/dist/index.cjs.js"; // If using Firebase database
+import "firebase/auth/dist/index.cjs.js"; // If using Firebase storage
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 

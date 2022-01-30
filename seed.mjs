@@ -1,25 +1,34 @@
-const { database } = require("../firebase");
-
+import { database } from "./firebase.mjs";
+// const { database } = require("./firebase");
+const date1 = new Date(2022, 1, 1);
+console.log("date1", date1);
 const sleepEntries = {
-  BNyn1gEv5KRFmKpFwTJtPxhP5l93: {
+  hJO4AAp6PuM8O8bcuowVQYbgHbi1: {
     1: {
-      date: new Date(2022, 1, 1),
-      start: new Date(2022, 1, 1, 22, 30),
-      end: new Date(2022, 1, 2, 7, 00),
+      date: 220101,
+      start: 2201012230,
+      end: 2201020700,
       quality: "ok",
       factors: ["screentime", "caffeine"],
     },
     2: {
-      date: new Date(2022, 1, 2),
+      date: 220102,
       start: new Date(2022, 1, 2, 22, 15),
-      end: new Date(2022, 1, 3, 7, 00),
+      end: new Date(2022, 1, 3, 7, 0),
       quality: "ok",
       factors: ["screentime", "caffeine"],
     },
     3: {
-      date: new Date(2022, 1, 2),
-      start: new Date(2022, 1, 2, 22, 10),
-      end: new Date(2022, 1, 3, 7, 00),
+      date: 220103,
+      start: new Date(2022, 1, 3, 22, 10),
+      end: new Date(2022, 1, 4, 7, 0),
+      quality: "ok",
+      factors: ["screentime", "caffeine"],
+    },
+    4: {
+      date: 220104,
+      start: new Date(2022, 1, 4, 22, 0),
+      end: new Date(2022, 1, 5, 7, 0),
       quality: "ok",
       factors: ["screentime", "caffeine"],
     },
@@ -48,7 +57,7 @@ const SimpleSleepEntries = {
 };
 
 const seed = () => {
-  database.ref()("simpleSleepEntries").set(SimpleSleepEntries);
+  database.ref("simplesleepEntries").set(SimpleSleepEntries);
 };
 
 seed();
