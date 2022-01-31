@@ -36,8 +36,6 @@ export default function App() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    console.log("hello world from inside useEffect");
-
     //get data from firebase.  the reference for the data was established when it was written into the database.  This is getting a "snapshot" of the data
     const sleepEntriesRef = database.ref("simplesleepEntries");
 
@@ -53,7 +51,7 @@ export default function App() {
   const reformatDataForChart = (dbData) => {
     return dbData.map((dbSleepEntry) => {
       return {
-        SleepLength: dbSleepEntry.sleepLength,
+        SleepLength: dbSleepEntry.length,
         SleepQuality: dbSleepEntry.quality,
       };
     });
@@ -62,11 +60,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <VictoryChart>
-        <VictoryScatter
-          data={reformatDataForChart(dummyData)}
-          x="SleepLength"
-          y="SleepQuality"
-        />
+        {data && (
+          <VictoryScatter
+            data={reformatDataForChart(data)}
+            x="SleepLength"
+            y="SleepQuality"
+          />
+        )}
       </VictoryChart>
     </NavigationContainer>
   );
