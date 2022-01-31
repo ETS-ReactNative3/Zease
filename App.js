@@ -44,7 +44,6 @@ export default function App() {
       const sleepEntryData = snapshot.val();
       //Im trying to put the data on local state so that it can be passed to the chart view.  this isn't working.  I'm not sure why.
       setData(sleepEntryData);
-      console.log(" sleepEntryData ", sleepEntryData);
     });
   }, []);
 
