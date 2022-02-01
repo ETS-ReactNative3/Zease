@@ -10,17 +10,30 @@ const BuildProfile = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [name, setName] = useState("");
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [sleepGoalStart, setsleepGoalStart] = useState(0);
 
-  const showTimePicker = () => {
-    setTimePickerVisibility(true);
+  const showBedTimePicker = () => {
+    setBedTimePickerVisibility(true);
   };
-  const hideTimePicker = () => {
-    setTimePickerVisibility(fasle);
+  const hideBedTimePicker = () => {
+    setBedTimePickerVisibility(false);
   };
   const handleTimeConfirm = (time) => {
-    hideTimePicker();
+    console.log(`${time} has been picked`);
+    console.dir("time object", time);
+    console.log("time string object", JSON.stringify(time));
+    //time porvided by picker is an object, and not an array object
+    //if you stringify the object it has this format
+    //"yyyy-mm-dd-Thh:mm:ss.Z"
+    // 01234567890123456
+    let hourString = JSON.stringify(time).slice(12, 14);
+    let minString = JSON.stringify(time).slice(15, 17);
+    let militaryTimeString = hourString + minString;
+    console.log("militaryTimeString", militaryTimeString);
+
+    setsleepGoalStart();
+    hideBedTimePicker();
   };
 
   return (
@@ -49,12 +62,12 @@ const BuildProfile = () => {
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        <Button title="Select Bed Time Goal" onPress={showTimePicker} />
+        <Button title="Select Bed Time Goal" onPress={showBedTimePicker} />
         <DateTimePickerModal
-          isVisible={isTimePickerVisible}
+          isVisible={isBedTimePickerVisible}
           mode="time"
           onConfirm={handleTimeConfirm}
-          onCancel={hideTimePicker}
+          onCancel={hideBedTimePicker}
         />
       </View>
     </View>
