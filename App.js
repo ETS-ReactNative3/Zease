@@ -6,13 +6,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import Chart from "./screens/Chart";
+import AddEntry from "./screens/AddEntry";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <>
-      <Chart />
+      <AddEntry />
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
