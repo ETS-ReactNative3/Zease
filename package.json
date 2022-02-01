@@ -29,7 +29,9 @@
     "victory-native": "^36.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "@expo/webpack-config": "^0.16.16",
+    "babel-loader": "^8.2.3"
   },
   "private": true
 }

@@ -13,6 +13,22 @@ const BuildProfile = () => {
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [sleepGoalStart, setsleepGoalStart] = useState(0);
 
+  //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit integer.
+  const convertToMilitaryInteger = (UTCTimeDate) => {
+    let hoursString = String(UTCTimeDate.getHours());
+    //make sure that the hours string has 2 characters even it is less than 10
+    hoursString = hoursString.length < 2 ? 0 + hoursString : hoursString;
+
+    let minutesString = String(UTCTimeDate.getMinutes());
+    //make sure that the minutes string has 2 characters even it is less than 10
+    minutesString =
+      minutesString.length < 2 ? 0 + minutesString : minutesString;
+
+    //let militaryTimeString = hoursString + minutesString;
+
+    return Number(hoursString + minutesString);
+  };
+
   const showBedTimePicker = () => {
     setBedTimePickerVisibility(true);
   };
@@ -21,18 +37,9 @@ const BuildProfile = () => {
   };
   const handleTimeConfirm = (time) => {
     console.log(`${time} has been picked`);
-    console.dir("time object", time);
-    console.log("time string object", JSON.stringify(time));
-    //time porvided by picker is an object, and not an array object
-    //if you stringify the object it has this format
-    //"yyyy-mm-dd-Thh:mm:ss.Z"
-    // 01234567890123456
-    let hourString = JSON.stringify(time).slice(12, 14);
-    let minString = JSON.stringify(time).slice(15, 17);
-    let militaryTimeString = hourString + minString;
-    console.log("militaryTimeString", militaryTimeString);
+    console.log("militarytime int", convertToMilitaryInteger(time));
 
-    setsleepGoalStart();
+    setsleepGoalStart(convertToMilitaryInteger(time));
     hideBedTimePicker();
   };
 
