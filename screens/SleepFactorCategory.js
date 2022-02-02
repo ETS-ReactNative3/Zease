@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "react-native-heroicons/outline";
 
 import SleepFactorSwitch from "./SleepFactorSwitch";
+
 /*
 each SleepFactorCategory component in the build profile screen will be passed a category object through props with this format:
 category= {
@@ -20,10 +21,6 @@ category= {
 */
 const SleepFactorCategory = (props) => {
   const [expanded, setExpanded] = useState(false);
-  console.log(
-    "props.category.factors from sleep factor category",
-    props.category.factors
-  );
 
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -43,8 +40,14 @@ const SleepFactorCategory = (props) => {
       <View />
       {expanded && (
         <View>
-          {props.category.factors.map((factor, idx) => {
-            return <SleepFactorSwitch key={idx} factor={factor} />;
+          {props.category.factors.map((factor) => {
+            return (
+              <SleepFactorSwitch
+                key={factor[1]}
+                factorId={factor[1]}
+                factor={factor[0]}
+              />
+            );
           })}
         </View>
       )}

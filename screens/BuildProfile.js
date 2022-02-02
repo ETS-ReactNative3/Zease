@@ -126,16 +126,16 @@ const BuildProfile = () => {
     ];
 
     for (const factor in dbFactorsObject) {
-      let name = dbFactorsObject[factor].name;
+      let factorSubArray = [dbFactorsObject[factor].name, factor];
       switch (dbFactorsObject[factor].category) {
         case "practice":
-          categories[0].factors.push(name);
+          categories[0].factors.push(factorSubArray);
           break;
         case "tool":
-          categories[1].factors.push(name);
+          categories[1].factors.push(factorSubArray);
           break;
         case "chemical":
-          categories[2].factors.push(name);
+          categories[2].factors.push(factorSubArray);
           break;
       }
     }
