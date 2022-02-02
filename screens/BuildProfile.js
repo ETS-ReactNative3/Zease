@@ -12,6 +12,7 @@ import { database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+import SleepFactorCategory from "./SleepFactorCategory";
 const dummySleepFactors = {
   1: {
     name: "Caffeine",
@@ -45,6 +46,15 @@ const dummySleepFactors = {
     name: "Meditation before bed",
     category: "practice",
   },
+};
+
+const dummyCategory = {
+  name: "Practices",
+  factors: [
+    "Screentime before bed",
+    "Listening to a sleep podcast",
+    "Meditation before bed",
+  ],
 };
 
 const BuildProfile = () => {
@@ -97,6 +107,37 @@ const BuildProfile = () => {
   const handleWakeTimeConfirm = (time) => {
     setsleepGoalEnd(convertToMilitaryString(time));
     setWakeTimePickerVisibility(false);
+  };
+
+  const reformatFactors = (dbFactors) => {
+    const categories = [
+      {
+        name: "Practices",
+        factors: [],
+      },
+      {
+        name: "Tools",
+        factors: [],
+      },
+      {
+        name: "Chemicals",
+        factors: [],
+      },
+    ];
+    dbFactors.forEach((dbFactor) => {
+      switch (dbFactor.category) {
+        case "practice":
+          categories[0].factors.push(dbFactor.name);
+          break;
+        case "tool":
+          categories[1].factors.push(dbFactor.name);
+          break;
+        case "chemical":
+          categories[2].factors.push(dbFactor.name);
+          break;
+      }
+    });
+    return categories;
   };
 
   return (
@@ -174,6 +215,7 @@ const BuildProfile = () => {
           />
         </View>
         <Text>Sleep Factors</Text>
+        <SleepFactorCategory category={dummyCategory} />
       </View>
     </View>
   );
