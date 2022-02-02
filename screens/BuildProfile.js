@@ -11,10 +11,13 @@ const BuildProfile = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [name, setName] = useState("");
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  const [sleepGoalStart, setsleepGoalStart] = useState(0);
+  const [sleepGoalStart, setsleepGoalStart] = useState(null);
+  const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
+  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
+    useState(false);
 
   //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit integer.
-  const convertToMilitaryInteger = (UTCTimeDate) => {
+  const convertToMilitaryString = (UTCTimeDate) => {
     let hoursString = String(UTCTimeDate.getHours());
     //make sure that the hours string has 2 characters even it is less than 10
     hoursString = hoursString.length < 2 ? 0 + hoursString : hoursString;
@@ -24,23 +27,32 @@ const BuildProfile = () => {
     minutesString =
       minutesString.length < 2 ? 0 + minutesString : minutesString;
 
-    //let militaryTimeString = hoursString + minutesString;
-
-    return Number(hoursString + minutesString);
+    return hoursString + minutesString;
   };
 
-  const showBedTimePicker = () => {
-    setBedTimePickerVisibility(true);
+  const convertToAmPm = (militaryString) => {
+    let militaryHoursNum = Number(militaryString.slice(0, 2));
+    let hoursString =
+      militaryHoursNum > 12
+        ? String(militaryHoursNum - 12)
+        : String(militaryHoursNum);
+    if (hoursString === "00") {
+      hoursString = "12";
+    }
+
+    let minString = militaryString.slice(-2);
+    let AmPm = militaryHoursNum > 11 ? "PM" : "AM";
+    return `${hoursString}:${minString} ${AmPm}`;
   };
-  const hideBedTimePicker = () => {
+
+  const handleBedTimeConfirm = (time) => {
+    setsleepGoalStart(convertToMilitaryString(time));
     setBedTimePickerVisibility(false);
   };
-  const handleTimeConfirm = (time) => {
-    console.log(`${time} has been picked`);
-    console.log("militarytime int", convertToMilitaryInteger(time));
 
-    setsleepGoalStart(convertToMilitaryInteger(time));
-    hideBedTimePicker();
+  const handleWakeTimeConfirm = (time) => {
+    setsleepGoalEnd(convertToMilitaryString(time));
+    setWakeTimePickerVisibility(false);
   };
 
   return (
@@ -59,22 +71,45 @@ const BuildProfile = () => {
           secureTextEntry
         />
         <TextInput
-          placeholder="passwordConfirm"
+          placeholder="Confirm Password"
           value={passwordConfirm}
           onChangeText={(text) => setPasswordConfirm(text)}
           secureTextEntry
         />
         <TextInput
-          placeholder="name"
+          placeholder="Name"
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        <Button title="Select Bed Time Goal" onPress={showBedTimePicker} />
+        <View style={tw``}>
+          <Text>
+            Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
+          </Text>
+          <Button
+            title="Set Time"
+            onPress={() => setBedTimePickerVisibility(true)}
+          />
+        </View>
         <DateTimePickerModal
           isVisible={isBedTimePickerVisible}
           mode="time"
-          onConfirm={handleTimeConfirm}
-          onCancel={hideBedTimePicker}
+          onConfirm={handleBedTimeConfirm}
+          onCancel={() => setBedTimePickerVisibility(false)}
+        />
+        <View style={tw``}>
+          <Text>
+            Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
+          </Text>
+          <Button
+            title="Set Time"
+            onPress={() => setWakeTimePickerVisibility(true)}
+          />
+        </View>
+        <DateTimePickerModal
+          isVisible={isWakeTimePickerVisible}
+          mode="time"
+          onConfirm={handleWakeTimeConfirm}
+          onCancel={() => setWakeTimePickerVisibility(false)}
         />
       </View>
     </View>
