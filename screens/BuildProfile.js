@@ -109,7 +109,7 @@ const BuildProfile = () => {
     setWakeTimePickerVisibility(false);
   };
 
-  const reformatFactors = (dbFactors) => {
+  const reformatFactors = (dbFactorsObject) => {
     const categories = [
       {
         name: "Practices",
@@ -124,19 +124,22 @@ const BuildProfile = () => {
         factors: [],
       },
     ];
-    dbFactors.forEach((dbFactor) => {
-      switch (dbFactor.category) {
+
+    for (const factor in dbFactorsObject) {
+      let name = dbFactorsObject[factor].name;
+      switch (dbFactorsObject[factor].category) {
         case "practice":
-          categories[0].factors.push(dbFactor.name);
+          categories[0].factors.push(name);
           break;
         case "tool":
-          categories[1].factors.push(dbFactor.name);
+          categories[1].factors.push(name);
           break;
         case "chemical":
-          categories[2].factors.push(dbFactor.name);
+          categories[2].factors.push(name);
           break;
       }
-    });
+    }
+
     return categories;
   };
 
@@ -215,7 +218,11 @@ const BuildProfile = () => {
           <Text>Remind me to go to sleep</Text>
         </View>
         <Text>Sleep Factors</Text>
-        <SleepFactorCategory category={dummyCategory} />
+        {reformatFactors(dummySleepFactors).map((category) => {
+          return (
+            <SleepFactorCategory key={category.name} category={category} />
+          );
+        })}
       </View>
     </View>
   );

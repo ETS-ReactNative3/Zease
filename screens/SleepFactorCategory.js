@@ -19,9 +19,11 @@ category= {
 }
 */
 const SleepFactorCategory = (props) => {
-  const [category, setCategory] = useState(props.category.name);
-  const [factors, setFactors] = useState(props.category.factors);
   const [expanded, setExpanded] = useState(false);
+  console.log(
+    "props.category.factors from sleep factor category",
+    props.category.factors
+  );
 
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -31,17 +33,18 @@ const SleepFactorCategory = (props) => {
   if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }
+
   return (
     <View>
       <TouchableOpacity onPress={() => toggleExpand()}>
         {expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
-        <Text>{category}</Text>
+        <Text>{props.category.name}</Text>
       </TouchableOpacity>
       <View />
       {expanded && (
         <View>
-          {factors.map((factor) => {
-            return <SleepFactorSwitch factor={factor} />;
+          {props.category.factors.map((factor, idx) => {
+            return <SleepFactorSwitch key={idx} factor={factor} />;
           })}
         </View>
       )}
