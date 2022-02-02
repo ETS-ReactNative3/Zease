@@ -2,7 +2,6 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Switch,
   LayoutAnimation,
   Platform,
   UIManager,
@@ -10,6 +9,8 @@ import {
 import React from "react";
 import { useEffect, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "react-native-heroicons/outline";
+
+import SleepFactorSwitch from "./SleepFactorSwitch";
 /*
 each SleepFactorCategory component in the build profile screen will be passed a category object through props with this format:
 category= {
@@ -33,9 +34,17 @@ const SleepFactorCategory = (props) => {
   return (
     <View>
       <TouchableOpacity onPress={() => toggleExpand()}>
-        <Text>{category}</Text>
         {expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        <Text>{category}</Text>
       </TouchableOpacity>
+      <View />
+      {expanded && (
+        <View>
+          {factors.map((factor) => {
+            return <SleepFactorSwitch factor={factor} />;
+          })}
+        </View>
+      )}
     </View>
   );
 };

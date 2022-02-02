@@ -197,22 +197,22 @@ const BuildProfile = () => {
           onCancel={() => setWakeTimePickerVisibility(false)}
         />
         <View>
-          <Text>Remind me to enter daily sleep log</Text>
           <Switch
             value={logReminderOn}
             onValueChange={() =>
               setLogReminder((previousValue) => !previousValue)
             }
           />
+          <Text>Remind me to enter daily sleep log</Text>
         </View>
         <View>
-          <Text>Remind me to go to sleep</Text>
           <Switch
             value={sleepReminderOn}
             onValueChange={() =>
               setSleepReminder((previousValue) => !previousValue)
             }
           />
+          <Text>Remind me to go to sleep</Text>
         </View>
         <Text>Sleep Factors</Text>
         <SleepFactorCategory category={dummyCategory} />
