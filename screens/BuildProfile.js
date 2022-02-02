@@ -60,7 +60,7 @@ const BuildProfile = () => {
   const [logReminderOn, setLogReminder] = useState(false);
   const [sleepReminderOn, setSleepReminder] = useState(false);
 
-  //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit integer.
+  //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit string.
   const convertToMilitaryString = (UTCTimeDate) => {
     let hoursString = String(UTCTimeDate.getHours());
     //make sure that the hours string has 2 characters even it is less than 10
@@ -73,7 +73,7 @@ const BuildProfile = () => {
 
     return hoursString + minutesString;
   };
-
+  //takes in a 4 digitstring in military time and returns it in AM/PM time format
   const convertToAmPm = (militaryString) => {
     let militaryHoursNum = Number(militaryString.slice(0, 2));
     let hoursString =
