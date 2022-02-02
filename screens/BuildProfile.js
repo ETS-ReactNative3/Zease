@@ -6,6 +6,7 @@ import {
   Switch,
   TouchableOpacity,
   Alert,
+  Modal
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -72,6 +73,7 @@ const BuildProfile = () => {
     useState(false);
   const [logReminderOn, setLogReminder] = useState(false);
   const [sleepReminderOn, setSleepReminder] = useState(false);
+  const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
   //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit string.
   const convertToMilitaryString = (UTCTimeDate) => {
@@ -163,12 +165,13 @@ const BuildProfile = () => {
         : [];
 
       //make sure that all required fields are filled in
+
       if (
         email === "" ||
         name === "" ||
-        sleepGoalStart === "" ||
-        sleepGoalEnd === "" ||
-        userFactors.length
+        sleepGoalStart === null ||
+        sleepGoalEnd === null ||
+        userFactors.length === 0
       ) {
         Alert.alert("Error", "Please fill in all required fields.");
         validated = false;
@@ -287,7 +290,13 @@ const BuildProfile = () => {
           />
           <Text>Remind me to go to sleep</Text>
         </View>
+        <View>
         <Text>Sleep Factors</Text>
+        <TouchableOpacity
+        onPress={() => setFactorInfoVisibility(true)}>
+          <Text>What is that?</Text>
+        </TouchableOpacity>
+        </View>
         {reformatFactors(dummySleepFactors).map((category) => {
           return (
             <SleepFactorCategory key={category.name} category={category} />
