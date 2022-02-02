@@ -14,7 +14,7 @@ export default function App() {
   return (
     <>
       <AddEntry />
-      <NavigationContainer>
+      {/* <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
             options={{ headerShown: false }}
@@ -23,7 +23,7 @@ export default function App() {
           />
           <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> */}
     </>
   );
 }
