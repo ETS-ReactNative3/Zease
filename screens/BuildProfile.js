@@ -1,9 +1,51 @@
-import { StyleSheet, View, Text, TextInput, Button } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Switch,
+} from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
 import { database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+const dummySleepFactors = {
+  1: {
+    name: "Caffeine",
+    category: "chemical",
+  },
+  2: {
+    name: "CBD",
+    category: "chemical",
+  },
+  3: {
+    name: "Melatonin",
+    category: "chemical",
+  },
+  4: {
+    name: "Sleep Mask",
+    category: "tool",
+  },
+  5: {
+    name: "C-Pap",
+    category: "tool",
+  },
+  6: {
+    name: "Screentime before bed",
+    category: "practice",
+  },
+  7: {
+    name: "Listening to a sleep podcast",
+    category: "practice",
+  },
+  8: {
+    name: "Meditation before bed",
+    category: "practice",
+  },
+};
 
 const BuildProfile = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +57,8 @@ const BuildProfile = () => {
   const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
   const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
     useState(false);
+  const [logReminderOn, setLogReminder] = useState(false);
+  const [sleepReminderOn, setSleepReminder] = useState(false);
 
   //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit integer.
   const convertToMilitaryString = (UTCTimeDate) => {
@@ -111,6 +155,25 @@ const BuildProfile = () => {
           onConfirm={handleWakeTimeConfirm}
           onCancel={() => setWakeTimePickerVisibility(false)}
         />
+        <View>
+          <Text>Remind me to enter daily sleep log</Text>
+          <Switch
+            value={logReminderOn}
+            onValueChange={() =>
+              setLogReminder((previousValue) => !previousValue)
+            }
+          />
+        </View>
+        <View>
+          <Text>Remind me to go to sleep</Text>
+          <Switch
+            value={sleepReminderOn}
+            onValueChange={() =>
+              setSleepReminder((previousValue) => !previousValue)
+            }
+          />
+        </View>
+        <Text>Sleep Factors</Text>
       </View>
     </View>
   );
