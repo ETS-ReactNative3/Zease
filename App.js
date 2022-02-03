@@ -4,9 +4,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LoginScreen from "./screens/LoginScreen";
-import HomeScreen from "./screens/HomeScreen";
 import Chart from "./screens/Chart";
 import BuildProfile from "./screens/BuildProfile";
+import NavBar from "./screens/NavBar";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -14,14 +15,12 @@ export default function App() {
     <>
       <BuildProfile />
       {/* <Chart />
+       <NavBar />
+
+
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Login"
-            component={LoginScreen}
-          />
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen options={{ headerShown: false }} name='Login' component={LoginScreen} />
         </Stack.Navigator>
       </NavigationContainer> */}
     </>
