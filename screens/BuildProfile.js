@@ -18,7 +18,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-//import LoginScreen from "./LoginScreen";
 import SleepFactorCategory from "./SleepFactorCategory";
 import {
   convertToMilitaryString,
@@ -26,7 +25,7 @@ import {
   reformatFactors,
 } from "../Util";
 
-const BuildProfile = (navigation) => {
+const BuildProfile = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [password, setPassword] = useState("");
@@ -254,9 +253,9 @@ const BuildProfile = (navigation) => {
         <TouchableOpacity onPress={handleSubmit}>
           <Text>Submit</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={() => navigation.navigate(LoginScreen)}>
+        <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
           <Text>Cancel</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </View>
   );
