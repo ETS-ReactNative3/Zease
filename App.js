@@ -4,26 +4,34 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LoginScreen from "./screens/LoginScreen";
-import HomeScreen from "./screens/HomeScreen";
 import Chart from "./screens/Chart";
 import AddEntry from "./screens/AddEntry";
+import BuildProfile from "./screens/BuildProfile";
+import NavBar from "./screens/NavBar";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <>
-      <AddEntry />
-      {/* <NavigationContainer>
+      {/* <BuildProfile /> */}
+      {/* <Chart />
+       <NavBar />*/}
+
+      <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
             options={{ headerShown: false }}
             name="Login"
             component={LoginScreen}
           />
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="BuildProfile"
+            component={BuildProfile}
+          />
         </Stack.Navigator>
-      </NavigationContainer> */}
+      </NavigationContainer>
     </>
   );
 }

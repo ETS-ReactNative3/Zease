@@ -4,54 +4,45 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
-} from 'react-native';
-import React, { useState } from 'react';
-import { auth, database } from '../firebase';
+  View,
+} from "react-native";
+import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { auth, database } from "../firebase";
+import BuildProfile from "./BuildProfile";
 
-const LoginScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   function writeUserData(userId, name) {
-    database.ref('users/' + userId).set({
-      username: name
+    database.ref("users/" + userId).set({
+      username: name,
     });
   }
-
-  const handleSignup = () => {
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log('Registered with:', user.email);
-        console.log('UID', user.uid);
-        writeUserData(user.uid, user.email);
-      })
-      .catch((error) => alert(error.message));
-  };
 
   const handleLogin = () => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log('Logged In with', user.email);
+        console.log("Logged In with", user.email);
       })
       .catch((error) => alert(error.message));
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior='padding'>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder='Email'
+          placeholder="Email"
           value={email}
           onChangeText={(text) => setEmail(text)}
           style={styles.input}
         />
         <TextInput
-          placeholder='Password'
+          placeholder="Password"
           value={password}
           onChangeText={(text) => setPassword(text)}
           style={styles.input}
@@ -63,7 +54,10 @@ const LoginScreen = () => {
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleSignup} style={[styles.button, styles.buttonOutline]}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(BuildProfile)}
+          style={[styles.button, styles.buttonOutline]}
+        >
           <Text style={styles.buttonOutlineText}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -74,26 +68,26 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   inputContainer: {
-    width: '80%'
+    width: "80%",
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
-    marginTop: 5
+    marginTop: 5,
   },
   buttonContainer: {
-    width: '60%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "60%",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 40,
-    alignItems: 'center'
-  }
+    alignItems: "center",
+  },
 });
 
 export default LoginScreen;
