@@ -12,7 +12,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
-// import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -73,8 +73,9 @@ const BuildProfile = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [name, setName] = useState("");
-  // const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  // const [sleepGoalStart, setsleepGoalStart] = useState(null);
+  const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
+  const [sleepGoalStart, setsleepGoalStart] = useState(null);
+  const [sleepGoalUTC, setsleepGoalUTC] = useState(Date.now());
   // const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
   // const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
   //   useState(false);
@@ -82,10 +83,10 @@ const BuildProfile = () => {
   const [sleepReminderOn, setSleepReminder] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
-  // const handleBedTimeConfirm = (time) => {
-  //   setsleepGoalStart(convertToMilitaryString(time));
-  //   setBedTimePickerVisibility(false);
-  // };
+  const handleBedTimeConfirm = (evt, time) => {
+    setsleepGoalStart(convertToMilitaryString(time));
+    setBedTimePickerVisibility(false);
+  };
 
   // const handleWakeTimeConfirm = (time) => {
   //   setsleepGoalEnd(convertToMilitaryString(time));
@@ -114,7 +115,7 @@ const BuildProfile = () => {
       if (
         email === "" ||
         name === "" ||
-        // sleepGoalStart === null ||
+        sleepGoalStart === null ||
         // sleepGoalEnd === null ||
         userFactors === null
       ) {
@@ -138,7 +139,7 @@ const BuildProfile = () => {
       let newUser = {
         email,
         name,
-        // sleepGoalStart,
+        sleepGoalStart,
         // sleepGoalEnd,
         userFactors,
         logReminderOn,
@@ -187,7 +188,7 @@ const BuildProfile = () => {
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        {/* <View style={tw``}>
+        <View style={tw``}>
           <Text>
             Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
           </Text>
@@ -196,13 +197,16 @@ const BuildProfile = () => {
             onPress={() => setBedTimePickerVisibility(true)}
           />
         </View>
-        <DateTimePickerModal
-          isVisible={isBedTimePickerVisible}
-          mode="time"
-          onConfirm={handleBedTimeConfirm}
-          onCancel={() => setBedTimePickerVisibility(false)}
-        />
-        <View style={tw``}>
+        {isBedTimePickerVisible && (
+          <DateTimePicker
+            //  isVisible={isBedTimePickerVisible}
+            mode="time"
+            value={sleepGoalUTC}
+            onChange={handleBedTimeConfirm}
+            //  onCancel={() => setBedTimePickerVisibility(false)}
+          />
+        )}
+        {/* <View style={tw``}>
           <Text>
             Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
           </Text>
