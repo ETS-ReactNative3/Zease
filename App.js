@@ -16,11 +16,6 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen
-            options={{ headerShown: false }}
-            name="NavBar"
-            component={NavBar}
-          /> */}
           <Stack.Screen
             options={{ headerShown: false }}
             name="LoginScreen"
@@ -30,6 +25,11 @@ export default function App() {
             options={{ headerShown: false }}
             name="BuildProfile"
             component={BuildProfile}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="NavBar"
+            component={NavBar}
           />
         </Stack.Navigator>
       </NavigationContainer>

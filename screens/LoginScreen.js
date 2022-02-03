@@ -11,23 +11,30 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { auth, database } from "../firebase";
 import BuildProfile from "./BuildProfile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function writeUserData(userId, name) {
-    database.ref("users/" + userId).set({
-      username: name,
-    });
-  }
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     auth
       .signInWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
+      .then(async (userCredentials) => {
         const user = userCredentials.user;
+        const userId = user.uid;
         console.log("Logged In with", user.email);
+        console.log("userId", userId);
+        try {
+          await AsyncStorage.setItem("userID", JSON.stringify(userId));
+        } catch (error) {
+          console.log(
+            "there was an error in attempting to save the userID info in async storage: ",
+            error
+          );
+        }
+        //show the navbar screen after login
+        navigation.navigate("NavBar");
       })
       .catch((error) => alert(error.message));
   };
