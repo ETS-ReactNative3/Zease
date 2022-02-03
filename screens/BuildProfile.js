@@ -75,23 +75,24 @@ const BuildProfile = () => {
   const [name, setName] = useState("");
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [sleepGoalStart, setsleepGoalStart] = useState(null);
-  const [sleepGoalUTC, setsleepGoalUTC] = useState(Date.now());
-  // const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
-  // const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
-  //   useState(false);
+  const [sleepGoalStartUTC, setsleepGoalStartUTC] = useState(Date.now());
+  const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
+  const [sleepGoalEndUTC, setsleepGoalEndUTC] = useState(Date.now());
+  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
+    useState(false);
   const [logReminderOn, setLogReminder] = useState(false);
   const [sleepReminderOn, setSleepReminder] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
   const handleBedTimeConfirm = (evt, time) => {
+    setsleepGoalStartUTC(time);
     setsleepGoalStart(convertToMilitaryString(time));
-    setBedTimePickerVisibility(false);
   };
 
-  // const handleWakeTimeConfirm = (time) => {
-  //   setsleepGoalEnd(convertToMilitaryString(time));
-  //   setWakeTimePickerVisibility(false);
-  // };
+  const handleWakeTimeConfirm = (evt, time) => {
+    setsleepGoalEndUTC(time);
+    setsleepGoalEnd(convertToMilitaryString(time));
+  };
 
   const handleSubmit = async () => {
     let validated = true;
@@ -116,7 +117,7 @@ const BuildProfile = () => {
         email === "" ||
         name === "" ||
         sleepGoalStart === null ||
-        // sleepGoalEnd === null ||
+        sleepGoalEnd === null ||
         userFactors === null
       ) {
         Alert.alert("Error", "Please fill in all required fields.");
@@ -140,7 +141,7 @@ const BuildProfile = () => {
         email,
         name,
         sleepGoalStart,
-        // sleepGoalEnd,
+        sleepGoalEnd,
         userFactors,
         logReminderOn,
         sleepReminderOn,
@@ -192,35 +193,34 @@ const BuildProfile = () => {
           <Text>
             Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
           </Text>
+          {isBedTimePickerVisible && (
+            <DateTimePicker
+              mode="time"
+              value={sleepGoalStartUTC}
+              onChange={handleBedTimeConfirm}
+            />
+          )}
           <Button
-            title="Set Time"
-            onPress={() => setBedTimePickerVisibility(true)}
+            title={isBedTimePickerVisible ? "Confirm" : "Set Time"}
+            onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
           />
         </View>
-        {isBedTimePickerVisible && (
-          <DateTimePicker
-            //  isVisible={isBedTimePickerVisible}
-            mode="time"
-            value={sleepGoalUTC}
-            onChange={handleBedTimeConfirm}
-            //  onCancel={() => setBedTimePickerVisibility(false)}
-          />
-        )}
-        {/* <View style={tw``}>
+        <View style={tw``}>
           <Text>
             Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
           </Text>
-          <Button
-            title="Set Time"
-            onPress={() => setWakeTimePickerVisibility(true)}
-          />
         </View>
-        <DateTimePickerModal
-          isVisible={isWakeTimePickerVisible}
-          mode="time"
-          onConfirm={handleWakeTimeConfirm}
-          onCancel={() => setWakeTimePickerVisibility(false)}
-        /> */}
+        {isWakeTimePickerVisible && (
+          <DateTimePicker
+            mode="time"
+            value={sleepGoalEndUTC}
+            onChange={handleWakeTimeConfirm}
+          />
+        )}
+        <Button
+          title={isWakeTimePickerVisible ? "Confirm" : "Set Time"}
+          onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
+        />
         <View>
           <Switch
             value={logReminderOn}
