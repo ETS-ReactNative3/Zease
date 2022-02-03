@@ -16,8 +16,6 @@ import tw from "tailwind-react-native-classnames";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import SleepFactorCategory from "./SleepFactorCategory";
 import {
@@ -190,7 +188,7 @@ const BuildProfile = ({ navigation }) => {
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        <View style={tw`flex-row`}>
+        <View>
           <Text>
             Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
           </Text>
@@ -206,7 +204,7 @@ const BuildProfile = ({ navigation }) => {
             onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
           />
         </View>
-        <View style={tw`flex-row`}>
+        <View>
           <Text>
             Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
           </Text>
