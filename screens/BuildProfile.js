@@ -12,7 +12,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -73,24 +73,24 @@ const BuildProfile = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [name, setName] = useState("");
-  const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  const [sleepGoalStart, setsleepGoalStart] = useState(null);
-  const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
-  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
-    useState(false);
+  // const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
+  // const [sleepGoalStart, setsleepGoalStart] = useState(null);
+  // const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
+  // const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
+  //   useState(false);
   const [logReminderOn, setLogReminder] = useState(false);
   const [sleepReminderOn, setSleepReminder] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
-  const handleBedTimeConfirm = (time) => {
-    setsleepGoalStart(convertToMilitaryString(time));
-    setBedTimePickerVisibility(false);
-  };
+  // const handleBedTimeConfirm = (time) => {
+  //   setsleepGoalStart(convertToMilitaryString(time));
+  //   setBedTimePickerVisibility(false);
+  // };
 
-  const handleWakeTimeConfirm = (time) => {
-    setsleepGoalEnd(convertToMilitaryString(time));
-    setWakeTimePickerVisibility(false);
-  };
+  // const handleWakeTimeConfirm = (time) => {
+  //   setsleepGoalEnd(convertToMilitaryString(time));
+  //   setWakeTimePickerVisibility(false);
+  // };
 
   const handleSubmit = async () => {
     let validated = true;
@@ -114,8 +114,8 @@ const BuildProfile = () => {
       if (
         email === "" ||
         name === "" ||
-        sleepGoalStart === null ||
-        sleepGoalEnd === null ||
+        // sleepGoalStart === null ||
+        // sleepGoalEnd === null ||
         userFactors === null
       ) {
         Alert.alert("Error", "Please fill in all required fields.");
@@ -138,8 +138,8 @@ const BuildProfile = () => {
       let newUser = {
         email,
         name,
-        sleepGoalStart,
-        sleepGoalEnd,
+        // sleepGoalStart,
+        // sleepGoalEnd,
         userFactors,
         logReminderOn,
         sleepReminderOn,
@@ -187,7 +187,7 @@ const BuildProfile = () => {
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        <View style={tw``}>
+        {/* <View style={tw``}>
           <Text>
             Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
           </Text>
@@ -216,7 +216,7 @@ const BuildProfile = () => {
           mode="time"
           onConfirm={handleWakeTimeConfirm}
           onCancel={() => setWakeTimePickerVisibility(false)}
-        />
+        /> */}
         <View>
           <Switch
             value={logReminderOn}
