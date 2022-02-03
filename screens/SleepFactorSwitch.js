@@ -2,6 +2,7 @@ import { View, Text, Switch } from "react-native";
 import React from "react";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import tw from "tailwind-react-native-classnames";
 
 const SleepFactorSwitch = (props) => {
   const [factorRelevant, setFactorRelevance] = useState(false);
@@ -16,7 +17,7 @@ const SleepFactorSwitch = (props) => {
       const oldUserFactors = oldUserFactorsString
         ? JSON.parse(oldUserFactorsString)
         : null;
-      console.log("oldUserFactors fetched from async storage", oldUserFactors);
+      // console.log("oldUserFactors fetched from async storage", oldUserFactors);
       //
       let newUserFactors = {};
       if (oldUserFactors && oldUserFactors[factorId]) {
@@ -35,10 +36,10 @@ const SleepFactorSwitch = (props) => {
       }
       //store the updated user factors in async storage.
       //newUserFactors = {};
-      console.log(
-        "new user factors about to be put in local storage",
-        newUserFactors
-      );
+      // console.log(
+      //   "new user factors about to be put in local storage",
+      //   newUserFactors
+      // );
       await AsyncStorage.setItem("userFactors", JSON.stringify(newUserFactors));
     } catch (error) {
       console.log(
@@ -48,7 +49,7 @@ const SleepFactorSwitch = (props) => {
     }
   };
   return (
-    <View>
+    <View style={tw`flex-row`}>
       <Switch value={factorRelevant} onValueChange={() => toggleSwitch()} />
       <Text>{props.factor.name}</Text>
     </View>

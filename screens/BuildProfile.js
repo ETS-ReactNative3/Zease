@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  Pressable,
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -157,7 +158,7 @@ const BuildProfile = ({ navigation }) => {
     <View style={tw`flex-1 items-center justify-center`}>
       <Text>Welcome!</Text>
       <View>
-        <View>
+        <View style={tw`flex-row`}>
           <TextInput
             placeholder="Email"
             value={email}
@@ -167,7 +168,7 @@ const BuildProfile = ({ navigation }) => {
             <Ionicons name="alert-outline" size={20} color="red" />
           )}
         </View>
-        <View>
+        <View style={tw`flex-row`}>
           <TextInput
             placeholder="Password"
             value={password}
@@ -189,7 +190,7 @@ const BuildProfile = ({ navigation }) => {
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        <View style={tw``}>
+        <View style={tw`flex-row`}>
           <Text>
             Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
           </Text>
@@ -205,23 +206,26 @@ const BuildProfile = ({ navigation }) => {
             onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
           />
         </View>
-        <View style={tw``}>
+        <View style={tw`flex-row`}>
           <Text>
             Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
           </Text>
-        </View>
-        {isWakeTimePickerVisible && (
-          <DateTimePicker
-            mode="time"
-            value={sleepGoalEndUTC}
-            onChange={handleWakeTimeConfirm}
+
+          {isWakeTimePickerVisible && (
+            <DateTimePicker
+              mode="time"
+              value={sleepGoalEndUTC}
+              onChange={handleWakeTimeConfirm}
+            />
+          )}
+          <Button
+            title={isWakeTimePickerVisible ? "Confirm" : "Set Time"}
+            onPress={() =>
+              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
+            }
           />
-        )}
-        <Button
-          title={isWakeTimePickerVisible ? "Confirm" : "Set Time"}
-          onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
-        />
-        <View>
+        </View>
+        <View style={tw`flex-row`}>
           <Switch
             value={logReminderOn}
             onValueChange={() =>
@@ -230,7 +234,7 @@ const BuildProfile = ({ navigation }) => {
           />
           <Text>Remind me to enter daily sleep log</Text>
         </View>
-        <View>
+        <View style={tw`flex-row`}>
           <Switch
             value={sleepReminderOn}
             onValueChange={() =>
@@ -239,23 +243,47 @@ const BuildProfile = ({ navigation }) => {
           />
           <Text>Remind me to go to sleep</Text>
         </View>
-        <View>
+        <View style={tw`flex-row`}>
           <Text>Sleep Factors</Text>
           <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
             <Ionicons name="information-circle-outline" size={25} />
           </TouchableOpacity>
         </View>
+        <Modal
+          transparent={false}
+          animationType="slide"
+          visible={isFactorInfoVisible}
+          onRequestClose={() => setFactorInfoVisibility(!isFactorInfoVisible)}
+        >
+          <View style={tw`flex-1 items-center justify-center`}>
+            <Text>
+              A sleep factor is something that has the potential to affect your
+              sleep. When you are making a daily sleep entry you will be able to
+              select any number of the sleep factors you choose here. When
+              viewing visualizations of your sleep entries you will be able to
+              see any correlations that may exist between factors you have
+              chosen to track and the quality or duration of your sleep.
+            </Text>
+            <Pressable
+              onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}
+            >
+              <Text>Close</Text>
+            </Pressable>
+          </View>
+        </Modal>
         {reformatFactors(sleepFactors).map((category) => {
           return (
             <SleepFactorCategory key={category.name} category={category} />
           );
         })}
-        <TouchableOpacity onPress={handleSubmit}>
-          <Text>Submit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
-          <Text>Cancel</Text>
-        </TouchableOpacity>
+        <View style={tw`items-center `}>
+          <TouchableOpacity onPress={handleSubmit}>
+            <Text>Submit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
