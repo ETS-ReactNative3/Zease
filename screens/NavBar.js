@@ -5,19 +5,12 @@ import { Ionicons } from '@expo/vector-icons';
 
 import LoginScreen from './LoginScreen';
 import Chart from './Chart';
+import AllSleepEntries from './AllSleepEntries';
 
 function AddScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Add Your Entry Here</Text>
-    </View>
-  );
-}
-
-function AllSleepEntries() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>All Sleep Entries Here</Text>
     </View>
   );
 }

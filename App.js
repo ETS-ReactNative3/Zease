@@ -1,34 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import { StatusBar } from 'expo-status-bar';
+// import { StyleSheet, View } from 'react-native';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import NavBar from './screens/NavBar';
-import LoginScreen from './screens/LoginScreen';
-import Chart from './screens/Chart';
+// import LoginScreen from './screens/LoginScreen';
+// import Chart from './screens/Chart';
 
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <>
-      {/* <NavBar /> */}
+      <NavBar />
 
-      <Chart />
+      {/* <Chart />
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen options={{ headerShown: false }} name='Login' component={LoginScreen} />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> */}
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center'
+//   }
+// });
