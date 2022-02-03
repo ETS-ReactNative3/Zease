@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, Button, TextInput, Alert } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Slider from "@react-native-community/slider";
 import MultiSelect from "react-native-multiple-select";
 
@@ -22,6 +23,11 @@ const AddEntry = () => {
   // Time picker state
   const [startTimePickerVisible, setStartTimePickerVisible] = useState(false);
   const [endTimePickerVisible, setEndTimePickerVisible] = useState(false);
+  // TODO: Initialize time picker to user's goal times
+  // const [startTimeUTC, setStartTimeUTC] = useState(Date.now());
+  // const [endTimeUTC, setEndTimeUTC] = useState(Date.now());
+  // const [startTimeUTC, setStartTimeUTC] = useState(new Date().setHours(20,0,0,0));
+  // const [endTimeUTC, setEndTimeUTC] = useState(new Date().setHours(7,0,0,0));
 
   // Sleep factor multiselect ref (used to call prototype methods)
   const multiSelectRef = useRef();
@@ -34,12 +40,14 @@ const AddEntry = () => {
 
   // Set state for sleep startTime once modal picker selection confirmed
   const handleConfirmStart = (time) => {
+    // setStartTimeUTC(time);
     setStartTime(convertToMilitaryString(time));
     hideTimePickers();
   };
 
   // Set state for sleep endTime once modal picker selection confirmed
   const handleConfirmEnd = (time) => {
+    // setEndTimeUTC(time);
     setEndTime(convertToMilitaryString(time));
     hideTimePickers();
   };
@@ -62,7 +70,7 @@ const AddEntry = () => {
     const factorsRef = database.ref(`users/${userId}/userFactors`);
     factorsRef.on("value", (snapshot) => {
       const factors = snapshot.val();
-      setUserFactors(factors)
+      setUserFactors(factors);
       // Reformat factors to array of objects, with keys id, name, and category
       const formattedFactors = [];
       for (let key in factors) {
@@ -73,28 +81,32 @@ const AddEntry = () => {
   }, []);
 
   const handleSubmit = () => {
+    // TODO: Validate form data
+    
     // Set formData date to date string yyyy-mm-dd (of previous day)
     const dateObj = new Date();
-    dateObj.setTime(dateObj.getTime() - (24*60*60*1000)) // Subtract 24 hours
-    const date = dateObj.toISOString().slice(0, 10)
+    dateObj.setTime(dateObj.getTime() - 24 * 60 * 60 * 1000); // Subtract 24 hours
+    const date = dateObj.toISOString().slice(0, 10);
 
-    const entryFactors = {}
-    entryFactorsArr.forEach(factorId => entryFactors[factorId] = userFactors[factorId]) // Only grab name and category
+    const entryFactors = {};
+    entryFactorsArr.forEach(
+      (factorId) => (entryFactors[factorId] = userFactors[factorId])
+    ); // Only grab name and category
     // Set formData factors to formatted selectedItems (selected items will be array of ids)
-    const formData = {date, startTime, endTime, quality, entryFactors, notes}
-    console.log("formData", formData)
+    const formData = { date, startTime, endTime, quality, entryFactors, notes };
+    console.log("formData", formData);
 
     // Write form inputs to firebase
     const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
     sleepEntriesRef.push(formData);
     // Success alert
-    Alert.alert("Entry submitted!")
+    Alert.alert("Entry submitted!");
     // Reset form data
-      setStartTime("");
-      setEndTime("");
-      setQuality(0);
-      setEntryFactorsArr([]);
-      setNotes("");
+    setStartTime("");
+    setEndTime("");
+    setQuality(0);
+    setEntryFactorsArr([]);
+    setNotes("");
     // Take user to SingleEntry view of submitted entry
   };
 
@@ -116,6 +128,11 @@ const AddEntry = () => {
           onConfirm={handleConfirmStart}
           onCancel={hideTimePickers}
         />
+        {/* <DateTimePicker
+          value={startTimeUTC}
+          mode="time"
+          onChange={handleConfirmStart}
+        /> */}
         <Text>Wake time</Text>
         <Button
           title={endTime ? convertToAmPm(endTime) : "Select"}
@@ -129,6 +146,11 @@ const AddEntry = () => {
           onConfirm={handleConfirmEnd}
           onCancel={hideTimePickers}
         />
+        {/* <DateTimePicker
+          value={endTimeUTC}
+          mode="time"
+          onChange={handleConfirmEnd}
+        /> */}
         <Text>Sleep Quality</Text>
         <Slider
           step={1}
@@ -172,7 +194,7 @@ const AddEntry = () => {
           multiline={true}
           numberOfLines={4}
           placeholder="Enter notes..."
-          onChangeText={input => setNotes(input)}
+          onChangeText={(input) => setNotes(input)}
           value={notes}
         />
         <Button
