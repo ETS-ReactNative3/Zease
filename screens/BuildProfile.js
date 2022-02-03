@@ -17,6 +17,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
 import SleepFactorCategory from "./SleepFactorCategory";
+import {
+  convertToMilitaryString,
+  convertToAmPm,
+  reformatFactors,
+} from "../Util";
+import { isNullOrUndefined } from "util";
 
 const dummySleepFactors = {
   1: {
@@ -76,69 +82,6 @@ const BuildProfile = () => {
   const [sleepReminderOn, setSleepReminder] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
-  //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit string.
-  const convertToMilitaryString = (UTCTimeDate) => {
-    let hoursString = String(UTCTimeDate.getHours());
-    //make sure that the hours string has 2 characters even it is less than 10
-    hoursString = hoursString.length < 2 ? 0 + hoursString : hoursString;
-
-    let minutesString = String(UTCTimeDate.getMinutes());
-    //make sure that the minutes string has 2 characters even it is less than 10
-    minutesString =
-      minutesString.length < 2 ? 0 + minutesString : minutesString;
-
-    return hoursString + minutesString;
-  };
-  //takes in a 4 digitstring in military time and returns it in AM/PM time format
-  const convertToAmPm = (militaryString) => {
-    let militaryHoursNum = Number(militaryString.slice(0, 2));
-    let hoursString =
-      militaryHoursNum > 12
-        ? String(militaryHoursNum - 12)
-        : String(militaryHoursNum);
-    if (hoursString === "00") {
-      hoursString = "12";
-    }
-
-    let minString = militaryString.slice(-2);
-    let AmPm = militaryHoursNum > 11 ? "PM" : "AM";
-    return `${hoursString}:${minString} ${AmPm}`;
-  };
-
-  //takes in the object of all sleep factors fetched from realtime firebase and reformats it into an array of categories that can be mapped into sleep factor category sub components.
-  const reformatFactors = (dbFactorsObject) => {
-    const categories = [
-      {
-        name: "Practices",
-        factors: [],
-      },
-      {
-        name: "Tools",
-        factors: [],
-      },
-      {
-        name: "Chemicals",
-        factors: [],
-      },
-    ];
-
-    for (const factor in dbFactorsObject) {
-      let factorSubArray = [dbFactorsObject[factor].name, factor];
-      switch (dbFactorsObject[factor].category) {
-        case "practice":
-          categories[0].factors.push(factorSubArray);
-          break;
-        case "tool":
-          categories[1].factors.push(factorSubArray);
-          break;
-        case "chemical":
-          categories[2].factors.push(factorSubArray);
-          break;
-      }
-    }
-    return categories;
-  };
-
   const handleBedTimeConfirm = (time) => {
     setsleepGoalStart(convertToMilitaryString(time));
     setBedTimePickerVisibility(false);
@@ -163,16 +106,17 @@ const BuildProfile = () => {
 
       const userFactors = userFactorsString
         ? JSON.parse(userFactorsString)
-        : [];
+        : null;
 
       //make sure that all required fields are filled in
+      console.log("userFactors from async storage", userFactors);
 
       if (
         email === "" ||
         name === "" ||
         sleepGoalStart === null ||
         sleepGoalEnd === null ||
-        userFactors.length === 0
+        userFactors === null
       ) {
         Alert.alert("Error", "Please fill in all required fields.");
         validated = false;

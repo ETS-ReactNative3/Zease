@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SleepFactorSwitch = (props) => {
   const [factorRelevant, setFactorRelevance] = useState(false);
-  const factorId = props.factorId;
+  const { factorId, factor } = props;
 
   const toggleSwitch = async () => {
     setFactorRelevance((previousValue) => !previousValue);
@@ -18,22 +18,27 @@ const SleepFactorSwitch = (props) => {
         : null;
       console.log("oldUserFactors fetched from async storage", oldUserFactors);
       //
-      let newUserFactors = [];
-      if (oldUserFactors && oldUserFactors.includes(factorId)) {
-        //if old user factors array currently includes this factor's ID, remove it.
-        newUserFactors = oldUserFactors.filter((id) => id !== factorId);
-        //if the old user factors array doesn't include this factor's ID, add it.
+      let newUserFactors = {};
+      if (oldUserFactors && oldUserFactors[factorId]) {
+        //if old user factors object currently includes this factor's key value pair, remove it.
+        newUserFactors = { ...oldUserFactors };
+        delete newUserFactors[factorId];
       }
 
-      if (oldUserFactors && !oldUserFactors.includes(factorId)) {
-        //if the old user factors array doesn't include this factor's ID, add it.
-        newUserFactors = [...oldUserFactors, factorId];
+      if (oldUserFactors && !oldUserFactors[factorId]) {
+        //if the old user factors object doesn't include this factor's key value pair, add it.
+        newUserFactors = { ...oldUserFactors, [factorId]: factor };
       }
       if (oldUserFactors === null) {
-        //if the old user factors array is null, the new factors array will have just this factor's ID in it.
-        newUserFactors = [factorId];
+        //if the old user factors object is null, the new factors object will have just this factor's key value pair in it.
+        newUserFactors[factorId] = factor;
       }
-      //store the updated user factors in async stroage.
+      //store the updated user factors in async storage.
+      // newUserFactors = {};
+      console.log(
+        "new user factors about to be put in local storage",
+        newUserFactors
+      );
       await AsyncStorage.setItem("userFactors", JSON.stringify(newUserFactors));
     } catch (error) {
       console.log(
@@ -45,7 +50,7 @@ const SleepFactorSwitch = (props) => {
   return (
     <View>
       <Switch value={factorRelevant} onValueChange={() => toggleSwitch()} />
-      <Text>{props.factor}</Text>
+      <Text>{props.factor.name}</Text>
     </View>
   );
 };
