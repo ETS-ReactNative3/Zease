@@ -81,8 +81,11 @@ const AddEntry = () => {
   }, []);
 
   const handleSubmit = () => {
-    // TODO: Validate form data
-    
+    // Validate form data
+    if (!startTime || !endTime || !quality) {
+      Alert.alert("Error", "Please fill in all required fields!");
+      return
+    }
     // Set formData date to date string yyyy-mm-dd (of previous day)
     const dateObj = new Date();
     dateObj.setTime(dateObj.getTime() - 24 * 60 * 60 * 1000); // Subtract 24 hours

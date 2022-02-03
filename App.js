@@ -14,11 +14,12 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <>
-      {/* <BuildProfile /> */}
-      {/* <Chart />
-       <NavBar />*/}
+      {/* <BuildProfile />
+      <Chart />
+      <NavBar /> */}
+      <AddEntry />
 
-      <NavigationContainer>
+      {/* <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
             options={{ headerShown: false }}
@@ -31,7 +32,7 @@ export default function App() {
             component={BuildProfile}
           />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> */}
     </>
   );
 }
