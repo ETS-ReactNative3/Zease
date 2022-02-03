@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Button, FlatList } from "react-native";
+import { StyleSheet, View, Text, Button, TextInput, Alert } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Slider from "@react-native-community/slider";
@@ -9,22 +9,20 @@ import { convertToMilitaryString, convertToAmPm } from "../utils";
 
 const AddEntry = () => {
   // User sleep factors (pulled in from firebase)
-  const [factors, setFactors] = useState([]);
+  const [userFactors, setUserFactors] = useState({});
+  const [userFactorsArr, setUserFactorsArr] = useState([]);
 
   // Form state
-  const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [quality, setQuality] = useState(0);
-  const [entryFactors, setEntryFactors] = useState([]);
+  const [entryFactorsArr, setEntryFactorsArr] = useState([]);
   const [notes, setNotes] = useState("");
 
   // Time picker state
   const [startTimePickerVisible, setStartTimePickerVisible] = useState(false);
   const [endTimePickerVisible, setEndTimePickerVisible] = useState(false);
 
-  // Sleep factors multiselect state
-  const [selectedItems, setSelectedItems] = useState([]);
   // Sleep factor multiselect ref (used to call prototype methods)
   const multiSelectRef = useRef();
 
@@ -50,48 +48,66 @@ const AddEntry = () => {
 
   // Set state for sleep quality when slider changes
   const handleSelectQuality = (val) => {
-    console.warn("Quality selected: ", val);
+    // console.warn("Quality selected: ", val);
     setQuality(val);
   };
 
-  const onSelectedItemsChange = (selectedItems) => {
-    console.warn("Sleep factors selected: ", selectedItems);
-    setSelectedItems(selectedItems);
+  const onEntryFactorsChange = (selectedItems) => {
+    // console.log("Sleep factors selected: ", selectedItems);
+    setEntryFactorsArr(selectedItems);
   };
 
-  const userIdTest = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID
+  const alstonUserId = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID
   // Grab userId from the firebase auth component
-  const userId = auth.currentUser ? auth.currentUser.uid : userIdTest;
+  const userId = auth.currentUser ? auth.currentUser.uid : alstonUserId;
 
   // User's sleep factors dummy data
   const factorsTest = [
-    { name: "caffeine", category: "chemical" },
-    { name: "CBD", category: "chemical" },
-    { name: "meditation", category: "practice" },
-    { name: "stressful day", category: "practice" },
-    { name: "exercised late", category: "practice" },
+    { id: "1", name: "caffeine", category: "chemical" },
+    { id: "2", name: "CBD", category: "chemical" },
+    { id: "3", name: "meditation", category: "practice" },
+    { id: "4", name: "stressful day", category: "practice" },
+    { id: "5", name: "exercised late", category: "practice" },
   ];
 
   useEffect(() => {
     // Load user's sleep factors from firebase
     const factorsRef = database.ref(`users/${userId}/userFactors`);
     factorsRef.on("value", (snapshot) => {
-      const userFactors = snapshot.val();
-      setFactors(userFactors);
-      console.log("userFactors", userFactors);
+      const factors = snapshot.val();
+      setUserFactors(factors)
+      // Reformat factors to array of objects, with keys id, name, and category
+      const formattedFactors = [];
+      for (let key in factors) {
+        formattedFactors.push({ ...factors[key], id: key });
+      }
+      setUserFactorsArr(formattedFactors);
     });
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Set date to date string yyyy-mm-dd
-    // setFormData({ ...formData, date: new Date(Date.now()) });
-    // Restructure data for firebase, convert any strings to numbers
+  const handleSubmit = () => {
+    // Set formData date to date string yyyy-mm-dd (of previous day)
+    const dateObj = new Date();
+    dateObj.setTime(dateObj.getTime() - (24*60*60*1000)) // Subtract 24 hours
+    const date = dateObj.toISOString().slice(0, 10)
+
+    const entryFactors = {}
+    entryFactorsArr.forEach(factorId => entryFactors[factorId] = userFactors[factorId]) // Only grab name and category
+    // Set formData factors to formatted selectedItems (selected items will be array of ids)
+    const formData = {date, startTime, endTime, quality, entryFactors, notes}
+    console.log("formData", formData)
+
     // Write form inputs to firebase
     const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
-    // sleepEntriesRef.push(formData);
+    sleepEntriesRef.push(formData);
     // Success alert
+    Alert.alert("Entry submitted!")
     // Reset form data
+      setStartTime("");
+      setEndTime("");
+      setQuality(0);
+      setEntryFactorsArr([]);
+      setNotes("");
     // Take user to SingleEntry view of submitted entry
   };
 
@@ -140,15 +156,14 @@ const AddEntry = () => {
         <Text>Factors</Text>
         <MultiSelect
           hideTags
-          items={factorsTest}
-          uniqueKey="name"
-          onSelectedItemsChange={onSelectedItemsChange}
-          selectedItems={selectedItems}
-          selectText="Pick Items"
-          searchInputPlaceholderText="Search Items..."
+          items={userFactorsArr}
+          uniqueKey="id"
+          onSelectedItemsChange={onEntryFactorsChange}
+          selectedItems={entryFactorsArr}
+          selectText="Select factors..."
+          searchInputPlaceholderText="Search factors..."
           ref={multiSelectRef}
           onChangeInput={(text) => console.log(text)}
-          //   altFontFamily="ProximaNova-Light"
           tagRemoveIconColor="#CCC"
           tagBorderColor="#CCC"
           tagTextColor="#CCC"
@@ -160,8 +175,25 @@ const AddEntry = () => {
           submitButtonColor="#CCC"
           submitButtonText="Submit"
         />
-        <View>{multiSelectRef.current.getSelectedItemsExt(selectedItems)}</View>
+        {/* {entryFactorsArr && (
+          <View>
+            {multiSelectRef.current.getSelectedItemsExt(entryFactorsArr)}
+          </View>
+        )} */}
         <Text>Notes</Text>
+        <TextInput
+          multiline={true}
+          numberOfLines={4}
+          placeholder="Enter notes..."
+          onChangeText={input => setNotes(input)}
+          value={notes}
+        />
+        <Button
+          onPress={handleSubmit}
+          title="Submit"
+          color="#3395ff"
+          accessibilityLabel="Submit sleep entry form"
+        />
       </View>
     </View>
   );

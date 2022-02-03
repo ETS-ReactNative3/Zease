@@ -1,3 +1,5 @@
+import { database } from "./firebase";
+
 export const convertToMilitaryString = (UTCTimeDate) => {
   let hoursString = String(UTCTimeDate.getHours());
   //make sure that the hours string has 2 characters even it is less than 10
@@ -22,3 +24,46 @@ export const convertToAmPm = (militaryString) => {
   let AmPm = militaryHoursNum > 11 ? "PM" : "AM";
   return `${hoursString}:${minString} ${AmPm}`;
 };
+
+// 
+export const seedFirebase = () => {
+  // Push sleep factors to firebase
+  const sleepFactorsRef = database.ref("sleepFactors");
+  const sleepFactorsData = [ // This data has already been added, so change factors or they will be duplicated
+    {name: "caffeine", category: "chemical"},
+    {name: "alcohol", category: "chemical"},
+    {name: "CBD", category: "chemical"},
+    {name: "melatonin", category: "chemical"},
+    {name: "meditated", category: "practice"},
+    {name: "worked out", category: "practice"},
+    {name: "ate late", category: "practice"},
+    {name: "napped", category: "practice"},
+    {name: "no screens", category: "practice"},
+    {name: "sleep podcast", category: "practice"},
+    {name: "stressful day", category: "environment"},
+  ]
+  sleepFactorsData.forEach(factor => sleepFactorsRef.push(factor));
+  console.log("data sent to firebase")
+
+  // Fetch sleep factors from firebase
+  let sleepFactors;
+  sleepFactorsRef.on("value", (snapshot) => {
+    sleepFactors = snapshot.val();
+    console.log("sleepFactors", sleepFactors);
+  });
+  console.log("data fetched from firebase")
+
+  // Set user profile data
+  const userId="" // Update for user to seed
+  const userRef = database.ref(`users/${userId}`);
+  const userProfileData = { // Update data for specific user
+    name: "",
+    sleepGoalStart: "", 
+    sleepGoalEnd:  "",
+    userFactors: sleepFactors, 
+    logReminderOn: true,
+    sleepReminderOn: true
+  }
+  userRef.set(userProfileData);
+  console.log("data sent to firebase")
+}
