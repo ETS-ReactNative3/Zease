@@ -34,41 +34,28 @@ const AddEntry = () => {
 
   // Set state for sleep startTime once modal picker selection confirmed
   const handleConfirmStart = (time) => {
-    // console.warn("A time has been picked: ", time);
     setStartTime(convertToMilitaryString(time));
     hideTimePickers();
   };
 
   // Set state for sleep endTime once modal picker selection confirmed
   const handleConfirmEnd = (time) => {
-    // console.warn("A time has been picked: ", time);
     setEndTime(convertToMilitaryString(time));
     hideTimePickers();
   };
 
   // Set state for sleep quality when slider changes
   const handleSelectQuality = (val) => {
-    // console.warn("Quality selected: ", val);
     setQuality(val);
   };
 
   const onEntryFactorsChange = (selectedItems) => {
-    // console.log("Sleep factors selected: ", selectedItems);
     setEntryFactorsArr(selectedItems);
   };
 
-  const alstonUserId = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID
+  const alstonUserId = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID, delete once component incorporated to main app
   // Grab userId from the firebase auth component
   const userId = auth.currentUser ? auth.currentUser.uid : alstonUserId;
-
-  // User's sleep factors dummy data
-  const factorsTest = [
-    { id: "1", name: "caffeine", category: "chemical" },
-    { id: "2", name: "CBD", category: "chemical" },
-    { id: "3", name: "meditation", category: "practice" },
-    { id: "4", name: "stressful day", category: "practice" },
-    { id: "5", name: "exercised late", category: "practice" },
-  ];
 
   useEffect(() => {
     // Load user's sleep factors from firebase
