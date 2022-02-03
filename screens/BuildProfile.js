@@ -22,7 +22,6 @@ import {
   convertToAmPm,
   reformatFactors,
 } from "../Util";
-import { isNullOrUndefined } from "util";
 
 const dummySleepFactors = {
   1: {
@@ -83,6 +82,15 @@ const BuildProfile = () => {
   const [logReminderOn, setLogReminder] = useState(false);
   const [sleepReminderOn, setSleepReminder] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
+  const [sleepFactors, setSleepFactors] = useState({});
+
+  useEffect(() => {
+    let sleepFactorsRef = database.ref("sleepFactors");
+    sleepFactorsRef.on("value", (snapshot) => {
+      const data = snapshot.val();
+      setSleepFactors(data);
+    });
+  }, []);
 
   const handleBedTimeConfirm = (evt, time) => {
     setsleepGoalStartUTC(time);
@@ -245,7 +253,7 @@ const BuildProfile = () => {
             <Ionicons name="information-circle-outline" size={25} />
           </TouchableOpacity>
         </View>
-        {reformatFactors(dummySleepFactors).map((category) => {
+        {reformatFactors(sleepFactors).map((category) => {
           return (
             <SleepFactorCategory key={category.name} category={category} />
           );

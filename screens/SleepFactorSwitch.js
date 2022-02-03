@@ -34,7 +34,7 @@ const SleepFactorSwitch = (props) => {
         newUserFactors[factorId] = factor;
       }
       //store the updated user factors in async storage.
-      // newUserFactors = {};
+      //newUserFactors = {};
       console.log(
         "new user factors about to be put in local storage",
         newUserFactors
