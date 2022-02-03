@@ -7,18 +7,20 @@ import LoginScreen from "./screens/LoginScreen";
 import Chart from "./screens/Chart";
 import BuildProfile from "./screens/BuildProfile";
 import NavBar from "./screens/NavBar";
+import DataVisualization from "./screens/DataVisualization";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <>
-      {/* <BuildProfile /> */}
-      {/* <Chart />
-       <NavBar />*/}
-
       <NavigationContainer>
         <Stack.Navigator>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="NavBar"
+            component={NavBar}
+          />
           <Stack.Screen
             options={{ headerShown: false }}
             name="LoginScreen"
