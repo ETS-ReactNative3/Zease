@@ -61,3 +61,47 @@ export const reformatFactors = (dbFactorsObject) => {
 
   return categories;
 };
+
+//const dummySleepFactors = {
+//   1: {
+//     name: "Caffeine",
+//     category: "chemical",
+//   },
+//   2: {
+//     name: "CBD",
+//     category: "chemical",
+//   },
+//   3: {
+//     name: "Melatonin",
+//     category: "chemical",
+//   },
+//   4: {
+//     name: "Sleep Mask",
+//     category: "tool",
+//   },
+//   5: {
+//     name: "C-Pap",
+//     category: "tool",
+//   },
+//   6: {
+//     name: "Screentime before bed",
+//     category: "practice",
+//   },
+//   7: {
+//     name: "Listening to a sleep podcast",
+//     category: "practice",
+//   },
+//   8: {
+//     name: "Meditation before bed",
+//     category: "practice",
+//   },
+// };
+
+// const dummyCategory = {
+//   name: "Practices",
+//   factors: [
+//     "Screentime before bed",
+//     "Listening to a sleep podcast",
+//     "Meditation before bed",
+//   ],
+// };

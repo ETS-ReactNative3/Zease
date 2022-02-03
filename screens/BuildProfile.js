@@ -23,54 +23,12 @@ import {
   reformatFactors,
 } from "../Util";
 
-const dummySleepFactors = {
-  1: {
-    name: "Caffeine",
-    category: "chemical",
-  },
-  2: {
-    name: "CBD",
-    category: "chemical",
-  },
-  3: {
-    name: "Melatonin",
-    category: "chemical",
-  },
-  4: {
-    name: "Sleep Mask",
-    category: "tool",
-  },
-  5: {
-    name: "C-Pap",
-    category: "tool",
-  },
-  6: {
-    name: "Screentime before bed",
-    category: "practice",
-  },
-  7: {
-    name: "Listening to a sleep podcast",
-    category: "practice",
-  },
-  8: {
-    name: "Meditation before bed",
-    category: "practice",
-  },
-};
-
-const dummyCategory = {
-  name: "Practices",
-  factors: [
-    "Screentime before bed",
-    "Listening to a sleep podcast",
-    "Meditation before bed",
-  ],
-};
-
 const BuildProfile = () => {
   const [email, setEmail] = useState("");
+  const [emailValid, setEmailValid] = useState(true);
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [name, setName] = useState("");
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [sleepGoalStart, setsleepGoalStart] = useState(null);
@@ -84,6 +42,7 @@ const BuildProfile = () => {
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
   const [sleepFactors, setSleepFactors] = useState({});
 
+  //get the sleep factors from db when the page loads
   useEffect(() => {
     let sleepFactorsRef = database.ref("sleepFactors");
     sleepFactorsRef.on("value", (snapshot) => {
@@ -91,6 +50,20 @@ const BuildProfile = () => {
       setSleepFactors(data);
     });
   }, []);
+
+  useEffect(() => {
+    setEmailValid(
+      String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    );
+  }, [email]);
+
+  useEffect(() => {
+    setPasswordsMatch(password === passwordConfirm);
+  }, [passwordConfirm, password]);
 
   const handleBedTimeConfirm = (evt, time) => {
     setsleepGoalStartUTC(time);
@@ -105,8 +78,13 @@ const BuildProfile = () => {
   const handleSubmit = async () => {
     let validated = true;
 
-    if (password !== passwordConfirm) {
+    if (!passwordsMatch) {
       Alert.alert("Error", "Password and Confirm Password do not match.");
+      validated = false;
+    }
+
+    if (!emailValid) {
+      Alert.alert("Error", "Please enter a valid email address");
       validated = false;
     }
 
@@ -116,17 +94,19 @@ const BuildProfile = () => {
 
       const userFactors = userFactorsString
         ? JSON.parse(userFactorsString)
-        : null;
+        : {};
+
+      if (Object.keys(userFactors).length === 0) {
+        Alert.alert("Error", "Please select at least one sleep factor");
+        validated = false;
+      }
 
       //make sure that all required fields are filled in
-      console.log("userFactors from async storage", userFactors);
-
       if (
         email === "" ||
         name === "" ||
         sleepGoalStart === null ||
-        sleepGoalEnd === null ||
-        userFactors === null
+        sleepGoalEnd === null
       ) {
         Alert.alert("Error", "Please fill in all required fields.");
         validated = false;
@@ -175,17 +155,27 @@ const BuildProfile = () => {
     <View style={tw`flex-1 items-center justify-center`}>
       <Text>Welcome!</Text>
       <View>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry
-        />
+        <View>
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+          {!emailValid && (
+            <Ionicons name="alert-outline" size={20} color="red" />
+          )}
+        </View>
+        <View>
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry
+          />
+          {!passwordsMatch && (
+            <Ionicons name="alert-outline" size={20} color="red" />
+          )}
+        </View>
         <TextInput
           placeholder="Confirm Password"
           value={passwordConfirm}
