@@ -15,7 +15,10 @@ import tw from "tailwind-react-native-classnames";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import LoginScreen from "./LoginScreen";
 import SleepFactorCategory from "./SleepFactorCategory";
 import {
   convertToMilitaryString,
@@ -23,7 +26,7 @@ import {
   reformatFactors,
 } from "../Util";
 
-const BuildProfile = () => {
+const BuildProfile = (navigation) => {
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [password, setPassword] = useState("");
@@ -250,6 +253,9 @@ const BuildProfile = () => {
         })}
         <TouchableOpacity onPress={handleSubmit}>
           <Text>Submit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate(LoginScreen)}>
+          <Text>Cancel</Text>
         </TouchableOpacity>
       </View>
     </View>
