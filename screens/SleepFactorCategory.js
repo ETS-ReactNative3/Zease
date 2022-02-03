@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "react-native-heroicons/outline";
+import { Ionicons } from "@expo/vector-icons";
 
 import SleepFactorSwitch from "./SleepFactorSwitch";
 
@@ -34,7 +34,11 @@ const SleepFactorCategory = (props) => {
   return (
     <View>
       <TouchableOpacity onPress={() => toggleExpand()}>
-        {expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        {expanded ? (
+          <Ionicons name="chevron-up-outline" size={20} />
+        ) : (
+          <Ionicons name="chevron-down-outline" size={20} />
+        )}
         <Text>{props.category.name}</Text>
       </TouchableOpacity>
       <View />

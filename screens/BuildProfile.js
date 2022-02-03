@@ -6,7 +6,7 @@ import {
   Switch,
   TouchableOpacity,
   Alert,
-  Modal
+  Modal,
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 
 import SleepFactorCategory from "./SleepFactorCategory";
 
@@ -291,11 +292,10 @@ const BuildProfile = () => {
           <Text>Remind me to go to sleep</Text>
         </View>
         <View>
-        <Text>Sleep Factors</Text>
-        <TouchableOpacity
-        onPress={() => setFactorInfoVisibility(true)}>
-          <Text>What is that?</Text>
-        </TouchableOpacity>
+          <Text>Sleep Factors</Text>
+          <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
+            <Ionicons name="information-circle-outline" size={25} />
+          </TouchableOpacity>
         </View>
         {reformatFactors(dummySleepFactors).map((category) => {
           return (
