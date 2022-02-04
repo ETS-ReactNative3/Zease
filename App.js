@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LoginScreen from "./screens/LoginScreen";
 import Chart from "./screens/Chart";
+import AddEntry from "./screens/AddEntry";
 import BuildProfile from "./screens/BuildProfile";
 import NavBar from "./screens/NavBar";
 
@@ -14,10 +15,11 @@ export default function App() {
   return (
     <>
       {/* <BuildProfile /> */}
-      {/* <Chart />
-       <NavBar />*/}
+      {/* <Chart /> */}
+      <NavBar />
+      {/* <AddEntry /> */}
 
-      <NavigationContainer>
+      {/* <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
             options={{ headerShown: false }}
@@ -30,7 +32,7 @@ export default function App() {
             component={BuildProfile}
           />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> */}
     </>
   );
 }
