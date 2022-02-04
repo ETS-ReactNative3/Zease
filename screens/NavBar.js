@@ -5,8 +5,9 @@ import { Ionicons } from "@expo/vector-icons";
 
 import DataVisualization from "./DataVisualization";
 import LoginScreen from "./LoginScreen";
-import Chart from "./Chart";
+
 import AddEntry from "./AddEntry";
+import SingleEntry from "./SingleEntry";
 
 function AllSleepEntries() {
   return (

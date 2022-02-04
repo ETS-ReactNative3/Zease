@@ -4,11 +4,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/LoginScreen";
 import BuildProfile from "./screens/BuildProfile";
 import NavBar from "./screens/NavBar";
+import SingleEntry from "./screens/SingleEntry";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+    // <SingleEntry />
+
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen

@@ -133,3 +133,20 @@ export const reformatDate = (dateString) => {
   }
   return `${month} ${day}, ${year}`;
 };
+
+//this takes in a sleep entry.  It used the starttime and endTime properties on the entry to calculate the number of hours of sleep
+export const calculateSleepLength = (entry) => {
+  let startHrs = Number(entry.startTime.slice(0, 2));
+  let startMin = Number(entry.startTime.slice(3));
+  let sleepMinBeforeMidnight = (23 - startHrs) * 60 + (60 - startMin);
+  //this line accounts for entries when they user went to sleep after midnight.
+  if (startHrs < 10) {
+    sleepMinBeforeMidnight = -(startHrs * 60 + startMin);
+  }
+
+  let endHrs = Number(entry.endTime.slice(0, 2));
+  let endMin = Number(entry.endTime.slice(3));
+  let sleepMinAfterMidnight = endHrs * 60 + endMin;
+
+  return (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60;
+};

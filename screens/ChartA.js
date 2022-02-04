@@ -10,15 +10,14 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { database } from "../firebase";
-import { reformatDate } from "../Util";
+import { reformatDate, calculateSleepLength } from "../Util";
 
 const ChartA = (props) => {
   const data = props.data;
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
-  // const [selectedEntry, setSelectedEntry] = useState({});
 
-  //get slepe factors for this user from firebase.
+  //get sleep factors for this user from firebase.
   useEffect(async () => {
     //get the userId from async storage
     const userId = await AsyncStorage.getItem("userID");
@@ -45,20 +44,20 @@ const ChartA = (props) => {
     for (let entryId in dbDataObject) {
       let entry = dbDataObject[entryId];
 
-      let startHrs = Number(entry.startTime.slice(0, 2));
-      let startMin = Number(entry.startTime.slice(3));
-      let sleepMinBeforeMidnight = (23 - startHrs) * 60 + (60 - startMin);
-      //this line accounts for entries when they user went to sleep after midnight.
-      if (startHrs < 10) {
-        sleepMinBeforeMidnight = -(startHrs * 60 + startMin);
-      }
+      // let startHrs = Number(entry.startTime.slice(0, 2));
+      // let startMin = Number(entry.startTime.slice(3));
+      // let sleepMinBeforeMidnight = (23 - startHrs) * 60 + (60 - startMin);
+      // //this line accounts for entries when they user went to sleep after midnight.
+      // if (startHrs < 10) {
+      //   sleepMinBeforeMidnight = -(startHrs * 60 + startMin);
+      // }
 
-      let endHrs = Number(entry.endTime.slice(0, 2));
-      let endMin = Number(entry.endTime.slice(3));
-      let sleepMinAfterMidnight = endHrs * 60 + endMin;
+      // let endHrs = Number(entry.endTime.slice(0, 2));
+      // let endMin = Number(entry.endTime.slice(3));
+      // let sleepMinAfterMidnight = endHrs * 60 + endMin;
 
       let entryForChart = {
-        SleepLength: (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60,
+        SleepLength: calculateSleepLength(entry),
         SleepQuality: entry.quality,
         date: entry.date,
         label: reformatDate(entry.date),
