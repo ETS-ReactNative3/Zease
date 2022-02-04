@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -8,6 +8,8 @@ import Chart from './screens/Chart';
 import BuildProfile from './screens/BuildProfile';
 import NavBar from './screens/NavBar';
 
+import TestReadFromDB from './screens/TestReadFromDB';
+
 // const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -15,7 +17,8 @@ export default function App() {
     <>
       <NavBar />
 
-      {/* <Chart />
+      {/* <TestReadFromDB /> */}
+      {/* /* <Chart />
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
@@ -29,7 +32,7 @@ export default function App() {
             component={BuildProfile}
           />
         </Stack.Navigator>
-      </NavigationContainer> */}
+    </NavigationContainer> */}
     </>
   );
 }
