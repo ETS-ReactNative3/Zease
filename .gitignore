@@ -12,3 +12,5 @@ web-build/
 firebaseConfig.mjs
 # macOS
 .DS_Store
+
+.vercel
