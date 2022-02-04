@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "tailwind-react-native-classnames";
 
-import { database } from "../firebase";
+import { database, auth } from "../firebase";
 import ChartA from "./ChartA";
 import ChartB from "./ChartB";
 
@@ -15,11 +15,10 @@ const DataVisualization = () => {
 
   //get sleep entry data from firbase
   useEffect(async () => {
-    //get the userId from async storage
-    const userId = await AsyncStorage.getItem("userID");
+    const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
 
     //get data from firebase. This is getting a "snapshot" of the data
-    const sleepEntriesRef = database.ref(`sleepEntries/${JSON.parse(userId)}`);
+    const sleepEntriesRef = database.ref(`sleepEntries/${JSON.userId}`);
 
     //this on method gets the value of the data at that reference.
     sleepEntriesRef.on("value", (snapshot) => {

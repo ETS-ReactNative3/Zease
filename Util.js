@@ -150,3 +150,22 @@ export const calculateSleepLength = (entry) => {
 
   return (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60;
 };
+
+//get the date of yesterday formatted in a string of yyyy-mm-dd
+export const yesterday = () => {
+  const dateObj = new Date();
+  dateObj.setTime(dateObj.getTime() - 24 * 60 * 60 * 1000); // Subtract 24 hours
+  const date = dateObj.toISOString().slice(0, 10);
+  return date;
+};
+
+//takes in a date string with format of yyyy-mm-dd and returns a number with format yyyymmdd
+export const getDateNumber = (dateString) => {
+  let noDashString = "";
+  for (let i = 0; i < dateString.length; i++) {
+    if (dateString[i] !== "-") {
+      noDashString += dateString[i];
+    }
+  }
+  return Number(noDashString);
+};
