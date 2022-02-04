@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
 import DataVisualization from './DataVisualization';
-import LoginScreen from './LoginScreen';
+import ViewProfile from './ViewProfile';
 import Chart from './Chart';
 import AddEntry from './AddEntry';
 import AllSleepEntries from './AllSleepEntries';
@@ -35,10 +35,14 @@ export default function NavBar() {
         headerShown: false
       })}
     >
-      <Tab.Screen name='Add' component={AddEntry} />
-      <Tab.Screen name='Entries' component={AllSleepEntries} />
-      <Tab.Screen name='Analyze' component={DataVisualization} options={{ headerShown: true }} />
-      <Tab.Screen name='Profile' component={LoginScreen} />
+      <Tab.Screen name="Add" component={AddEntry} />
+      <Tab.Screen name="Entries" component={AllSleepEntries} />
+      <Tab.Screen
+        name="Analyze"
+        component={DataVisualization}
+        options={{ headerShown: true }}
+      />
+      <Tab.Screen name="Profile" component={ViewProfile} />
     </Tab.Navigator>
   );
 }
