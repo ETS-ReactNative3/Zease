@@ -7,8 +7,9 @@ import {
   UIManager,
 } from "react-native";
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import tw from "tailwind-react-native-classnames";
 
 import SleepFactorSwitch from "./SleepFactorSwitch";
 
@@ -33,7 +34,7 @@ const SleepFactorCategory = (props) => {
 
   return (
     <View>
-      <TouchableOpacity onPress={() => toggleExpand()}>
+      <TouchableOpacity style={tw`flex-row`} onPress={() => toggleExpand()}>
         {expanded ? (
           <Ionicons name="chevron-up-outline" size={20} />
         ) : (

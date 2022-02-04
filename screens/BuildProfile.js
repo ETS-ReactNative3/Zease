@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  Pressable,
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -15,10 +16,7 @@ import tw from "tailwind-react-native-classnames";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-//import LoginScreen from "./LoginScreen";
 import SleepFactorCategory from "./SleepFactorCategory";
 import {
   convertToMilitaryString,
@@ -26,7 +24,7 @@ import {
   reformatFactors,
 } from "../Util";
 
-const BuildProfile = (navigation) => {
+const BuildProfile = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [password, setPassword] = useState("");
@@ -54,6 +52,7 @@ const BuildProfile = (navigation) => {
     });
   }, []);
 
+  //check whether we need to indicate if email is not valid when the email changes
   useEffect(() => {
     setEmailValid(
       String(email)
@@ -64,6 +63,7 @@ const BuildProfile = (navigation) => {
     );
   }, [email]);
 
+  //check whether we need to indicate if the passwords don't match when either password changes
   useEffect(() => {
     setPasswordsMatch(password === passwordConfirm);
   }, [passwordConfirm, password]);
@@ -78,6 +78,7 @@ const BuildProfile = (navigation) => {
     setsleepGoalEnd(convertToMilitaryString(time));
   };
 
+  //front end validation check on form data
   const handleSubmit = async () => {
     let validated = true;
 
@@ -126,6 +127,7 @@ const BuildProfile = (navigation) => {
     }
   };
 
+  //once form entry has been validated write it to auth and Realtime db
   const putUserinDB = async (userFactors) => {
     try {
       let newUser = {
@@ -158,7 +160,7 @@ const BuildProfile = (navigation) => {
     <View style={tw`flex-1 items-center justify-center`}>
       <Text>Welcome!</Text>
       <View>
-        <View>
+        <View style={tw`flex-row`}>
           <TextInput
             placeholder="Email"
             value={email}
@@ -168,7 +170,7 @@ const BuildProfile = (navigation) => {
             <Ionicons name="alert-outline" size={20} color="red" />
           )}
         </View>
-        <View>
+        <View style={tw`flex-row`}>
           <TextInput
             placeholder="Password"
             value={password}
@@ -190,7 +192,7 @@ const BuildProfile = (navigation) => {
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        <View style={tw``}>
+        <View>
           <Text>
             Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
           </Text>
@@ -206,23 +208,26 @@ const BuildProfile = (navigation) => {
             onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
           />
         </View>
-        <View style={tw``}>
+        <View>
           <Text>
             Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
           </Text>
-        </View>
-        {isWakeTimePickerVisible && (
-          <DateTimePicker
-            mode="time"
-            value={sleepGoalEndUTC}
-            onChange={handleWakeTimeConfirm}
+
+          {isWakeTimePickerVisible && (
+            <DateTimePicker
+              mode="time"
+              value={sleepGoalEndUTC}
+              onChange={handleWakeTimeConfirm}
+            />
+          )}
+          <Button
+            title={isWakeTimePickerVisible ? "Confirm" : "Set Time"}
+            onPress={() =>
+              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
+            }
           />
-        )}
-        <Button
-          title={isWakeTimePickerVisible ? "Confirm" : "Set Time"}
-          onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
-        />
-        <View>
+        </View>
+        <View style={tw`flex-row`}>
           <Switch
             value={logReminderOn}
             onValueChange={() =>
@@ -231,7 +236,7 @@ const BuildProfile = (navigation) => {
           />
           <Text>Remind me to enter daily sleep log</Text>
         </View>
-        <View>
+        <View style={tw`flex-row`}>
           <Switch
             value={sleepReminderOn}
             onValueChange={() =>
@@ -240,23 +245,47 @@ const BuildProfile = (navigation) => {
           />
           <Text>Remind me to go to sleep</Text>
         </View>
-        <View>
+        <View style={tw`flex-row`}>
           <Text>Sleep Factors</Text>
           <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
             <Ionicons name="information-circle-outline" size={25} />
           </TouchableOpacity>
         </View>
+        <Modal
+          transparent={false}
+          animationType="slide"
+          visible={isFactorInfoVisible}
+          onRequestClose={() => setFactorInfoVisibility(!isFactorInfoVisible)}
+        >
+          <View style={tw`flex-1 items-center justify-center`}>
+            <Text>
+              A sleep factor is something that has the potential to affect your
+              sleep. When you are making a daily sleep entry you will be able to
+              select any number of the sleep factors you choose here. When
+              viewing visualizations of your sleep entries you will be able to
+              see any correlations that may exist between factors you have
+              chosen to track and the quality or duration of your sleep.
+            </Text>
+            <Pressable
+              onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}
+            >
+              <Text>Close</Text>
+            </Pressable>
+          </View>
+        </Modal>
         {reformatFactors(sleepFactors).map((category) => {
           return (
             <SleepFactorCategory key={category.name} category={category} />
           );
         })}
-        <TouchableOpacity onPress={handleSubmit}>
-          <Text>Submit</Text>
-        </TouchableOpacity>
-        {/* <TouchableOpacity onPress={() => navigation.navigate(LoginScreen)}>
-          <Text>Cancel</Text>
-        </TouchableOpacity> */}
+        <View style={tw`items-center `}>
+          <TouchableOpacity onPress={handleSubmit}>
+            <Text>Submit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
