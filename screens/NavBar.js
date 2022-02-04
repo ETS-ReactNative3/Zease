@@ -6,14 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DataVisualization from "./DataVisualization";
 import LoginScreen from "./LoginScreen";
 import Chart from "./Chart";
-
-function AddScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Add Your Entry Here</Text>
-    </View>
-  );
-}
+import AddEntry from "./AddEntry";
 
 function AllSleepEntries() {
   return (
@@ -41,7 +34,6 @@ export default function NavBar() {
           } else if (route.name === "Profile") {
             iconName = "person";
           }
-
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "#F78A03",
@@ -50,7 +42,7 @@ export default function NavBar() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Add" component={AddScreen} />
+      <Tab.Screen name="Add" component={AddEntry} />
       <Tab.Screen name="Entries" component={AllSleepEntries} />
       <Tab.Screen
         name="Analyze"
