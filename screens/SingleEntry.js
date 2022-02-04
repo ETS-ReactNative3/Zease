@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { reformatDate, calculateSleepLength } from "../Util";
+import { reformatDate, calculateSleepLength, convertToAmPm } from "../Util";
 
 //this could be a modal sub component of the all entries view.  i.e. each of the entry snapshots in the all entries is nested inside touchableOpacity.  The presshandler for its touchable opacity does two things:
 //1- opens a modal that displays this component (along with a back button)
@@ -86,28 +86,32 @@ const SingleEntry = (props) => {
       <Text style={tw`text-xl`}>{reformatDate(entry.date)}</Text>
       <View>
         <Text style={tw`text-lg`}>Overview</Text>
-        <Text>Bed Time: {convertToAmPm(entry.startTime)}</Text>
-        <Text>Wake Up Time: {convertToAmPm(entry.endTime)}</Text>
-        <Text>
-          Sleep Duration: {Math.floor(calculateSleepLength(entry))} hours,
-          {(calculateSleepLength(entry) -
-            Math.floor(calculateSleepLength(entry))) *
-            60}
-          minutes
-        </Text>
-        <Text> Quality: {entry.quality}%</Text>
+        <View>
+          <Text>Bed Time: {convertToAmPm(entry.startTime)}</Text>
+          <Text>Wake Up Time: {convertToAmPm(entry.endTime)}</Text>
+          <Text>
+            Sleep Duration: {Math.floor(calculateSleepLength(entry))} hours,
+            {(calculateSleepLength(entry) -
+              Math.floor(calculateSleepLength(entry))) *
+              60}
+            minutes
+          </Text>
+          <Text> Quality: {entry.quality}%</Text>
+        </View>
       </View>
       <View>
         <Text style={tw`text-lg`}>Factors</Text>
-        <FlatList
-          data={factorNames}
-          renderItem={renderFactor}
-          keyExtractor={(factor) => factor}
-        />
+        <View>
+          {factorNames.map((factor) => {
+            return <Text key={factor}>{factor}</Text>;
+          })}
+        </View>
       </View>
       <View>
         <Text style={tw`text-lg`}>Notes</Text>
-        <Text>{entry.notes}</Text>
+        <View>
+          <Text>{entry.notes}</Text>
+        </View>
       </View>
     </View>
   );

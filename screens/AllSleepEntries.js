@@ -6,11 +6,12 @@ import {
   Text,
   TouchableOpacity,
   Modal,
-  Button,
+  Pressable,
 } from "react-native";
 import { convertToAmPm } from "../Util.js";
 import tw from "tailwind-react-native-classnames";
 import { auth, database } from "../firebase";
+import SingleEntry from "./SingleEntry";
 
 export const AllSleepEntries = () => {
   const [entryList, setEntryList] = useState([]);
@@ -43,6 +44,7 @@ export const AllSleepEntries = () => {
             key={entry.id}
             onPress={() => {
               setSelectedEntry(entry);
+              setModalOpen(!modalOpen);
             }}
             style={tw`bg-gray-300 rounded drop-shadow-xl my-3 mx-3`}
           >
@@ -68,18 +70,14 @@ export const AllSleepEntries = () => {
 
               {/* SLEEP QUALITY SCORE */}
               <Text style={tw`text-gray-700 text-base`}>
-<<<<<<< HEAD
                 Sleep Quality Score: {entry.quality}
               </Text>
               <Text style={tw`text-gray-700 text-base`}>
                 {`Sleep Factor Count: ${
                   (entry.entryFactors &&
                     Object.keys(entry.entryFactors).length) ||
-                  0
+                  "0"
                 }`}
-=======
-                {`Sleep Factor Count: ${entry.entryFactors && Object.keys(entry.entryFactors).length || "0"}`}
->>>>>>> e03d053c53476632ab88ce84ec5e2a94f07b3157
               </Text>
             </View>
           </TouchableOpacity>
@@ -89,16 +87,18 @@ export const AllSleepEntries = () => {
           animationType="slide"
           visible={modalOpen}
           onRequestClose={() => {
-            setModalOpen(false);
+            setModalOpen(!modalOpen);
           }}
         >
-          <Button
+          <SingleEntry entry={selectedEntry} />
+          <Pressable
+            style={tw`flex-1 items-center justify-center`}
             onPress={() => {
-              setModalOpen(false);
+              setModalOpen(!modalOpen);
             }}
           >
             <Text>Back To Entries</Text>
-          </Button>
+          </Pressable>
         </Modal>
       </ScrollView>
     </SafeAreaView>
