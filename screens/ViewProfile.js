@@ -1,10 +1,10 @@
-import { StyleSheet, View, Text, Button, TextInput, Alert } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, View, Text, Button } from "react-native";
+import React, { useEffect, useState } from "react";
 
 import { auth, database } from "../firebase";
-import { convertToMilitaryString, convertToAmPm } from "../utils";
+import { convertToAmPm } from "../utils";
 
-const AddEntry = () => {
+const AddEntry = ({ navigation }) => {
   // User sleep factors (pulled in from firebase)
   const [profileData, setProfileData] = useState({});
 
@@ -17,56 +17,72 @@ const AddEntry = () => {
     profileRef.on("value", (snapshot) => {
       const profile = snapshot.val();
       setProfileData(profile);
-      console.log(profile);
+      console.log("useEffect profile", profile);
     });
   }, []);
 
-  const AccountItem = (key, val) => {
-    return (
-      <View style={styles.accountItem}>
-        <Text>Name: </Text>
-        <Text>Alston</Text>
-      </View>
-    );
+  const handleEdit = () => {
+    console.log("Edit profile");
+    // TODO: Navigate to EditProfile component
+    // navigation.navigate("EditProfile")
+  };
+
+  const handleLogOut = () => {
+    console.log("Logging out");
+    auth
+      .signOut()
+      .then(() => {
+        console.log("Log out sucess");
+        navigation.navigate("LoginScreen")
+      })
+      .catch((error) => {
+        console.log("Error logging out", error);
+      });
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={styles.header}>Your Profile</Text>
-        <View style={styles.accountContainer}>
-          <View style={styles.accountItem}>
-            <Text>Name: </Text>
-            <Text>{profileData.name}</Text>
+      {profileData.name && (
+        <View style={styles.contentContainer}>
+          <Text style={styles.header}>Your Profile</Text>
+          <View style={styles.accountContainer}>
+            <View style={styles.accountItem}>
+              <Text>Name: </Text>
+              <Text>{profileData.name}</Text>
+            </View>
+            <View style={styles.accountItem}>
+              <Text>Email: </Text>
+              <Text>{auth.currentUser.email}</Text>
+            </View>
+            <View style={styles.accountItem}>
+              <Text>Bed Time Goal: </Text>
+              <Text>{convertToAmPm(profileData.sleepGoalStart)}</Text>
+            </View>
+            <View style={styles.accountItem}>
+              <Text>Wake Up Goal: </Text>
+              <Text>{convertToAmPm(profileData.sleepGoalEnd)}</Text>
+            </View>
+            <View style={styles.accountItem}>
+              <Text>Morning Log Reminder: </Text>
+              <Text>{profileData.logReminderOn ? "On" : "Off"}</Text>
+            </View>
+            <View style={styles.accountItem}>
+              <Text>Evening Sleep Reminder: </Text>
+              <Text>{profileData.sleepReminderOn ? "On" : "Off"}</Text>
+            </View>
           </View>
-          <View style={styles.accountItem}>
-            <Text>Email: </Text>
-            <Text>{auth.currentUser.email}</Text>
-          </View>
-          <View style={styles.accountItem}>
-            <Text>Bed Time Goal: </Text>
-            <Text>{convertToAmPm(profileData.sleepGoalStart)}</Text>
-          </View>
-          <View style={styles.accountItem}>
-            <Text>Wake Up Goal: </Text>
-            <Text>{convertToAmPm(profileData.sleepGoalEnd)}</Text>
-          </View>
-          <View style={styles.accountItem}>
-            <Text>Morning Log Reminder: </Text>
-            <Text>{profileData.logReminderOn ? "On" : "Off"}</Text>
-          </View>
-          <View style={styles.accountItem}>
-            <Text>Evening Sleep Reminder: </Text>
-            <Text>{profileData.sleepReminderOn ? "On" : "Off"}</Text>
+          <Text style={styles.header}>Your Sleep Factors</Text>
+          <View style={styles.factorsContainer}>
+            {Object.keys(profileData.userFactors).map((key) => (
+              <Text key={key} style={styles.factorItem}>
+                {profileData.userFactors[key].name}
+              </Text>
+            ))}
           </View>
         </View>
-        <Text style={styles.header}>Your Sleep Factors</Text>
-        <View style={styles.factorsContainer}>
-          {Object.keys(profileData.userFactors).map((key) => (
-            <Text style={styles.factorItem}>{profileData.userFactors[key].name}</Text>
-          ))}
-        </View>
-      </View>
+      )}
+      <Button title="Edit Profile" onPress={handleEdit} />
+      <Button title="Log Out" onPress={handleLogOut} />
     </View>
   );
 };
@@ -75,9 +91,7 @@ export default AddEntry;
 
 const styles = StyleSheet.create({
   container: {
-    width: "80%",
     flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
   },
@@ -90,11 +104,17 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginTop: 20,
   },
+  accounttContainer: {
+    paddingLeft: 5,
+  },
   accountItem: {
     flexDirection: "row",
     paddingTop: 5,
   },
+  factorsContainer: {
+    paddingLeft: 5,
+  },
   factorItem: {
     paddingTop: 5,
-  },
+  }
 });

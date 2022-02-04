@@ -7,6 +7,7 @@ import DataVisualization from "./DataVisualization";
 import LoginScreen from "./LoginScreen";
 import Chart from "./Chart";
 import AddEntry from "./AddEntry";
+import ViewProfile from "./ViewProfile"
 
 function AllSleepEntries() {
   return (
@@ -49,7 +50,7 @@ export default function NavBar() {
         component={DataVisualization}
         options={{ headerShown: true }}
       />
-      <Tab.Screen name="Profile" component={LoginScreen} />
+      <Tab.Screen name="Profile" component={ViewProfile} />
     </Tab.Navigator>
   );
 }
