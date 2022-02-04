@@ -1,13 +1,32 @@
 import { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  Button
+} from 'react-native';
+import { convertToAmPm } from '../Util.js';
 import tw from 'tailwind-react-native-classnames';
-import { database } from '../firebase';
+import { auth, database } from '../firebase';
 
 export const AllSleepEntries = () => {
   const [entryList, setEntryList] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState({});
+
+  const currentUserId = 'v3fmHEk6CiTxbU5o8M6tFxuawEI3';
+  // User Sam ID, delete once component incorporated to main app
+  // Grab userId from the firebase auth component
+
+  const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
+  //CL TEST FOR CURRENT ID
+  console.log(userId);
 
   useEffect(() => {
-    const entryRef = database.ref('simplesleepEntries');
+    const entryRef = database.ref(`sleepEntries/${userId}`);
     entryRef.on('value', (snapshot) => {
       const entries = snapshot.val();
       const entryList = [];
@@ -17,26 +36,59 @@ export const AllSleepEntries = () => {
       setEntryList(entryList);
     });
   }, []);
-  const date = new Date();
 
+  console.log('THESE ARE MY SLEEP ENTRIES: ', entryList);
   return (
     <SafeAreaView>
       <ScrollView>
         {entryList.map((entry) => (
-          <TouchableOpacity style={tw`bg-gray-200 rounded drop-shadow-xl my-3 mx-3`}>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedEntry(entry);
+            }}
+            style={tw`bg-gray-200 rounded drop-shadow-xl my-3 mx-3`}
+          >
             <View style={tw`px-6 py-4`}>
-              <Text style={tw`font-bold text-xl mb-2`}>{date.getFullYear()}</Text>
-              <Text style={tw`text-gray-700 text-base`}>Sleep Time: {entry.length}</Text>
+              {/* SLEEP ENTRY DATE */}
+              <Text style={tw`font-bold text-xl mb-2`}>{`${entry.date.slice(
+                5,
+                7
+              )} / ${entry.date.slice(8, 10)} / ${entry.date.slice(0, 4)}`}</Text>
+
+              {/* SLEEP ENTRY START TIME */}
+              <Text style={tw`text-gray-700 text-base`}>{`Sleep Start Time: ${convertToAmPm(
+                entry.startTime
+              )}`}</Text>
+
+              {/* SLEEP ENTRY END TIME */}
+              <Text style={tw`text-gray-700 text-base`}>{`Sleep End Time: ${convertToAmPm(
+                entry.endTime
+              )}`}</Text>
+
+              {/* SLEEP QUALITY SCORE */}
               <Text style={tw`text-gray-700 text-base`}>Sleep Quality Score: {entry.quality}</Text>
               <Text style={tw`text-gray-700 text-base`}>
-                Sleep Factors:{' '}
-                {entry.factors.map((factor) => (
-                  <Text>#{factor} </Text>
-                ))}
+                {`Sleep Factor Count: ${Object.keys(entry.entryFactors).length}`}
               </Text>
             </View>
           </TouchableOpacity>
         ))}
+        <Modal
+          transparent={false}
+          animationType='slide'
+          visible={modalOpen}
+          onRequestClose={() => {
+            setModalOpen(false);
+          }}
+        >
+          <Button
+            onPress={() => {
+              setModalOpen(false);
+            }}
+          >
+            <Text>Back To Entries</Text>
+          </Button>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );

@@ -5,9 +5,7 @@ import LoginScreen from './screens/LoginScreen';
 import BuildProfile from './screens/BuildProfile';
 import NavBar from './screens/NavBar';
 
-import TestReadFromDB from './screens/TestReadFromDB';
-
-// const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (

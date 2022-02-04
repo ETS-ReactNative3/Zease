@@ -7,14 +7,7 @@ import DataVisualization from './DataVisualization';
 import LoginScreen from './LoginScreen';
 import Chart from './Chart';
 import AddEntry from './AddEntry';
-
-function AllSleepEntries() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>All Sleep Entries Here</Text>
-    </View>
-  );
-}
+import AllSleepEntries from './AllSleepEntries';
 
 const Tab = createBottomTabNavigator();
 
