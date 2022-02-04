@@ -62,46 +62,47 @@ export const reformatFactors = (dbFactorsObject) => {
   return categories;
 };
 
-//const dummySleepFactors = {
-//   1: {
-//     name: "Caffeine",
-//     category: "chemical",
-//   },
-//   2: {
-//     name: "CBD",
-//     category: "chemical",
-//   },
-//   3: {
-//     name: "Melatonin",
-//     category: "chemical",
-//   },
-//   4: {
-//     name: "Sleep Mask",
-//     category: "tool",
-//   },
-//   5: {
-//     name: "C-Pap",
-//     category: "tool",
-//   },
-//   6: {
-//     name: "Screentime before bed",
-//     category: "practice",
-//   },
-//   7: {
-//     name: "Listening to a sleep podcast",
-//     category: "practice",
-//   },
-//   8: {
-//     name: "Meditation before bed",
-//     category: "practice",
-//   },
-// };
+//
+export const seedFirebase = () => {
+  // Push sleep factors to firebase
+  const sleepFactorsRef = database.ref("sleepFactors");
+  const sleepFactorsData = [
+    // This data has already been added, so change factors or they will be duplicated
+    { name: "caffeine", category: "chemical" },
+    { name: "alcohol", category: "chemical" },
+    { name: "CBD", category: "chemical" },
+    { name: "melatonin", category: "chemical" },
+    { name: "meditated", category: "practice" },
+    { name: "worked out", category: "practice" },
+    { name: "ate late", category: "practice" },
+    { name: "napped", category: "practice" },
+    { name: "no screens", category: "practice" },
+    { name: "sleep podcast", category: "practice" },
+    { name: "stressful day", category: "environment" },
+  ];
+  sleepFactorsData.forEach((factor) => sleepFactorsRef.push(factor));
+  console.log("data sent to firebase");
 
-// const dummyCategory = {
-//   name: "Practices",
-//   factors: [
-//     "Screentime before bed",
-//     "Listening to a sleep podcast",
-//     "Meditation before bed",
-//   ],
-// };
+  // Fetch sleep factors from firebase
+  let sleepFactors;
+  sleepFactorsRef.on("value", (snapshot) => {
+    sleepFactors = snapshot.val();
+    console.log("sleepFactors", sleepFactors);
+  });
+  console.log("data fetched from firebase");
+
+  // Set user profile data
+  const userId = ""; // Update for user to seed
+  const userRef = database.ref(`users/${userId}`);
+  const userProfileData = {
+    // Update data for specific user
+    name: "",
+    sleepGoalStart: "",
+    sleepGoalEnd: "",
+    userFactors: sleepFactors,
+    logReminderOn: true,
+    sleepReminderOn: true,
+  };
+  userRef.set(userProfileData);
+  console.log("data sent to firebase");
+};

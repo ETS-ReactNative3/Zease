@@ -3,13 +3,16 @@ import { Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { VictoryChart, VictoryAxis, VictoryScatter } from "victory-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Picker } from "@react-native-picker/picker";
 import { database } from "../firebase";
 
 const ChartA = (props) => {
   const data = props.data;
   const [userFactors, setUserFactors] = useState([]);
+  const [selectedFactor, setSelectedFactor] = useState("");
   // const [selectedEntry, setSelectedEntry] = useState({});
 
+  //get slepe factors for this user from firebase.
   useEffect(async () => {
     //get the userId from async storage
     const userId = await AsyncStorage.getItem("userID");
@@ -54,9 +57,9 @@ const ChartA = (props) => {
         date: entry.date,
       };
 
+      //put the name of the factor directly on the entry object. (perhaps it should be the id of the factor?)
       for (let entryFactorId in entry.entryFactors) {
         let entryFactor = entry.entryFactors[entryFactorId];
-        //put the name of the factor directly on the entry object. (perhaps it should be the id of the factor?)
         entryForChart[entryFactor.name] = true;
       }
 
@@ -64,6 +67,7 @@ const ChartA = (props) => {
     }
     return dbDataArray;
   };
+
   return (
     <View>
       <VictoryChart>
@@ -81,19 +85,12 @@ const ChartA = (props) => {
             data={reformatDataForChart(data)}
             x="SleepLength"
             y="SleepQuality"
-            // events={[{
-            //   target:data,
-            //   eventHandlers:{
-            //     onPress: ()=>{
-            //       return [
-            //         {
-            //           target:"data",
-            //           mutation:
-            //         }
-            //       ]
-            //     }
-            //   }
-            // }]}
+            style={{
+              data: {
+                fill: ({ datum }) =>
+                  datum[selectedFactor] ? "#F78A03" : "#1C3F52",
+              },
+            }}
           />
         )}
       </VictoryChart>
@@ -102,10 +99,21 @@ const ChartA = (props) => {
         <Text>{selectedEntry.date}</Text>
       </View> */}
       <View>
-        <Text>Sleep Factors You're Tracking:</Text>
-        {userFactors.map((factor) => {
-          return <Text key={factor.id}>{factor.name}</Text>;
-        })}
+        <Text>Select a Sleep Factor:</Text>
+        <Picker
+          selectedValue={selectedFactor}
+          onValueChange={(factor, idx) => setSelectedFactor(factor)}
+        >
+          {userFactors.map((factor) => {
+            return (
+              <Picker.Item
+                label={factor.name}
+                value={factor.name}
+                key={factor.id}
+              />
+            );
+          })}
+        </Picker>
       </View>
     </View>
   );

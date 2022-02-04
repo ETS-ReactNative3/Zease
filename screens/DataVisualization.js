@@ -13,6 +13,7 @@ const DataVisualization = () => {
   const [viewChartA, toggleChartView] = useState(true);
   const [data, setData] = useState([]);
 
+  //get sleep entry data from firbase
   useEffect(async () => {
     //get the userId from async storage
     const userId = await AsyncStorage.getItem("userID");
