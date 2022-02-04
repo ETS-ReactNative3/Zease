@@ -2,10 +2,34 @@ import React from "react";
 import { Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { VictoryChart, VictoryAxis, VictoryScatter } from "victory-native";
-import tw from "tailwind-react-native-classnames";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { database } from "../firebase";
 
 const ChartA = (props) => {
   const data = props.data;
+  const [userFactors, setUserFactors] = useState([]);
+
+  useEffect(async () => {
+    //get the userId from async storage
+    const userId = await AsyncStorage.getItem("userID");
+
+    //get data from firebase. This is getting a "snapshot" of the data
+    const userRef = database.ref(`users/${JSON.parse(userId)}`);
+
+    //this on method gets the value of the data at that reference.
+    userRef.on("value", (snapshot) => {
+      const user = snapshot.val();
+      const userFactorsObj = user.userFactors;
+      const userFactorsArr = [];
+      for (let factorId in userFactorsObj) {
+        let factor = userFactorsObj[factorId];
+        factor.id = factorId;
+        userFactorsArr.push(factor);
+      }
+
+      setUserFactors(userFactorsArr);
+    });
+  }, []);
 
   const reformatDataForChart = (dbDataObject) => {
     const dbDataArray = [];
@@ -52,6 +76,12 @@ const ChartA = (props) => {
           />
         )}
       </VictoryChart>
+      <View>
+        <Text>Sleep Factors You're Tracking:</Text>
+        {userFactors.map((factor) => {
+          return <Text key={factor.id}>{factor.name}</Text>;
+        })}
+      </View>
     </View>
   );
 };
