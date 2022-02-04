@@ -52,6 +52,7 @@ const BuildProfile = ({ navigation }) => {
     });
   }, []);
 
+  //check whether we need to indicate if email is not valid when the email changes
   useEffect(() => {
     setEmailValid(
       String(email)
@@ -62,6 +63,7 @@ const BuildProfile = ({ navigation }) => {
     );
   }, [email]);
 
+  //check whether we need to indicate if the passwords don't match when either password changes
   useEffect(() => {
     setPasswordsMatch(password === passwordConfirm);
   }, [passwordConfirm, password]);
@@ -76,6 +78,7 @@ const BuildProfile = ({ navigation }) => {
     setsleepGoalEnd(convertToMilitaryString(time));
   };
 
+  //front end validation check on form data
   const handleSubmit = async () => {
     let validated = true;
 
@@ -124,6 +127,7 @@ const BuildProfile = ({ navigation }) => {
     }
   };
 
+  //once form entry has been validated write it to auth and Realtime db
   const putUserinDB = async (userFactors) => {
     try {
       let newUser = {

@@ -47,11 +47,19 @@ const ChartA = (props) => {
       let endHrs = Number(entry.endTime.slice(0, 2));
       let endMin = Number(entry.endTime.slice(3));
       let sleepMinAfterMidnight = endHrs * 60 + endMin;
+
       let entryForChart = {
         SleepLength: (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60,
         SleepQuality: entry.quality,
         date: entry.date,
       };
+
+      for (let entryFactorId in entry.entryFactors) {
+        let entryFactor = entry.entryFactors[entryFactorId];
+        //put the name of the factor directly on the entry object. (perhaps it should be the id of the factor?)
+        entryForChart[entryFactor.name] = true;
+      }
+
       dbDataArray.push(entryForChart);
     }
     return dbDataArray;
