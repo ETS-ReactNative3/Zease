@@ -5,17 +5,9 @@ import { Ionicons } from "@expo/vector-icons";
 
 import DataVisualization from "./DataVisualization";
 import LoginScreen from "./LoginScreen";
-
+import AllSleepEntries from "./AllSleepEntries";
 import AddEntry from "./AddEntry";
 import SingleEntry from "./SingleEntry";
-
-function AllSleepEntries() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>All Sleep Entries Here</Text>
-    </View>
-  );
-}
 
 const Tab = createBottomTabNavigator();
 
