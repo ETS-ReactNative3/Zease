@@ -65,7 +65,7 @@ export const AllSleepEntries = () => {
               {/* SLEEP QUALITY SCORE */}
               <Text style={tw`text-gray-700 text-base`}>Sleep Quality Score: {entry.quality}</Text>
               <Text style={tw`text-gray-700 text-base`}>
-                {`Sleep Factor Count: ${Object.keys(entry.entryFactors).length}`}
+                {`Sleep Factor Count: ${entry.entryFactors && Object.keys(entry.entryFactors).length || "0"}`}
               </Text>
             </View>
           </TouchableOpacity>
