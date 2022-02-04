@@ -68,6 +68,7 @@ export const AllSleepEntries = () => {
 
               {/* SLEEP QUALITY SCORE */}
               <Text style={tw`text-gray-700 text-base`}>
+<<<<<<< HEAD
                 Sleep Quality Score: {entry.quality}
               </Text>
               <Text style={tw`text-gray-700 text-base`}>
@@ -76,6 +77,9 @@ export const AllSleepEntries = () => {
                     Object.keys(entry.entryFactors).length) ||
                   0
                 }`}
+=======
+                {`Sleep Factor Count: ${entry.entryFactors && Object.keys(entry.entryFactors).length || "0"}`}
+>>>>>>> e03d053c53476632ab88ce84ec5e2a94f07b3157
               </Text>
             </View>
           </TouchableOpacity>
