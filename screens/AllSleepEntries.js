@@ -22,8 +22,6 @@ export const AllSleepEntries = () => {
   // Grab userId from the firebase auth component
 
   const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
-  //CL TEST FOR CURRENT ID
-  console.log(userId);
 
   useEffect(() => {
     const entryRef = database.ref(`sleepEntries/${userId}`);
@@ -37,16 +35,15 @@ export const AllSleepEntries = () => {
     });
   }, []);
 
-  console.log('THESE ARE MY SLEEP ENTRIES: ', entryList);
   return (
-    <SafeAreaView>
+    <SafeAreaView style={tw`bg-white`}>
       <ScrollView>
         {entryList.map((entry) => (
           <TouchableOpacity
             onPress={() => {
               setSelectedEntry(entry);
             }}
-            style={tw`bg-gray-200 rounded drop-shadow-xl my-3 mx-3`}
+            style={tw`bg-gray-300 rounded drop-shadow-xl my-3 mx-3`}
           >
             <View style={tw`px-6 py-4`}>
               {/* SLEEP ENTRY DATE */}
