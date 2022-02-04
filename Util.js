@@ -106,3 +106,30 @@ export const seedFirebase = () => {
   userRef.set(userProfileData);
   console.log("data sent to firebase");
 };
+
+//takes in a date string of "yyyy-mm-dd" and returns string "mon, d, yyyy"
+export const reformatDate = (dateString) => {
+  const year = `${dateString.slice(0, 4)}`;
+  const monthLookUp = {
+    "01": "Jan",
+    "02": "Feb",
+    "03": "Mar",
+    "04": "Apr",
+    "05": "May",
+    "06": "Jun",
+    "07": "Jul",
+    "08": "Aug",
+    "09": "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec",
+  };
+  const month = monthLookUp[dateString.slice(5, 7)];
+
+  let day = dateString.slice(-2);
+  //don't display a leading zero on the date
+  if (day[0] === "0") {
+    day = day.slice(-1);
+  }
+  return `${month} ${day}, ${year}`;
+};

@@ -1,10 +1,16 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { useEffect, useState } from "react";
-import { VictoryChart, VictoryAxis, VictoryScatter } from "victory-native";
+import {
+  VictoryChart,
+  VictoryAxis,
+  VictoryScatter,
+  VictoryTooltip,
+} from "victory-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { database } from "../firebase";
+import { reformatDate } from "../Util";
 
 const ChartA = (props) => {
   const data = props.data;
@@ -55,6 +61,7 @@ const ChartA = (props) => {
         SleepLength: (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60,
         SleepQuality: entry.quality,
         date: entry.date,
+        label: reformatDate(entry.date),
       };
 
       //put the name of the factor directly on the entry object. (perhaps it should be the id of the factor?)
@@ -91,13 +98,11 @@ const ChartA = (props) => {
                   datum[selectedFactor] ? "#F78A03" : "#1C3F52",
               },
             }}
+            labelComponent={<VictoryTooltip />}
           />
         )}
       </VictoryChart>
-      {/* <View>
-        <Text>Selected Entry</Text>
-        <Text>{selectedEntry.date}</Text>
-      </View> */}
+
       <View>
         <Text>Select a Sleep Factor:</Text>
         <Picker
