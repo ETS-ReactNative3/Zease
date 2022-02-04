@@ -8,6 +8,7 @@ import { database } from "../firebase";
 const ChartA = (props) => {
   const data = props.data;
   const [userFactors, setUserFactors] = useState([]);
+  // const [selectedEntry, setSelectedEntry] = useState({});
 
   useEffect(async () => {
     //get the userId from async storage
@@ -26,7 +27,6 @@ const ChartA = (props) => {
         factor.id = factorId;
         userFactorsArr.push(factor);
       }
-
       setUserFactors(userFactorsArr);
     });
   }, []);
@@ -73,9 +73,26 @@ const ChartA = (props) => {
             data={reformatDataForChart(data)}
             x="SleepLength"
             y="SleepQuality"
+            // events={[{
+            //   target:data,
+            //   eventHandlers:{
+            //     onPress: ()=>{
+            //       return [
+            //         {
+            //           target:"data",
+            //           mutation:
+            //         }
+            //       ]
+            //     }
+            //   }
+            // }]}
           />
         )}
       </VictoryChart>
+      {/* <View>
+        <Text>Selected Entry</Text>
+        <Text>{selectedEntry.date}</Text>
+      </View> */}
       <View>
         <Text>Sleep Factors You're Tracking:</Text>
         {userFactors.map((factor) => {
