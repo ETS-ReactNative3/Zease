@@ -45,6 +45,8 @@ const BuildProfile = ({ navigation }) => {
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
   //visibility of modals
+  //passwords should be shown when edit mode is off OR when a user has chosen to reset their password in editmode (if we choose to allow that)
+  const [showPasswords, setShowPasswords] = useState(true);
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
     useState(false);
@@ -76,6 +78,7 @@ const BuildProfile = ({ navigation }) => {
           JSON.stringify(user.userFactors)
         );
         setEditMode(true);
+        setShowPasswords(false);
       });
     }
   }, []);
@@ -120,7 +123,8 @@ const BuildProfile = ({ navigation }) => {
       validated = false;
     }
 
-    if (!editMode && password === "") {
+    //showPasswords is false if the user is in edit mode and has not chosen to update their password.  in that case password validation isn't needed.
+    if (showPasswords && password === "") {
       Alert.alert("Error", "Please enter a password for account creation.");
       validated = false;
     }
@@ -148,7 +152,22 @@ const BuildProfile = ({ navigation }) => {
       }
 
       if (validated) {
-        putUserinDB(userFactors);
+        let newUser = {
+          email,
+          name,
+          sleepGoalStart,
+          sleepGoalEnd,
+          userFactors,
+          logReminderOn,
+          sleepReminderOn,
+        };
+        // console.log("newUser about to be added/updated in db", newUser)
+        if (editMode) {
+          updateUserinDB(newUser);
+        }
+        if (!editMode) {
+          putUserinDB(newUser);
+        }
       }
     } catch (error) {
       console.log(
@@ -158,20 +177,31 @@ const BuildProfile = ({ navigation }) => {
     }
   };
 
-  //once form entry has been validated write it to auth and Realtime db
-  const putUserinDB = async (userFactors) => {
+  const updateUserinDB = (updatedUser) => {
     try {
-      let newUser = {
-        email,
-        name,
-        sleepGoalStart,
-        sleepGoalEnd,
-        userFactors,
-        logReminderOn,
-        sleepReminderOn,
-      };
-      // console.log("newUser about to be added to db", newUser);
+      auth.updateEmail(updatedUser.email);
+      // if (showPasswords) {
+      //   getAuth().updateUser(auth.currentUser.uid, { password });
+      // }
+    } catch (error) {
+      console.log(
+        "There was an error updating this user's email in firbase auth: ",
+        error
+      );
+    }
+    try {
+      database.ref("users" + auth.currentUser.uid).set(updatedUser);
+    } catch (error) {
+      console.log(
+        "There was an error updating this user's information in the reatime database: ",
+        error
+      );
+    }
+  };
 
+  //once form entry has been validated write it to auth and Realtime db
+  const putUserinDB = async (newUser) => {
+    try {
       auth
         .createUserWithEmailAndPassword(email, password)
         .then((userCredentials) => {
@@ -203,7 +233,12 @@ const BuildProfile = ({ navigation }) => {
             <Ionicons name="alert-outline" size={20} color="red" />
           )}
         </View>
-        {!editMode && (
+        {/* {editMode && (
+          <Pressable onPress={() => setShowPasswords(true)}>
+            <Text>Update Password</Text>
+          </Pressable>
+        )} */}
+        {showPasswords && (
           <View>
             <View style={tw`flex-row`}>
               <TextInput
@@ -222,6 +257,11 @@ const BuildProfile = ({ navigation }) => {
               onChangeText={(text) => setPasswordConfirm(text)}
               secureTextEntry
             />
+            {/* {editMode && (
+              <Pressable onPress={() => setShowPasswords(false)}>
+                <Text>Cancel Password Update</Text>
+              </Pressable>
+            )} */}
           </View>
         )}
         <TextInput

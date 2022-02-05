@@ -27,7 +27,7 @@ const AddEntry = ({ navigation }) => {
     navigation.navigate("BuildProfile");
   };
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
     console.log("Logging out");
     auth
       .signOut()
@@ -38,6 +38,8 @@ const AddEntry = ({ navigation }) => {
       .catch((error) => {
         console.log("Error logging out", error);
       });
+
+    await AsyncStorage.setItem("userFactors", JSON.stringify({}));
   };
 
   return (
