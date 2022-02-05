@@ -52,13 +52,19 @@ const SingleEntry = (props) => {
       <View>
         <Text style={tw`text-lg`}>Overview</Text>
         <View>
-          <Text>Bed Time: {convertToAmPm(entry.startTime)}</Text>
-          <Text>Wake Up Time: {convertToAmPm(entry.endTime)}</Text>
           <Text>
-            Sleep Duration: {Math.floor(calculateSleepLength(entry))} hours,
-            {(calculateSleepLength(entry) -
-              Math.floor(calculateSleepLength(entry))) *
-              60}
+            Bed Time: {entry.startTime && convertToAmPm(entry.startTime)}
+          </Text>
+          <Text>
+            Wake Up Time: {entry.endTime && convertToAmPm(entry.endTime)}
+          </Text>
+          <Text>
+            Sleep Duration:{" "}
+            {entry.endTime && Math.floor(calculateSleepLength(entry))} hours,
+            {entry.endTime &&
+              (calculateSleepLength(entry) -
+                Math.floor(calculateSleepLength(entry))) *
+                60}
             minutes
           </Text>
           <Text> Quality: {entry.quality}%</Text>

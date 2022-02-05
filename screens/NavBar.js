@@ -37,13 +37,9 @@ export default function NavBar() {
           mostRecentEntry = currentEntry;
         }
       }
-      console.log("most recent entry: ", mostRecentEntry);
-      console.log("yesterday", yesterday());
-      console.log("recent entry date", mostRecentEntry.date);
 
       //if the most recent entry was made yesterday put it in async storage, and note on local state that an entry has been made today
       if (mostRecentEntry.date === yesterday()) {
-        console.log("inside if for most recent entry is yesterday");
         setLoggedYesterday(true);
         await AsyncStorage.setItem(
           "yesterdaysEntry",
@@ -59,7 +55,7 @@ export default function NavBar() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Add") {
+          if (route.name === "Today") {
             iconName = focused ? "add-circle" : "add-circle-outline";
           } else if (route.name === "Entries") {
             iconName = "list";
@@ -76,11 +72,11 @@ export default function NavBar() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Entries" component={AllSleepEntries} />
       <Tab.Screen
         name="Today"
         component={loggedYesterday ? SingleEntry : AddEntry}
       />
+      <Tab.Screen name="Entries" component={AllSleepEntries} />
 
       <Tab.Screen
         name="Analyze"
