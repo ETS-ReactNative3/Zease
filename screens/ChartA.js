@@ -9,7 +9,7 @@ import {
 } from "victory-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
-import { database } from "../firebase";
+import { database, auth } from "../firebase";
 import { reformatDate, calculateSleepLength } from "../Util";
 
 const ChartA = (props) => {
@@ -20,10 +20,10 @@ const ChartA = (props) => {
   //get sleep factors for this user from firebase.
   useEffect(async () => {
     //get the userId from async storage
-    const userId = await AsyncStorage.getItem("userID");
+    const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
 
     //get data from firebase. This is getting a "snapshot" of the data
-    const userRef = database.ref(`users/${JSON.parse(userId)}`);
+    const userRef = database.ref(`users/${userId}`);
 
     //this on method gets the value of the data at that reference.
     userRef.on("value", (snapshot) => {

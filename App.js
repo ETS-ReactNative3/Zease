@@ -29,6 +29,11 @@ export default function App() {
           name="NavBar"
           component={NavBar}
         />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="SingleEntry"
+          component={SingleEntry}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

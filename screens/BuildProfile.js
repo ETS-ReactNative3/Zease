@@ -13,7 +13,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -33,9 +33,7 @@ const BuildProfile = ({ navigation }) => {
   const [name, setName] = useState("");
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [sleepGoalStart, setsleepGoalStart] = useState(null);
-  const [sleepGoalStartUTC, setsleepGoalStartUTC] = useState(Date.now());
   const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
-  const [sleepGoalEndUTC, setsleepGoalEndUTC] = useState(Date.now());
   const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
     useState(false);
   const [logReminderOn, setLogReminder] = useState(false);
@@ -68,14 +66,14 @@ const BuildProfile = ({ navigation }) => {
     setPasswordsMatch(password === passwordConfirm);
   }, [passwordConfirm, password]);
 
-  const handleBedTimeConfirm = (evt, time) => {
-    setsleepGoalStartUTC(time);
+  const handleBedTimeConfirm = (time) => {
     setsleepGoalStart(convertToMilitaryString(time));
+    setBedTimePickerVisibility(false);
   };
 
-  const handleWakeTimeConfirm = (evt, time) => {
-    setsleepGoalEndUTC(time);
+  const handleWakeTimeConfirm = (time) => {
     setsleepGoalEnd(convertToMilitaryString(time));
+    setWakeTimePickerVisibility(false);
   };
 
   //front end validation check on form data
@@ -139,7 +137,7 @@ const BuildProfile = ({ navigation }) => {
         logReminderOn,
         sleepReminderOn,
       };
-      console.log("newUser about to be added to db", newUser);
+      // console.log("newUser about to be added to db", newUser);
 
       auth
         .createUserWithEmailAndPassword(email, password)
@@ -148,6 +146,8 @@ const BuildProfile = ({ navigation }) => {
           database.ref("users/" + userId).set(newUser);
         })
         .catch((error) => alert(error.message));
+
+      navigation.navigate("NavBar");
     } catch (error) {
       console.log(
         "there was an error in attempting to add this user to the database: ",
@@ -196,15 +196,15 @@ const BuildProfile = ({ navigation }) => {
           <Text>
             Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
           </Text>
-          {isBedTimePickerVisible && (
-            <DateTimePicker
-              mode="time"
-              value={sleepGoalStartUTC}
-              onChange={handleBedTimeConfirm}
-            />
-          )}
+
+          <DateTimePickerModal
+            isVisible={isBedTimePickerVisible}
+            mode="time"
+            onConfirm={handleBedTimeConfirm}
+            onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+          />
           <Button
-            title={isBedTimePickerVisible ? "Confirm" : "Set Time"}
+            title="Set Time"
             onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
           />
         </View>
@@ -212,16 +212,16 @@ const BuildProfile = ({ navigation }) => {
           <Text>
             Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
           </Text>
-
-          {isWakeTimePickerVisible && (
-            <DateTimePicker
-              mode="time"
-              value={sleepGoalEndUTC}
-              onChange={handleWakeTimeConfirm}
-            />
-          )}
+          <DateTimePickerModal
+            isVisible={isWakeTimePickerVisible}
+            mode="time"
+            onConfirm={handleWakeTimeConfirm}
+            onCancel={() =>
+              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
+            }
+          />
           <Button
-            title={isWakeTimePickerVisible ? "Confirm" : "Set Time"}
+            title="Set Time"
             onPress={() =>
               setWakeTimePickerVisibility(!isWakeTimePickerVisible)
             }

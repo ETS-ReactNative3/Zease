@@ -18,9 +18,10 @@ import { reformatDate, calculateSleepLength, convertToAmPm } from "../Util";
 
 //if this view is accessed from the AllEntries list then the entry data will be passed on props from the parent component.
 //if this view is accessed from the Today button in the nav bar the entry data needs to be pulled from async storage
-const SingleEntry = (props) => {
+const SingleEntry = (props, { navigation }) => {
   const [entry, setEntry] = useState(props.entry || {});
   const [factorNames, setFactorNames] = useState([]);
+  const [isYesterdaysEntry, setIsYesterdaysEntry] = useState(false);
 
   //go get entry from the async storage if needed
   useEffect(async () => {
@@ -32,6 +33,7 @@ const SingleEntry = (props) => {
         JSON.parse(yesterdaysEntry)
       );
       setEntry(JSON.parse(yesterdaysEntry));
+      setIsYesterdaysEntry(true);
     }
   }, []);
 
@@ -60,11 +62,11 @@ const SingleEntry = (props) => {
           </Text>
           <Text>
             Sleep Duration:{" "}
-            {entry.endTime && Math.floor(calculateSleepLength(entry))} hours,
+            {entry.endTime && Math.floor(calculateSleepLength(entry))} hours,{" "}
             {entry.endTime &&
               (calculateSleepLength(entry) -
                 Math.floor(calculateSleepLength(entry))) *
-                60}
+                60}{" "}
             minutes
           </Text>
           <Text> Quality: {entry.quality}%</Text>
@@ -84,6 +86,9 @@ const SingleEntry = (props) => {
           <Text>{entry.notes}</Text>
         </View>
       </View>
+      <Pressable onPress={() => navigation.navigate("EditEntry")}>
+        <Text>Edit This Entry</Text>
+      </Pressable>
     </View>
   );
 };

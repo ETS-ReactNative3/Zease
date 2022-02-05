@@ -89,7 +89,7 @@ const AddEntry = () => {
     }
     // Set formData date to date string yyyy-mm-dd (of previous day)
     const dateObj = new Date();
-    dateObj.setTime(dateObj.getTime() - 24 * 60 * 60 * 1000); // Subtract 24 hours
+    dateObj.setTime(dateObj.getTime() - 48 * 60 * 60 * 1000); // Subtract 24 hours
     const date = dateObj.toISOString().slice(0, 10);
 
     const entryFactors = {};
@@ -98,7 +98,7 @@ const AddEntry = () => {
     ); // Only grab name and category
     // Set formData factors to formatted selectedItems (selected items will be array of ids)
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
-    console.log("formData", formData);
+    //console.log("formData", formData);
 
     //put the new entry in async storage so singleEntry view can use it.
     await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));

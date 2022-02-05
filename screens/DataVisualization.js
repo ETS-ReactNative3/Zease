@@ -18,7 +18,7 @@ const DataVisualization = () => {
     const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
 
     //get data from firebase. This is getting a "snapshot" of the data
-    const sleepEntriesRef = database.ref(`sleepEntries/${JSON.userId}`);
+    const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
 
     //this on method gets the value of the data at that reference.
     sleepEntriesRef.on("value", (snapshot) => {
