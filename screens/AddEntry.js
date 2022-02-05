@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { auth, database } from "../firebase";
 import { convertToMilitaryString, convertToAmPm } from "../utils";
+import { yesterday } from "../Util";
 
 const AddEntry = () => {
   // User sleep factors (pulled in from firebase)
@@ -87,10 +88,9 @@ const AddEntry = () => {
       Alert.alert("Error", "Please fill in all required fields!");
       return;
     }
+
     // Set formData date to date string yyyy-mm-dd (of previous day)
-    const dateObj = new Date();
-    dateObj.setTime(dateObj.getTime() - 48 * 60 * 60 * 1000); // Subtract 24 hours
-    const date = dateObj.toISOString().slice(0, 10);
+    const date = yesterday();
 
     const entryFactors = {};
     entryFactorsArr.forEach(

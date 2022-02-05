@@ -154,7 +154,11 @@ export const calculateSleepLength = (entry) => {
 //get the date of yesterday formatted in a string of yyyy-mm-dd
 export const yesterday = () => {
   const dateObj = new Date();
-  dateObj.setTime(dateObj.getTime() - 48 * 60 * 60 * 1000); // Subtract 24 hours
+
+  let timeZoneAdjust = -new Date().getTimezoneOffset() / 60;
+
+  dateObj.setTime(dateObj.getTime() - (24 + timeZoneAdjust) * 60 * 60 * 1000); // Subtract 24 hours because we want to give each entry the date of the night they went to sleep (not when they logged it)
+
   const date = dateObj.toISOString().slice(0, 10);
   return date;
 };
