@@ -27,6 +27,10 @@ const SingleEntry = (props) => {
     //if no entry was passed to this component through props then entry.date will be undefined, so we need to get the entry from async storage.
     if (!entry.date) {
       const yesterdaysEntry = await AsyncStorage.getItem("yesterdaysEntry");
+      console.log(
+        "yesterday's entry from async storage in single entry",
+        JSON.parse(yesterdaysEntry)
+      );
       setEntry(JSON.parse(yesterdaysEntry));
     }
   }, []);
@@ -44,7 +48,7 @@ const SingleEntry = (props) => {
 
   return (
     <View style={tw`flex-1 items-center justify-center`}>
-      <Text style={tw`text-xl`}>{reformatDate(entry.date)}</Text>
+      <Text style={tw`text-xl`}>{entry.date && reformatDate(entry.date)}</Text>
       <View>
         <Text style={tw`text-lg`}>Overview</Text>
         <View>

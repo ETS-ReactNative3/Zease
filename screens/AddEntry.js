@@ -4,6 +4,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Slider from "@react-native-community/slider";
 import MultiSelect from "react-native-multiple-select";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { auth, database } from "../firebase";
 import { convertToMilitaryString, convertToAmPm } from "../utils";
@@ -80,11 +81,11 @@ const AddEntry = () => {
     });
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate form data
     if (!startTime || !endTime || !quality) {
       Alert.alert("Error", "Please fill in all required fields!");
-      return
+      return;
     }
     // Set formData date to date string yyyy-mm-dd (of previous day)
     const dateObj = new Date();
@@ -98,6 +99,9 @@ const AddEntry = () => {
     // Set formData factors to formatted selectedItems (selected items will be array of ids)
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
     console.log("formData", formData);
+
+    //put the new entry in async storage so singleEntry view can use it.
+    await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
 
     // Write form inputs to firebase
     const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
