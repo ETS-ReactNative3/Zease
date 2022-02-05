@@ -17,7 +17,7 @@ const AddEntry = ({ navigation }) => {
     profileRef.on("value", (snapshot) => {
       const profile = snapshot.val();
       setProfileData(profile);
-      console.log("useEffect profile", profile);
+      //console.log("useEffect profile", profile);
     });
   }, []);
 
@@ -33,7 +33,7 @@ const AddEntry = ({ navigation }) => {
       .signOut()
       .then(() => {
         console.log("Log out sucess");
-        navigation.navigate("LoginScreen")
+        navigation.navigate("LoginScreen");
       })
       .catch((error) => {
         console.log("Error logging out", error);
@@ -116,5 +116,5 @@ const styles = StyleSheet.create({
   },
   factorItem: {
     paddingTop: 5,
-  }
+  },
 });

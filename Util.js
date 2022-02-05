@@ -62,46 +62,114 @@ export const reformatFactors = (dbFactorsObject) => {
   return categories;
 };
 
-//const dummySleepFactors = {
-//   1: {
-//     name: "Caffeine",
-//     category: "chemical",
-//   },
-//   2: {
-//     name: "CBD",
-//     category: "chemical",
-//   },
-//   3: {
-//     name: "Melatonin",
-//     category: "chemical",
-//   },
-//   4: {
-//     name: "Sleep Mask",
-//     category: "tool",
-//   },
-//   5: {
-//     name: "C-Pap",
-//     category: "tool",
-//   },
-//   6: {
-//     name: "Screentime before bed",
-//     category: "practice",
-//   },
-//   7: {
-//     name: "Listening to a sleep podcast",
-//     category: "practice",
-//   },
-//   8: {
-//     name: "Meditation before bed",
-//     category: "practice",
-//   },
-// };
+//
+export const seedFirebase = () => {
+  // Push sleep factors to firebase
+  const sleepFactorsRef = database.ref("sleepFactors");
+  const sleepFactorsData = [
+    // This data has already been added, so change factors or they will be duplicated
+    { name: "caffeine", category: "chemical" },
+    { name: "alcohol", category: "chemical" },
+    { name: "CBD", category: "chemical" },
+    { name: "melatonin", category: "chemical" },
+    { name: "meditated", category: "practice" },
+    { name: "worked out", category: "practice" },
+    { name: "ate late", category: "practice" },
+    { name: "napped", category: "practice" },
+    { name: "no screens", category: "practice" },
+    { name: "sleep podcast", category: "practice" },
+    { name: "stressful day", category: "environment" },
+  ];
+  sleepFactorsData.forEach((factor) => sleepFactorsRef.push(factor));
+  console.log("data sent to firebase");
 
-// const dummyCategory = {
-//   name: "Practices",
-//   factors: [
-//     "Screentime before bed",
-//     "Listening to a sleep podcast",
-//     "Meditation before bed",
-//   ],
-// };
+  // Fetch sleep factors from firebase
+  let sleepFactors;
+  sleepFactorsRef.on("value", (snapshot) => {
+    sleepFactors = snapshot.val();
+    console.log("sleepFactors", sleepFactors);
+  });
+  console.log("data fetched from firebase");
+
+  // Set user profile data
+  const userId = ""; // Update for user to seed
+  const userRef = database.ref(`users/${userId}`);
+  const userProfileData = {
+    // Update data for specific user
+    name: "",
+    sleepGoalStart: "",
+    sleepGoalEnd: "",
+    userFactors: sleepFactors,
+    logReminderOn: true,
+    sleepReminderOn: true,
+  };
+  userRef.set(userProfileData);
+  console.log("data sent to firebase");
+};
+
+//takes in a date string of "yyyy-mm-dd" and returns string "mon, d, yyyy"
+export const reformatDate = (dateString) => {
+  const year = `${dateString.slice(0, 4)}`;
+  const monthLookUp = {
+    "01": "Jan",
+    "02": "Feb",
+    "03": "Mar",
+    "04": "Apr",
+    "05": "May",
+    "06": "Jun",
+    "07": "Jul",
+    "08": "Aug",
+    "09": "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec",
+  };
+  const month = monthLookUp[dateString.slice(5, 7)];
+
+  let day = dateString.slice(-2);
+  //don't display a leading zero on the date
+  if (day[0] === "0") {
+    day = day.slice(-1);
+  }
+  return `${month} ${day}, ${year}`;
+};
+
+//this takes in a sleep entry.  It used the starttime and endTime properties on the entry to calculate the number of hours of sleep
+export const calculateSleepLength = (entry) => {
+  let startHrs = Number(entry.startTime.slice(0, 2));
+  let startMin = Number(entry.startTime.slice(3));
+  let sleepMinBeforeMidnight = (23 - startHrs) * 60 + (60 - startMin);
+  //this line accounts for entries when they user went to sleep after midnight.
+  if (startHrs < 10) {
+    sleepMinBeforeMidnight = -(startHrs * 60 + startMin);
+  }
+
+  let endHrs = Number(entry.endTime.slice(0, 2));
+  let endMin = Number(entry.endTime.slice(3));
+  let sleepMinAfterMidnight = endHrs * 60 + endMin;
+
+  return (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60;
+};
+
+//get the date of yesterday formatted in a string of yyyy-mm-dd
+export const yesterday = () => {
+  const dateObj = new Date();
+
+  let timeZoneAdjust = -new Date().getTimezoneOffset() / 60;
+
+  dateObj.setTime(dateObj.getTime() - (24 + timeZoneAdjust) * 60 * 60 * 1000); // Subtract 24 hours because we want to give each entry the date of the night they went to sleep (not when they logged it)
+
+  const date = dateObj.toISOString().slice(0, 10);
+  return date;
+};
+
+//takes in a date string with format of yyyy-mm-dd and returns a number with format yyyymmdd
+export const getDateNumber = (dateString) => {
+  let noDashString = "";
+  for (let i = 0; i < dateString.length; i++) {
+    if (dateString[i] !== "-") {
+      noDashString += dateString[i];
+    }
+  }
+  return Number(noDashString);
+};
