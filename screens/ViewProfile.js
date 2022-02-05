@@ -23,8 +23,8 @@ const AddEntry = ({ navigation }) => {
 
   const handleEdit = () => {
     console.log("Edit profile");
-    // TODO: Navigate to EditProfile component
-    // navigation.navigate("EditProfile")
+
+    navigation.navigate("BuildProfile");
   };
 
   const handleLogOut = () => {

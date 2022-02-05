@@ -65,7 +65,7 @@ const BuildProfile = ({ navigation }) => {
       const userRef = database.ref("users/" + userId);
       userRef.on("value", async (snapshot) => {
         const user = snapshot.val();
-        setEmail(user.email);
+        setEmail(auth.currentUser.email);
         setName(user.name);
         setsleepGoalStart(user.sleepGoalStart);
         setsleepGoalEnd(user.sleepGoalEnd);
@@ -117,6 +117,11 @@ const BuildProfile = ({ navigation }) => {
 
     if (!emailValid) {
       Alert.alert("Error", "Please enter a valid email address");
+      validated = false;
+    }
+
+    if (!editMode && password === "") {
+      Alert.alert("Error", "Please enter a password for account creation.");
       validated = false;
     }
 
@@ -198,23 +203,27 @@ const BuildProfile = ({ navigation }) => {
             <Ionicons name="alert-outline" size={20} color="red" />
           )}
         </View>
-        <View style={tw`flex-row`}>
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            secureTextEntry
-          />
-          {!passwordsMatch && (
-            <Ionicons name="alert-outline" size={20} color="red" />
-          )}
-        </View>
-        <TextInput
-          placeholder="Confirm Password"
-          value={passwordConfirm}
-          onChangeText={(text) => setPasswordConfirm(text)}
-          secureTextEntry
-        />
+        {!editMode && (
+          <View>
+            <View style={tw`flex-row`}>
+              <TextInput
+                placeholder="Password"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                secureTextEntry
+              />
+              {!passwordsMatch && (
+                <Ionicons name="alert-outline" size={20} color="red" />
+              )}
+            </View>
+            <TextInput
+              placeholder="Confirm Password"
+              value={passwordConfirm}
+              onChangeText={(text) => setPasswordConfirm(text)}
+              secureTextEntry
+            />
+          </View>
+        )}
         <TextInput
           placeholder="Name"
           value={name}
@@ -230,6 +239,7 @@ const BuildProfile = ({ navigation }) => {
             mode="time"
             onConfirm={handleBedTimeConfirm}
             onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+            minuteInterval={15}
           />
           <Button
             title="Set Time"
@@ -247,6 +257,7 @@ const BuildProfile = ({ navigation }) => {
             onCancel={() =>
               setWakeTimePickerVisibility(!isWakeTimePickerVisible)
             }
+            minuteInterval={15}
           />
           <Button
             title="Set Time"
@@ -310,7 +321,13 @@ const BuildProfile = ({ navigation }) => {
           <TouchableOpacity onPress={handleSubmit}>
             <Text>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+          <TouchableOpacity
+            onPress={() =>
+              editMode
+                ? navigation.navigate("NavBar")
+                : navigation.navigate("LoginScreen")
+            }
+          >
             <Text>Cancel</Text>
           </TouchableOpacity>
         </View>

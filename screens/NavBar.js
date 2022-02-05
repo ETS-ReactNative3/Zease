@@ -18,7 +18,7 @@ const Tab = createBottomTabNavigator();
 export default function NavBar() {
   //determine if the user has an entry that was made yesterday.
   const [loggedYesterday, setLoggedYesterday] = useState(false);
-  const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
+  const userId = auth.currentUser ? auth.currentUser.uid : null;
 
   //if an entry was made yesterday set it on local state.
   useEffect(() => {
