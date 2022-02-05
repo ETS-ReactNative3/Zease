@@ -14,7 +14,12 @@ import { useEffect, useState } from "react";
 import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { reformatDate, calculateSleepLength, convertToAmPm } from "../Util";
+import {
+  reformatDate,
+  calculateSleepLength,
+  convertToAmPm,
+  yesterday,
+} from "../Util";
 
 //if this view is accessed from the AllEntries list then the entry data will be passed on props from the parent component.
 //if this view is accessed from the Today button in the nav bar the entry data needs to be pulled from async storage
@@ -45,6 +50,11 @@ const SingleEntry = (props, { navigation }) => {
         factors.push(entry.entryFactors[factorId].name);
       }
       setFactorNames(factors);
+    }
+
+    //check if the entry's date is for yesterday (if so the edit button will be available)
+    if (entry.date === yesterday()) {
+      setIsYesterdaysEntry(true);
     }
   }, [entry]);
 
@@ -86,9 +96,11 @@ const SingleEntry = (props, { navigation }) => {
           <Text>{entry.notes}</Text>
         </View>
       </View>
-      <Pressable onPress={() => navigation.navigate("EditEntry")}>
-        <Text>Edit This Entry</Text>
-      </Pressable>
+      {isYesterdaysEntry && (
+        <Pressable onPress={() => navigation.navigate("EditEntry")}>
+          <Text>Edit This Entry</Text>
+        </Pressable>
+      )}
     </View>
   );
 };
