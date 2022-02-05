@@ -25,32 +25,62 @@ import {
 } from "../Util";
 
 const BuildProfile = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [emailValid, setEmailValid] = useState(true);
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const [name, setName] = useState("");
-  const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  const [sleepGoalStart, setsleepGoalStart] = useState(null);
-  const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
-  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
-    useState(false);
-  const [logReminderOn, setLogReminder] = useState(false);
-  const [sleepReminderOn, setSleepReminder] = useState(false);
-  const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
+  //is user creating a new profile or editing an exiting one.
+  const [editMode, setEditMode] = useState(false);
+  //sleep factor options from the DB (not specific to user)
   const [sleepFactors, setSleepFactors] = useState({});
 
-  //get the sleep factors from db when the page loads
+  //Manage form inputs
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [name, setName] = useState("");
+  const [sleepGoalStart, setsleepGoalStart] = useState(null);
+  const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
+  const [logReminderOn, setLogReminder] = useState(false);
+  const [sleepReminderOn, setSleepReminder] = useState(false);
+
+  //form validation
+  const [emailValid, setEmailValid] = useState(true);
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+
+  //visibility of modals
+  const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
+  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
+    useState(false);
+  const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
+
+  //when the page loads get info from db
   useEffect(() => {
+    //get the sleep factors from db
     let sleepFactorsRef = database.ref("sleepFactors");
     sleepFactorsRef.on("value", (snapshot) => {
       const data = snapshot.val();
       setSleepFactors(data);
     });
+
+    //if a user is logged in get their information and put it on local state/asyncStorage
+    if (auth.currentUser) {
+      const userId = auth.currentUser.uid;
+      const userRef = database.ref("users/" + userId);
+      userRef.on("value", async (snapshot) => {
+        const user = snapshot.val();
+        setEmail(user.email);
+        setName(user.name);
+        setsleepGoalStart(user.sleepGoalStart);
+        setsleepGoalEnd(user.sleepGoalEnd);
+        setSleepReminder(user.sleepReminderOn);
+        setLogReminder(user.logReminderOn);
+        await AsyncStorage.setItem(
+          "userFactors",
+          JSON.stringify(user.userFactors)
+        );
+        setEditMode(true);
+      });
+    }
   }, []);
 
-  //check whether we need to indicate if email is not valid when the email changes
+  //when email changes update state about whether it is a valid email
   useEffect(() => {
     setEmailValid(
       String(email)
@@ -61,7 +91,7 @@ const BuildProfile = ({ navigation }) => {
     );
   }, [email]);
 
-  //check whether we need to indicate if the passwords don't match when either password changes
+  //whena password changes update state about whether they match
   useEffect(() => {
     setPasswordsMatch(password === passwordConfirm);
   }, [passwordConfirm, password]);
@@ -93,11 +123,9 @@ const BuildProfile = ({ navigation }) => {
     try {
       //get the user's selected sleep factors from async storage
       const userFactorsString = await AsyncStorage.getItem("userFactors");
-
       const userFactors = userFactorsString
         ? JSON.parse(userFactorsString)
         : {};
-
       if (Object.keys(userFactors).length === 0) {
         Alert.alert("Error", "Please select at least one sleep factor");
         validated = false;

@@ -1,46 +1,58 @@
 import { View, Text, Switch } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "tailwind-react-native-classnames";
 
 const SleepFactorSwitch = (props) => {
-  const [factorRelevant, setFactorRelevance] = useState(false);
   const { factorId, factor } = props;
+  const [factorRelevant, setFactorRelevance] = useState(false);
+  const [userFactors, setUserFactors] = useState(null);
 
+  //when the page loads put any userFactors from async storage on local state.
+  useEffect(async () => {
+    const userFactorsString = await AsyncStorage.getItem("userFactors");
+    const userFactors = userFactorsString
+      ? JSON.parse(userFactorsString)
+      : null;
+    setUserFactors(userFactors);
+  }, []);
+
+  //if userFactors is updated check if the switch value needs to be updated.
+  useEffect(async () => {
+    for (let userFactorId in userFactors) {
+      if (factorId === userFactorId) {
+        setFactorRelevance(true);
+      }
+    }
+  }, [userFactors]);
+
+  //update userFactors for local state and async storage when switch is toggled
   const toggleSwitch = async () => {
     setFactorRelevance((previousValue) => !previousValue);
     try {
-      //get the pre-existing user factors from async storage (if there are any)
-      const oldUserFactorsString = await AsyncStorage.getItem("userFactors");
-
-      const oldUserFactors = oldUserFactorsString
-        ? JSON.parse(oldUserFactorsString)
-        : null;
-      // console.log("oldUserFactors fetched from async storage", oldUserFactors);
-      //
       let newUserFactors = {};
-      if (oldUserFactors && oldUserFactors[factorId]) {
+      if (userFactors && userFactors[factorId]) {
         //if old user factors object currently includes this factor's key value pair, remove it.
-        newUserFactors = { ...oldUserFactors };
+        newUserFactors = { ...userFactors };
         delete newUserFactors[factorId];
       }
 
-      if (oldUserFactors && !oldUserFactors[factorId]) {
+      if (userFactors && !userFactors[factorId]) {
         //if the old user factors object doesn't include this factor's key value pair, add it.
-        newUserFactors = { ...oldUserFactors, [factorId]: factor };
+        newUserFactors = { ...userFactors, [factorId]: factor };
       }
-      if (oldUserFactors === null) {
+      if (userFactors === null) {
         //if the old user factors object is null, the new factors object will have just this factor's key value pair in it.
         newUserFactors[factorId] = factor;
       }
-      //store the updated user factors in async storage.
+      //uncomment next line to clear async store's userFactors
       //newUserFactors = {};
-      // console.log(
-      //   "new user factors about to be put in local storage",
-      //   newUserFactors
-      // );
+      //console.log("new user factors",newUserFactors);
+
+      //store the updated user factors in async storage.
       await AsyncStorage.setItem("userFactors", JSON.stringify(newUserFactors));
+      setUserFactors(newUserFactors);
     } catch (error) {
       console.log(
         "There was an error in trying to update async storage with this sleep factor:",
