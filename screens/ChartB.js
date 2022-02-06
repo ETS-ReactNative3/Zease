@@ -7,36 +7,48 @@ const ChartB = (props) => {
   //data from db has already been pulled in by parent comppnent.  However it still needs to be reformatted.
   // const sleepEntryDbData = props.data;
 
+  // DUMMY DATA
   const data = [
     // x: (date), y: (hours)
     [
-      { x: 1, y: 5 },
-      { x: 2, y: 7 },
-      { x: 3, y: 8 },
-      { x: 4, y: 7 }
+      { x: 'Feb 1', y: 5 },
+      { x: 'Feb 2', y: 6.5 },
+      { x: 'Feb 3', y: 10 },
+      { x: 'Feb 4', y: 7 },
+      { x: 'Feb 5', y: 7 },
+      { x: 'Feb 6', y: 6.5 },
+      { x: 'Feb 7', y: 7.5 }
     ],
 
     // x: (date), y: (sleep quality score)
     [
-      { x: 1, y: 50 },
-      { x: 2, y: 75 },
-      { x: 3, y: 90 },
-      { x: 4, y: 85 }
+      { x: 'Feb 1', y: 50 },
+      { x: 'Feb 2', y: 65 },
+      { x: 'Feb 3', y: 90 },
+      { x: 'Feb 4', y: 85 },
+      { x: 'Feb 5', y: 75 },
+      { x: 'Feb 6', y: 70 },
+      { x: 'Feb 7', y: 85 }
     ]
   ];
   // find maxima for normalizing data
   const maxima = data.map((dataset) => Math.max(...dataset.map((d) => d.y)));
 
   const xOffsets = [50, 350];
-  const tickPadding = [0, 0, 20];
   const anchors = ['end', 'start'];
   const colors = ['red', 'blue'];
 
   return (
     <View>
-      <VictoryChart width={400} height={400} domain={{ y: [0, 1] }} theme={VictoryTheme.material}>
+      <VictoryChart
+        width={400}
+        height={400}
+        maxDomain={{ y: 1.1 }}
+        minDomain={{ y: 0 }}
+        theme={VictoryTheme.material}
+      >
         <VictoryAxis
-          label='Dates'
+          label='Sleep Date'
           style={{ axisLabel: { padding: 36 } }}
           theme={VictoryTheme.material}
         />
@@ -51,8 +63,7 @@ const ChartB = (props) => {
               axisLabel: { padding: 24 },
               tickLabels: { fill: colors[i], textAnchor: anchors[i] }
             }}
-            // Use normalized tickValues (0 - 1)
-            tickValues={[0.25, 0.5, 0.75, 1]}
+            tickValues={[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
             // Re-scale ticks by multiplying by correct maxima
             tickFormat={(t) => t * maxima[i]}
             theme={VictoryTheme.material}
@@ -60,6 +71,7 @@ const ChartB = (props) => {
         ))}
         {data.map((d, i) => (
           <VictoryLine
+            interpolation='natural'
             key={i}
             data={d}
             style={{ data: { stroke: colors[i] } }}
