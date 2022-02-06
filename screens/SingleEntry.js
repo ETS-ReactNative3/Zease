@@ -74,9 +74,11 @@ const SingleEntry = (props, { navigation }) => {
             Sleep Duration:{" "}
             {entry.endTime && Math.floor(calculateSleepLength(entry))} hours,{" "}
             {entry.endTime &&
-              (calculateSleepLength(entry) -
-                Math.floor(calculateSleepLength(entry))) *
-                60}{" "}
+              Math.floor(
+                (calculateSleepLength(entry) -
+                  Math.floor(calculateSleepLength(entry))) *
+                  60
+              )}{" "}
             minutes
           </Text>
           <Text> Quality: {entry.quality}%</Text>
