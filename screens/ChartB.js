@@ -28,6 +28,19 @@ const ChartB = (props) => {
     return dataArray;
   };
 
+  const getSleepQualityData = (dbDataObj) => {
+    const dataArray = [];
+    for (let entryId in dbDataObj) {
+      let entry = dbDataObj[entryId];
+      let entryForChart = {
+        x: getDateObj(entry.date),
+        y: entry.quality,
+      };
+      dataArray.push(entryForChart);
+    }
+    return dataArray;
+  };
+
   return (
     <View>
       <Text>Line chart goes here</Text>
