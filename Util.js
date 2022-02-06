@@ -173,3 +173,11 @@ export const getDateNumber = (dateString) => {
   }
   return Number(noDashString);
 };
+
+//takes in a date string with format of yyyy-mm-dd and returns the corresponding date object
+export const getDateObj = (dateString) => {
+  const year = Number(dateString.slice(0, 4));
+  const month = Number(dateString.slice(5, 7));
+  const day = Number(dateString.slice(-2));
+  return new Date(year, month, day);
+};
