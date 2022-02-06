@@ -7,7 +7,7 @@ import {
   VictoryAxis,
   VictoryLine,
 } from "victory-native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Svg, G } from "react-native-svg";
 import tw from "tailwind-react-native-classnames";
 import { getDateObj, calculateSleepLength } from "../Util";
@@ -19,6 +19,42 @@ import { getDateObj, calculateSleepLength } from "../Util";
 const ChartB = (props) => {
   //data from db has already been pulled in by parent component.  However it still needs to be reformatted.
   const sleepEntryDbData = props.data;
+  const [xDomain, setXDomain] = useState([
+    new Date(2022, 2, 1),
+    new Date(2022, 2, 14),
+  ]);
+  const [xTickValues, setXTickValues] = useState([]);
+
+  //on page load get oldest and newst entrys from async storage.  This is needed to determine x axis domain
+  useEffect(async () => {
+    const newestEntryString = await AsyncStorage.getItem("mostRecentEntry");
+    const newestDateObj = getDateObj(JSON.parse(newestEntryString).date);
+    const oldestEntryString = await AsyncStorage.getItem("oldestEntry");
+    const oldestDateObj = getDateObj(JSON.parse(oldestEntryString).date);
+    //console.log("newestDateObj", newestDateObj);
+    //console.log("newestEntryString", newestEntryString);
+    //console.log("oldestEntryString", oldestEntryString);
+    //console.log("xDomain", [oldestDateObj, newestDateObj]);
+    setXDomain([oldestDateObj, newestDateObj]);
+
+    //determine the amount of time between the oldest and newest entries.
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const timeSpan = newestDateObj.getTime() - oldestDateObj.getTime();
+
+    //divide the timeSpan of days by 4.  That's how often a tick mark should appear on the x axis
+    const tickMarkFrequency = Math.floor(timeSpan / 4);
+
+    //make four tick marks, start from the oldest date, and add the tickMarkFrequency
+    let tickValues = [];
+    for (let i = 1; i < 5; i++) {
+      let tickMarkDate = new Date(
+        oldestDateObj.getTime() + tickMarkFrequency * i
+      );
+      tickValues.push(tickMarkDate);
+    }
+    setXTickValues(tickValues);
+  }, []);
+
   const getSleepLengthData = (dbDataObj) => {
     const dataArray = [];
     for (let entryId in dbDataObj) {
@@ -53,16 +89,20 @@ const ChartB = (props) => {
           x={25}
           y={20}
           style={{ fill: "#F78A03" }}
-          text={"Sleep Length (Hours)"}
+          text="Sleep Length (Hours)"
         />
         <VictoryLabel
           x={320}
           y={20}
           style={{ fill: "#1C3F52" }}
-          text={"Sleep Quality"}
+          text="Sleep Quality (%)"
         />
         <G>
-          <VictoryAxis scale="time" standalone={false} />
+          <VictoryAxis
+            scale="time"
+            standalone={false}
+            tickValues={xTickValues}
+          />
           <VictoryAxis
             domain={[0, 15]}
             dependentAxis
@@ -73,7 +113,7 @@ const ChartB = (props) => {
           <VictoryLine
             data={getSleepLengthData(sleepEntryDbData)}
             domain={{
-              x: [new Date(2022, 2, 1), new Date(2022, 2, 8)],
+              x: xDomain,
               y: [0, 15],
             }}
             scale={{ x: "time", y: "linear" }}
@@ -92,7 +132,7 @@ const ChartB = (props) => {
           <VictoryLine
             data={getSleepQualityData(sleepEntryDbData)}
             domain={{
-              x: [new Date(2022, 2, 1), new Date(2022, 2, 8)],
+              x: xDomain,
               y: [0, 100],
             }}
             scale={{ x: "time", y: "linear" }}
