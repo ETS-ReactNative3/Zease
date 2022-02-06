@@ -179,5 +179,5 @@ export const getDateObj = (dateString) => {
   const year = Number(dateString.slice(0, 4));
   const month = Number(dateString.slice(5, 7));
   const day = Number(dateString.slice(-2));
-  return new Date(year, month, day);
+  return new Date(year, month - 1, day);
 };

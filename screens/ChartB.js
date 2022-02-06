@@ -32,20 +32,24 @@ const ChartB = (props) => {
     const oldestEntryString = await AsyncStorage.getItem("oldestEntry");
     const oldestDateObj = getDateObj(JSON.parse(oldestEntryString).date);
     setXDomain([oldestDateObj, newestDateObj]);
-
+    console.log("oldest date object", oldestDateObj);
+    //console.log("newestDateObj", JSON.parse(newestEntryString).date);
+    console.log("oldest Date", JSON.parse(oldestEntryString).date);
     //get the timespan between the oldest and newest entries.
     const msPerDay = 1000 * 60 * 60 * 24;
     const timeSpan = newestDateObj.getTime() - oldestDateObj.getTime();
 
     //divide the timeSpan by 4 and convert it from ms to days.  That's how often a tick mark should appear on the x axis
     const tickMarkFrequency = Math.floor(timeSpan / msPerDay / 4);
+    console.log("tickMarkFrequency", tickMarkFrequency);
 
     //make four tick marks, start from the oldest date, and add the tickMarkFrequency
     let tickValues = [];
-    for (let i = 1; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
       let tickMarkDate = new Date(
         oldestDateObj.getTime() + tickMarkFrequency * i * msPerDay
       );
+      console.log("tickMarkDate", tickMarkDate);
       tickValues.push(tickMarkDate);
     }
     setXTickValues(tickValues);
