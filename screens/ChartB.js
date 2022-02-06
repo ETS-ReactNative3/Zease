@@ -7,10 +7,14 @@ import {
   VictoryAxis,
   VictoryLine,
 } from "victory-native";
+
+import { Svg, G } from "react-native-svg";
+import tw from "tailwind-react-native-classnames";
 import { getDateObj, calculateSleepLength } from "../Util";
 //custom charts are wrapped in svg (and then within the sgv they are wrapped in g).  you need to get a library that allows you to do svg and g though since its not part of react native.
 
 //determining the x domain for the two VictoryLines, tickValues and tickFormat for the x axis (time) could be tricky because the appropriate scale for that axis will depend greatly on how long the data spans.  We'll leave it blank for now and make choices about that once data is rendered.
+//^ in order to accomplish this we might do something where we get the most recent and the oldest date from the data set.
 
 const ChartB = (props) => {
   //data from db has already been pulled in by parent component.  However it still needs to be reformatted.
@@ -44,7 +48,10 @@ const ChartB = (props) => {
   return (
     <View>
       <Text>Line chart goes here</Text>
-      <Svg>
+      <VictoryChart>
+        <VictoryLine data={getSleepLengthData(sleepEntryDbData)} />
+      </VictoryChart>
+      {/* <Svg >
         <VictoryLabel
           x={25}
           y={55}
@@ -77,7 +84,7 @@ const ChartB = (props) => {
             style={{ data: { stroke: "#F78A03", strokeWidth: 4 } }}
           />
         </G>
-      </Svg>
+      </Svg> */}
     </View>
   );
 };
