@@ -42,14 +42,15 @@ const ChartB = (props) => {
     const timeSpan = newestDateObj.getTime() - oldestDateObj.getTime();
 
     //divide the timeSpan of days by 4.  That's how often a tick mark should appear on the x axis
-    const tickMarkFrequency = Math.floor(timeSpan / 4);
+    const tickMarkFrequency = Math.floor(timeSpan / msPerDay / 4);
 
     //make four tick marks, start from the oldest date, and add the tickMarkFrequency
     let tickValues = [];
     for (let i = 1; i < 5; i++) {
       let tickMarkDate = new Date(
-        oldestDateObj.getTime() + tickMarkFrequency * i
+        oldestDateObj.getTime() + tickMarkFrequency * i * msPerDay
       );
+      console.log(tickMarkDate);
       tickValues.push(tickMarkDate);
     }
     setXTickValues(tickValues);
@@ -83,7 +84,6 @@ const ChartB = (props) => {
 
   return (
     <View>
-      <Text>Line chart goes here</Text>
       <VictoryChart>
         <VictoryLabel
           x={25}
@@ -92,35 +92,38 @@ const ChartB = (props) => {
           text="Sleep Length (Hours)"
         />
         <VictoryLabel
-          x={320}
+          x={310}
           y={20}
           style={{ fill: "#1C3F52" }}
           text="Sleep Quality (%)"
         />
         <G>
+          {/*shared x axis for time */}
           <VictoryAxis
             scale="time"
             standalone={false}
             tickValues={xTickValues}
           />
+          {/*y axis for duration */}
           <VictoryAxis
-            domain={[0, 15]}
+            domain={[0, 17]}
             dependentAxis
             orientation="left"
             standalone={false}
             style={{ axis: { stroke: "#F78A03", strokeWidth: 2 } }}
           />
+          {/*line chart for sleep duration */}
           <VictoryLine
             data={getSleepLengthData(sleepEntryDbData)}
             domain={{
               x: xDomain,
-              y: [0, 15],
+              y: [0, 17],
             }}
             scale={{ x: "time", y: "linear" }}
             standalone={false}
             style={{ data: { stroke: "#F78A03", strokeWidth: 4 } }}
           />
-
+          {/*y axis for sleep quality */}
           <VictoryAxis
             offsetX={50}
             domain={[0, 100]}
@@ -129,6 +132,7 @@ const ChartB = (props) => {
             standalone={false}
             style={{ axis: { stroke: "#1C3F52", strokeWidth: 2 } }}
           />
+          {/*line chart for sleep quality */}
           <VictoryLine
             data={getSleepQualityData(sleepEntryDbData)}
             domain={{
@@ -141,63 +145,6 @@ const ChartB = (props) => {
           />
         </G>
       </VictoryChart>
-      {/* <Svg
-        style={{ boxSizing: "border-box", display: "inline" }}
-        viewBox="0 0 450 350"
-      >
-        <VictoryLabel
-          x={25}
-          y={20}
-          style={{ fill: "#F78A03" }}
-          text={"Sleep Length (Hours)"}
-        />
-        <VictoryLabel
-          x={320}
-          y={20}
-          style={{ fill: "#1C3F52" }}
-          text={"Sleep Quality"}
-        />
-        <G>
-          <VictoryAxis scale="time" standalone={false} />
-
-          <VictoryAxis
-            domain={[0, 15]}
-            dependentAxis
-            orientation="left"
-            standalone={false}
-            style={{ axis: { stroke: "#F78A03", strokeWidth: 2 } }}
-          />
-          <VictoryLine
-            data={getSleepLengthData(sleepEntryDbData)}
-            domain={{
-              x: [new Date(2022, 2, 1), new Date(2022, 2, 8)],
-              y: [0, 15],
-            }}
-            scale={{ x: "time", y: "linear" }}
-            standalone={false}
-            style={{ data: { stroke: "#F78A03", strokeWidth: 4 } }}
-          />
-
-          <VictoryAxis
-            offsetX={50}
-            domain={[0, 100]}
-            dependentAxis
-            orientation="right"
-            standalone={false}
-            style={{ axis: { stroke: "#1C3F52", strokeWidth: 2 } }}
-          />
-          <VictoryLine
-            data={getSleepQualityData(sleepEntryDbData)}
-            domain={{
-              x: [new Date(2022, 2, 1), new Date(2022, 2, 8)],
-              y: [0, 100],
-            }}
-            scale={{ x: "time", y: "linear" }}
-            standalone={false}
-            style={{ data: { stroke: "#1C3F52", strokeWidth: 4 } }}
-          />
-        </G>
-      </Svg> */}
     </View>
   );
 };
