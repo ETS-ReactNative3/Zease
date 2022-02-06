@@ -49,8 +49,57 @@ const ChartB = (props) => {
     <View>
       <Text>Line chart goes here</Text>
       <VictoryChart>
-        <VictoryLine data={getSleepLengthData(sleepEntryDbData)} />
+        <VictoryLabel
+          x={25}
+          y={20}
+          style={{ fill: "#F78A03" }}
+          text={"Sleep Length (Hours)"}
+        />
+        <VictoryAxis scale="time" standalone={false} />
+        <VictoryAxis
+          domain={[0, 15]}
+          dependentAxis
+          orientation="left"
+          standalone={false}
+          style={{ axis: { stroke: "#F78A03", strokeWidth: 2 } }}
+        />
+        <VictoryLine
+          data={getSleepLengthData(sleepEntryDbData)}
+          domain={{
+            x: [new Date(2022, 2, 1), new Date(2022, 2, 8)],
+            y: [0, 15],
+          }}
+          scale={{ x: "time", y: "linear" }}
+          standalone={false}
+          style={{ data: { stroke: "#F78A03", strokeWidth: 4 } }}
+        />
+        <VictoryLabel
+          x={320}
+          y={20}
+          style={{ fill: "#1C3F52" }}
+          text={"Sleep Quality"}
+        />
+        <VictoryAxis
+          domain={[0, 100]}
+          dependentAxis
+          orientation="right"
+          standalone={false}
+          style={{ axis: { stroke: "#1C3F52", strokeWidth: 2 } }}
+        />
+        <VictoryLine
+          data={getSleepQualityData(sleepEntryDbData)}
+          domain={{
+            x: [new Date(2022, 2, 1), new Date(2022, 2, 8)],
+            y: [0, 100],
+          }}
+          scale={{ x: "time", y: "linear" }}
+          standalone={false}
+          style={{ data: { stroke: "#1C3F52", strokeWidth: 4 } }}
+        />
       </VictoryChart>
+      {/* <VictoryChart>
+        <VictoryLine data={getSleepLengthData(sleepEntryDbData)} />
+        </VictoryChart> */}
       {/* <Svg >
         <VictoryLabel
           x={25}
