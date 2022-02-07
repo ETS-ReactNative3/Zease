@@ -33,6 +33,7 @@ const AddEntry = ({ navigation }) => {
     await AsyncStorage.removeItem("oldestEntry");
     await AsyncStorage.removeItem("mostRecentEntry");
     await AsyncStorage.removeItem("userFactors");
+    await AsyncStorage.removeItem("yesterdaysEntry");
     auth
       .signOut()
       .then(() => {
