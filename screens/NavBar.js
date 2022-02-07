@@ -40,8 +40,6 @@ export default function NavBar() {
           oldestEntry = currentEntry;
         }
       }
-<<<<<<< HEAD
-=======
 
       //put the oldest and most recent entries in async storage (this is determining the correct domain of x axis in ChartB)
       await AsyncStorage.setItem(
@@ -50,7 +48,6 @@ export default function NavBar() {
       );
       await AsyncStorage.setItem("oldestEntry", JSON.stringify(oldestEntry));
 
->>>>>>> main
       // console.log("most recent entry date: ", mostRecentEntry.date);
       // console.log("yesterday: ", yesterday());
 
