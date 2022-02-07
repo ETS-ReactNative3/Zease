@@ -44,18 +44,6 @@ const ChartA = (props) => {
     for (let entryId in dbDataObject) {
       let entry = dbDataObject[entryId];
 
-      // let startHrs = Number(entry.startTime.slice(0, 2));
-      // let startMin = Number(entry.startTime.slice(3));
-      // let sleepMinBeforeMidnight = (23 - startHrs) * 60 + (60 - startMin);
-      // //this line accounts for entries when they user went to sleep after midnight.
-      // if (startHrs < 10) {
-      //   sleepMinBeforeMidnight = -(startHrs * 60 + startMin);
-      // }
-
-      // let endHrs = Number(entry.endTime.slice(0, 2));
-      // let endMin = Number(entry.endTime.slice(3));
-      // let sleepMinAfterMidnight = endHrs * 60 + endMin;
-
       let entryForChart = {
         SleepLength: calculateSleepLength(entry),
         SleepQuality: entry.quality,

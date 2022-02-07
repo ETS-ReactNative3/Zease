@@ -1,85 +1,142 @@
-import React from 'react';
-import { Text, View } from 'react-native';
-import { useEffect, useState } from 'react';
-import { VictoryChart, VictoryAxis, VictoryLine, VictoryTheme, VictoryLabel } from 'victory-native';
+import React from "react";
+import { Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  VictoryChart,
+  VictoryLabel,
+  VictoryAxis,
+  VictoryLine,
+} from "victory-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { G } from "react-native-svg";
+
+import { getDateObj, calculateSleepLength } from "../Util";
 
 const ChartB = (props) => {
-  //data from db has already been pulled in by parent comppnent.  However it still needs to be reformatted.
-  // const sleepEntryDbData = props.data;
+  //data from db has already been pulled in by parent component.  However it still needs to be reformatted.
+  const sleepEntryDbData = props.data;
+  const [xDomain, setXDomain] = useState([
+    new Date(2022, 2, 1),
+    new Date(2022, 2, 14),
+  ]);
+  const [xTickValues, setXTickValues] = useState([]);
 
-  // DUMMY DATA
-  const data = [
-    // x: (date), y: (hours)
-    [
-      { x: 'Feb 1', y: 5 },
-      { x: 'Feb 2', y: 6.5 },
-      { x: 'Feb 3', y: 10 },
-      { x: 'Feb 4', y: 7 },
-      { x: 'Feb 5', y: 7 },
-      { x: 'Feb 6', y: 6.5 },
-      { x: 'Feb 7', y: 7.5 }
-    ],
+  //on page load get oldest and newst entrys from async storage.  This is needed to determine x axis domain
+  useEffect(async () => {
+    const newestEntryString = await AsyncStorage.getItem("mostRecentEntry");
+    const newestDateObj = getDateObj(JSON.parse(newestEntryString).date);
+    const oldestEntryString = await AsyncStorage.getItem("oldestEntry");
+    const oldestDateObj = getDateObj(JSON.parse(oldestEntryString).date);
+    setXDomain([oldestDateObj, newestDateObj]);
+    //console.log("oldest date object", oldestDateObj);
+    //console.log("newestDateObj", JSON.parse(newestEntryString).date);
+    //console.log("oldest Date", JSON.parse(oldestEntryString).date);
+    //get the timespan between the oldest and newest entries.
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const timeSpan = newestDateObj.getTime() - oldestDateObj.getTime();
 
-    // x: (date), y: (sleep quality score)
-    [
-      { x: 'Feb 1', y: 50 },
-      { x: 'Feb 2', y: 65 },
-      { x: 'Feb 3', y: 90 },
-      { x: 'Feb 4', y: 85 },
-      { x: 'Feb 5', y: 75 },
-      { x: 'Feb 6', y: 70 },
-      { x: 'Feb 7', y: 85 }
-    ]
-  ];
-  // find maxima for normalizing data
-  const maxima = data.map((dataset) => Math.max(...dataset.map((d) => d.y)));
+    //divide the timeSpan by 4 and convert it from ms to days.  That's how often a tick mark should appear on the x axis
+    const tickMarkFrequency = Math.floor(timeSpan / msPerDay / 4);
 
-  const xOffsets = [50, 350];
-  const anchors = ['end', 'start'];
-  const colors = ['red', 'blue'];
+    //make four tick marks, start from the oldest date, and add the tickMarkFrequency
+    let tickValues = [];
+    for (let i = 0; i < 5; i++) {
+      let tickMarkDate = new Date(
+        oldestDateObj.getTime() + tickMarkFrequency * i * msPerDay
+      );
+      tickValues.push(tickMarkDate);
+    }
+    setXTickValues(tickValues);
+  }, []);
+
+  const getSleepLengthData = (dbDataObj) => {
+    const dataArray = [];
+    for (let entryId in dbDataObj) {
+      let entry = dbDataObj[entryId];
+      let entryForChart = {
+        x: getDateObj(entry.date),
+        y: calculateSleepLength(entry),
+      };
+      dataArray.push(entryForChart);
+    }
+    return dataArray;
+  };
+
+  const getSleepQualityData = (dbDataObj) => {
+    const dataArray = [];
+    for (let entryId in dbDataObj) {
+      let entry = dbDataObj[entryId];
+      let entryForChart = {
+        x: getDateObj(entry.date),
+        y: entry.quality,
+      };
+      dataArray.push(entryForChart);
+    }
+    return dataArray;
+  };
 
   return (
     <View>
-      <VictoryChart
-        width={400}
-        height={400}
-        maxDomain={{ y: 1.1 }}
-        minDomain={{ y: 0 }}
-        theme={VictoryTheme.material}
-      >
-        <VictoryAxis
-          label='Sleep Date'
-          style={{ axisLabel: { padding: 36 } }}
-          theme={VictoryTheme.material}
+      <VictoryChart>
+        <VictoryLabel
+          x={25}
+          y={20}
+          style={{ fill: "#F78A03" }}
+          text={"Sleep Length (Hours)"}
         />
-        {data.map((d, i) => (
+        <VictoryLabel
+          x={310}
+          y={20}
+          style={{ fill: "#1C3F52" }}
+          text={"Sleep Quality (%)"}
+        />
+        <G>
+          {/*shared x axis for time */}
           <VictoryAxis
-            label='Hours Slept'
+            scale="time"
+            standalone={false}
+            tickValues={xTickValues}
+          />
+          {/*y axis for duration */}
+          <VictoryAxis
+            domain={[0, 17]}
             dependentAxis
-            key={i}
-            offsetX={xOffsets[i]}
-            style={{
-              axis: { stroke: colors[i] },
-              axisLabel: { padding: 24 },
-              tickLabels: { fill: colors[i], textAnchor: anchors[i] }
-            }}
-            tickValues={[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
-            // Re-scale ticks by multiplying by correct maxima
-            tickFormat={(t) => t * maxima[i]}
-            theme={VictoryTheme.material}
+            orientation="left"
+            standalone={false}
+            style={{ axis: { stroke: "#F78A03", strokeWidth: 2 } }}
           />
-        ))}
-        {data.map((d, i) => (
+          {/*line chart for sleep duration */}
           <VictoryLine
-            interpolation='natural'
-            key={i}
-            data={d}
-            style={{ data: { stroke: colors[i] } }}
-            // normalize data
-            y={(datum) => datum.y / maxima[i]}
-            theme={VictoryTheme.material}
+            data={getSleepLengthData(sleepEntryDbData)}
+            domain={{
+              x: xDomain,
+              y: [0, 17],
+            }}
+            scale={{ x: "time", y: "linear" }}
+            standalone={false}
+            style={{ data: { stroke: "#F78A03", strokeWidth: 4 } }}
           />
-        ))}
+          {/*y axis for sleep quality */}
+          <VictoryAxis
+            offsetX={50}
+            domain={[0, 100]}
+            dependentAxis
+            orientation="right"
+            standalone={false}
+            style={{ axis: { stroke: "#1C3F52", strokeWidth: 2 } }}
+          />
+          {/*line chart for sleep quality */}
+          <VictoryLine
+            data={getSleepQualityData(sleepEntryDbData)}
+            domain={{
+              x: xDomain,
+              y: [0, 100],
+            }}
+            scale={{ x: "time", y: "linear" }}
+            standalone={false}
+            style={{ data: { stroke: "#1C3F52", strokeWidth: 4 } }}
+          />
+        </G>
       </VictoryChart>
     </View>
   );

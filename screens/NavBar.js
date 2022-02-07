@@ -27,18 +27,29 @@ export default function NavBar() {
     entryRef.on("value", async (snapshot) => {
       const entries = snapshot.val();
 
-      //identify which entry was made most recently
+      //identify which entry was made most recently, and which is oldest.
       let mostRecentEntry = { date: "0" };
+      let oldestEntry = { date: "3000-00-00" };
       for (let id in entries) {
         let currentEntry = entries[id];
-        if (
-          getDateNumber(currentEntry.date) > getDateNumber(mostRecentEntry.date)
-        ) {
+        let currentEntryDateNum = getDateNumber(currentEntry.date);
+        if (currentEntryDateNum > getDateNumber(mostRecentEntry.date)) {
           mostRecentEntry = currentEntry;
         }
+        if (currentEntryDateNum < getDateNumber(oldestEntry.date)) {
+          oldestEntry = currentEntry;
+        }
       }
-      console.log("most recent entry date: ", mostRecentEntry.date);
-      console.log("yesterday: ", yesterday());
+
+      //put the oldest and most recent entries in async storage (this is determining the correct domain of x axis in ChartB)
+      await AsyncStorage.setItem(
+        "mostRecentEntry",
+        JSON.stringify(mostRecentEntry)
+      );
+      await AsyncStorage.setItem("oldestEntry", JSON.stringify(oldestEntry));
+
+      // console.log("most recent entry date: ", mostRecentEntry.date);
+      // console.log("yesterday: ", yesterday());
 
       //if the most recent entry was made yesterday put it in async storage, and note on local state that an entry has been made today
       if (mostRecentEntry.date === yesterday()) {
