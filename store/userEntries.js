@@ -1,3 +1,9 @@
+import { auth, database } from "../firebase";
+
+const userId = auth.currentUser
+  ? auth.currentUser.uid
+  : "v3fmHEk6CiTxbU5o8M6tFxuawEI3";
+
 //action types
 const SET_USER_ENTRIES = "SET_USER_ENTRIES";
 
@@ -10,7 +16,7 @@ const setUserEntries = (entriesArray) => {
 };
 
 //thunk creators
-export const fetchUserEntries = (userId) => {
+export const fetchUserEntries = () => {
   return async (dispatch) => {
     try {
       const entriesRef = database.ref(`sleepEntries/${userId}`);

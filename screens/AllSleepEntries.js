@@ -23,11 +23,11 @@ export const AllSleepEntries = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState({});
 
-  const currentUserId = "v3fmHEk6CiTxbU5o8M6tFxuawEI3";
+  //const currentUserId = "v3fmHEk6CiTxbU5o8M6tFxuawEI3";
   // User Sam ID, delete once component incorporated to main app
   // Grab userId from the firebase auth component
 
-  const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
+  //const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
 
   useEffect(() => {
     // const entryRef = database.ref(`sleepEntries/${userId}`);
@@ -39,7 +39,7 @@ export const AllSleepEntries = () => {
     //   }
     //   setEntryList(entryList);
     // });
-    dispatch(fetchUserEntries(userId));
+    dispatch(fetchUserEntries());
   }, []);
 
   return (
