@@ -82,13 +82,13 @@ const ChartB = (props) => {
           x={25}
           y={20}
           style={{ fill: "#F78A03" }}
-          text="Sleep Length (Hours)"
+          text={"Sleep Length (Hours)"}
         />
         <VictoryLabel
           x={310}
           y={20}
           style={{ fill: "#1C3F52" }}
-          text="Sleep Quality (%)"
+          text={"Sleep Quality (%)"}
         />
         <G>
           {/*shared x axis for time */}
