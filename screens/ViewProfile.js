@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, Button } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import { auth, database } from "../firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { convertToAmPm } from "../utils";
 
 const AddEntry = ({ navigation }) => {
@@ -29,6 +30,9 @@ const AddEntry = ({ navigation }) => {
 
   const handleLogOut = async () => {
     console.log("Logging out");
+    await AsyncStorage.removeItem("oldestEntry");
+    await AsyncStorage.removeItem("mostRecentEntry");
+    await AsyncStorage.removeItem("userFactors");
     auth
       .signOut()
       .then(() => {
