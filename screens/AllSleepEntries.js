@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,18 +7,19 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
-} from "react-native";
-import { convertToAmPm } from "../Util.js";
-import tw from "tailwind-react-native-classnames";
-import { auth, database } from "../firebase";
-import SingleEntry from "./SingleEntry";
+  StyleSheet
+} from 'react-native';
+import { convertToAmPm } from '../Util.js';
+import tw from 'tailwind-react-native-classnames';
+import { auth, database } from '../firebase';
+import SingleEntry from './SingleEntry';
 
 export const AllSleepEntries = () => {
   const [entryList, setEntryList] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState({});
 
-  const currentUserId = "v3fmHEk6CiTxbU5o8M6tFxuawEI3";
+  const currentUserId = 'v3fmHEk6CiTxbU5o8M6tFxuawEI3';
   // User Sam ID, delete once component incorporated to main app
   // Grab userId from the firebase auth component
 
@@ -26,7 +27,7 @@ export const AllSleepEntries = () => {
 
   useEffect(() => {
     const entryRef = database.ref(`sleepEntries/${userId}`);
-    entryRef.on("value", (snapshot) => {
+    entryRef.on('value', (snapshot) => {
       const entries = snapshot.val();
       const entryList = [];
       for (let id in entries) {
@@ -37,7 +38,7 @@ export const AllSleepEntries = () => {
   }, []);
 
   return (
-    <SafeAreaView style={tw`bg-white`}>
+    <SafeAreaView style={styles.container}>
       <ScrollView>
         {entryList.map((entry) => (
           <View key={entry.id}>
@@ -46,38 +47,32 @@ export const AllSleepEntries = () => {
                 setSelectedEntry(entry);
                 setModalOpen(!modalOpen);
               }}
-              style={tw`bg-gray-300 rounded drop-shadow-xl my-3 mx-3`}
+              style={tw`bg-white rounded drop-shadow-xl my-4 mx-3`}
             >
               <View style={tw`px-6 py-4`}>
-                {/* SLEEP ENTRY DATE */}
-                <Text style={tw`font-bold text-xl mb-2`}>{`${entry.date.slice(
+                <Text style={tw`font-extrabold text-2xl mb-2 text-gray-900`}>{`${entry.date.slice(
                   5,
                   7
-                )} / ${entry.date.slice(8, 10)} / ${entry.date.slice(
-                  0,
-                  4
-                )}`}</Text>
+                )} / ${entry.date.slice(8, 10)} / ${entry.date.slice(0, 4)}`}</Text>
 
-                {/* SLEEP ENTRY START TIME */}
-                <Text
-                  style={tw`text-gray-700 text-base`}
-                >{`Sleep Start Time: ${convertToAmPm(entry.startTime)}`}</Text>
-
-                {/* SLEEP ENTRY END TIME */}
-                <Text
-                  style={tw`text-gray-700 text-base`}
-                >{`Sleep End Time: ${convertToAmPm(entry.endTime)}`}</Text>
-
-                {/* SLEEP QUALITY SCORE */}
-                <Text style={tw`text-gray-700 text-base`}>
-                  Sleep Quality Score: {entry.quality}
+                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                  <Text style={tw`font-semibold`}>{`Sleep Start Time:    `}</Text>
+                  {`${convertToAmPm(entry.startTime)}`}
                 </Text>
-                <Text style={tw`text-gray-700 text-base`}>
-                  {`Sleep Factor Count: ${
-                    (entry.entryFactors &&
-                      Object.keys(entry.entryFactors).length) ||
-                    "0"
-                  }`}
+
+                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                  <Text style={tw`font-semibold`}>{`Sleep End Time:    `}</Text>
+                  {`${convertToAmPm(entry.endTime)}`}
+                </Text>
+
+                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                  <Text style={tw`font-semibold`}>{`Sleep Quality Score:    `}</Text>
+                  {entry.quality}
+                </Text>
+
+                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                  <Text style={tw`font-semibold`}>{`Sleep Factor Count:    `}</Text>
+                  {`${(entry.entryFactors && Object.keys(entry.entryFactors).length) || '0'}`}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -85,7 +80,7 @@ export const AllSleepEntries = () => {
         ))}
         <Modal
           transparent={false}
-          animationType="slide"
+          animationType='slide'
           visible={modalOpen}
           onRequestClose={() => {
             setModalOpen(!modalOpen);
@@ -105,5 +100,11 @@ export const AllSleepEntries = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#1C3F52'
+  }
+});
 
 export default AllSleepEntries;
