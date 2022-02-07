@@ -1,3 +1,5 @@
+import { database } from "./firebase";
+
 //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit string.
 export const convertToMilitaryString = (UTCTimeDate) => {
   let hoursString = String(UTCTimeDate.getHours());
@@ -68,17 +70,19 @@ export const seedFirebase = () => {
   const sleepFactorsRef = database.ref("sleepFactors");
   const sleepFactorsData = [
     // This data has already been added, so change factors or they will be duplicated
-    { name: "caffeine", category: "chemical" },
-    { name: "alcohol", category: "chemical" },
+    { name: "Caffeine", category: "chemical" },
+    { name: "Alcohol", category: "chemical" },
     { name: "CBD", category: "chemical" },
-    { name: "melatonin", category: "chemical" },
-    { name: "meditated", category: "practice" },
-    { name: "worked out", category: "practice" },
-    { name: "ate late", category: "practice" },
-    { name: "napped", category: "practice" },
-    { name: "no screens", category: "practice" },
-    { name: "sleep podcast", category: "practice" },
-    { name: "stressful day", category: "environment" },
+    { name: "Melatonin", category: "chemical" },
+    { name: "Meditated", category: "practice" },
+    { name: "Worked Out", category: "practice" },
+    { name: "Ate Late", category: "practice" },
+    { name: "Napped", category: "practice" },
+    { name: "No Screens Before Bed", category: "practice" },
+    { name: "Sleep Podcast", category: "practice" },
+    { name: "Sleep mask", category: "tool" },
+    { name: "C-pap", category: "tool" },
+    { name: "Darkness blinds", category: "tool" },
   ];
   sleepFactorsData.forEach((factor) => sleepFactorsRef.push(factor));
   console.log("data sent to firebase");

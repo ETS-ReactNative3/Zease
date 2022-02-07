@@ -10,8 +10,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { auth, database } from "../firebase";
-import { convertToMilitaryString, convertToAmPm } from "../utils";
-import { yesterday } from "../Util";
+// import { convertToMilitaryString, convertToAmPm } from "../utils";
+import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
 import NativePushNotificationManagerIOS from "react-native/Libraries/PushNotificationIOS/NativePushNotificationManagerIOS";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -66,7 +66,7 @@ const EditEntry = ({ navigation }) => {
   };
 
   // Grab userId from the firebase auth component
-  const userId =auth.currentUser.uid;
+  const userId = auth.currentUser.uid;
 
   useEffect(() => {
     // Fetch user's sleep factors from firebase
@@ -107,7 +107,7 @@ const EditEntry = ({ navigation }) => {
     setQuality(yesterdaysEntry.quality);
     setNotes(yesterdaysEntry.notes);
     // Reformat factors to array of ids
-    const formattedFactors = Object.keys(yesterdaysEntry.entryFactors)
+    const formattedFactors = Object.keys(yesterdaysEntry.entryFactors);
     setEntryFactorsArr(formattedFactors);
   }, []);
 
@@ -129,9 +129,7 @@ const EditEntry = ({ navigation }) => {
       await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
 
       // Write form inputs to firebase
-      const sleepEntriesRef = database.ref(
-        `sleepEntries/${userId}/${entryId}`
-      );
+      const sleepEntriesRef = database.ref(`sleepEntries/${userId}/${entryId}`);
       sleepEntriesRef.set(formData);
       Alert.alert("Changes submitted!");
       navigation.navigate("NavBar");

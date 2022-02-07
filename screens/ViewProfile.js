@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { auth, database } from "../firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { convertToAmPm } from "../utils";
+import { convertToAmPm } from "../Util";
 
 const AddEntry = ({ navigation }) => {
   // User sleep factors (pulled in from firebase)

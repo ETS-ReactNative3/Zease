@@ -7,8 +7,8 @@ import MultiSelect from "react-native-multiple-select";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { auth, database } from "../firebase";
-import { convertToMilitaryString, convertToAmPm } from "../utils";
-import { yesterday } from "../Util";
+// import { convertToMilitaryString, convertToAmPm } from "../utils";
+import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
 
 const AddEntry = () => {
   // User sleep factors (pulled in from firebase)
