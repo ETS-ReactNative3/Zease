@@ -5,13 +5,12 @@ import LoginScreen from "./screens/LoginScreen";
 import BuildProfile from "./screens/BuildProfile";
 import NavBar from "./screens/NavBar";
 import SingleEntry from "./screens/SingleEntry";
+import EditEntry from "./screens/EditEntry";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    // <SingleEntry />
-
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -33,6 +32,11 @@ export default function App() {
           options={{ headerShown: false }}
           name="SingleEntry"
           component={SingleEntry}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="EditEntry"
+          component={EditEntry}
         />
       </Stack.Navigator>
     </NavigationContainer>
