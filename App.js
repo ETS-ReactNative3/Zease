@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LoginScreen from "./screens/LoginScreen";
 import BuildProfile from "./screens/BuildProfile";
+import EditProfile from "./screens/EditProfile";
 import NavBar from "./screens/NavBar";
 import SingleEntry from "./screens/SingleEntry";
 
@@ -23,6 +24,11 @@ export default function App() {
           options={{ headerShown: false }}
           name="BuildProfile"
           component={BuildProfile}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="EditProfile"
+          component={EditProfile}
         />
         <Stack.Screen
           options={{ headerShown: false }}

@@ -25,7 +25,7 @@ const AddEntry = ({ navigation }) => {
   const handleEdit = () => {
     console.log("Edit profile");
 
-    navigation.navigate("BuildProfile");
+    navigation.navigate("EditProfile");
   };
 
   const handleLogOut = async () => {
