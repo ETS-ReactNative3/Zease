@@ -36,10 +36,6 @@ const SingleEntry = (props) => {
     //if no entry was passed to this component through props then entry.date will be undefined, so we need to get the entry from async storage.
     if (!entry.date) {
       const yesterdaysEntry = await AsyncStorage.getItem("yesterdaysEntry");
-      // console.log(
-      //   "yesterday's entry from async storage in single entry",
-      //   JSON.parse(yesterdaysEntry)
-      // );
       setEntry(JSON.parse(yesterdaysEntry));
       setIsYesterdaysEntry(true);
     }
@@ -54,7 +50,6 @@ const SingleEntry = (props) => {
       }
       setFactorNames(factors);
     }
-
     //check if the entry's date is for yesterday (if so the edit button will be available)
     if (entry.date === yesterday()) {
       setIsYesterdaysEntry(true);

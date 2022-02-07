@@ -11,7 +11,6 @@ import ViewProfile from "./ViewProfile";
 import AllSleepEntries from "./AllSleepEntries";
 import AddEntry from "./AddEntry";
 import SingleEntry from "./SingleEntry";
-import EditEntry from "./EditEntry";
 import { yesterday, getDateNumber } from "../Util";
 
 const Tab = createBottomTabNavigator();
@@ -89,10 +88,6 @@ export default function NavBar() {
       <Tab.Screen
         name="Today"
         component={loggedYesterday ? SingleEntry : AddEntry}
-      />
-      <Tab.Screen
-        name="EditEntry"
-        component={EditEntry}
       />
       <Tab.Screen name="Entries" component={AllSleepEntries} />
 

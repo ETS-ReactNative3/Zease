@@ -15,11 +15,6 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen
           options={{ headerShown: false }}
-          name="EditEntry"
-          component={EditEntry}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
           name="LoginScreen"
           component={LoginScreen}
         />
@@ -37,6 +32,11 @@ export default function App() {
           options={{ headerShown: false }}
           name="SingleEntry"
           component={SingleEntry}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="EditEntry"
+          component={EditEntry}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -13,8 +13,12 @@ import { auth, database } from "../firebase";
 import { convertToMilitaryString, convertToAmPm } from "../utils";
 import { yesterday } from "../Util";
 import NativePushNotificationManagerIOS from "react-native/Libraries/PushNotificationIOS/NativePushNotificationManagerIOS";
+import { withSafeAreaInsets } from "react-native-safe-area-context";
 
-const AddEntry = ({ navigation }) => {
+const EditEntry = ({ navigation }) => {
+  // Entry ID (pulled in from firebase)
+  const [entryId, setEntryId] = useState("");
+
   // User sleep factors (pulled in from firebase)
   const [userFactors, setUserFactors] = useState({});
   const [userFactorsArr, setUserFactorsArr] = useState([]);
@@ -23,7 +27,6 @@ const AddEntry = ({ navigation }) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [quality, setQuality] = useState(0);
-  const [entryFactorsObj, setEntryFactorsObj] = useState({});
   const [entryFactorsArr, setEntryFactorsArr] = useState([]);
   const [notes, setNotes] = useState("");
   const [date, setDate] = useState("");
@@ -62,12 +65,11 @@ const AddEntry = ({ navigation }) => {
     setEntryFactorsArr(selectedItems);
   };
 
-  const alstonUserId = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID, delete once component incorporated to main app
   // Grab userId from the firebase auth component
-  const userId = auth.currentUser ? auth.currentUser.uid : alstonUserId;
+  const userId =auth.currentUser.uid;
 
   useEffect(() => {
-    // Load user's sleep factors from firebase
+    // Fetch user's sleep factors from firebase
     const factorsRef = database.ref(`users/${userId}/userFactors`);
     factorsRef.on("value", (snapshot) => {
       const factors = snapshot.val();
@@ -79,6 +81,19 @@ const AddEntry = ({ navigation }) => {
       }
       setUserFactorsArr(formattedFactors);
     });
+
+    // Fetch entry ID from firebase
+    const userEntriesRef = database.ref(`sleepEntries/${userId}/`);
+    userEntriesRef.on("value", (snapshot) => {
+      const allUserEntries = snapshot.val();
+      for (let key in allUserEntries) {
+        if (allUserEntries[key].date === yesterday()) {
+          setEntryId(key);
+          return;
+        }
+      }
+      console.log("Entry ID not found");
+    });
   }, []);
 
   // Fetch entry from the async storage and set form state
@@ -86,18 +101,13 @@ const AddEntry = ({ navigation }) => {
     const yesterdaysEntry = await AsyncStorage.getItem("yesterdaysEntry").then(
       (data) => JSON.parse(data)
     );
-    console.log(yesterdaysEntry)
     setDate(yesterdaysEntry.date);
     setStartTime(yesterdaysEntry.startTime);
     setEndTime(yesterdaysEntry.endTime);
     setQuality(yesterdaysEntry.quality);
     setNotes(yesterdaysEntry.notes);
-    setEntryFactorsObj(yesterdaysEntry.entryFactors);
-    // Reformat factors to array of objects, with keys id, name, and category
-    const formattedFactors = [];
-    for (let key in yesterdaysEntry.entryFactors) {
-      formattedFactors.push({ ...yesterdaysEntry.entryFactors[key], id: key });
-    }
+    // Reformat factors to array of ids
+    const formattedFactors = Object.keys(yesterdaysEntry.entryFactors)
     setEntryFactorsArr(formattedFactors);
   }, []);
 
@@ -108,129 +118,122 @@ const AddEntry = ({ navigation }) => {
       return;
     }
 
-    // Set formData date to date string yyyy-mm-dd (of previous day)
-    const date = yesterday();
-
+    // Convert entryFactorsArr (arr of ids) for factor objects
     const entryFactors = {};
     entryFactorsArr.forEach(
       (factorId) => (entryFactors[factorId] = userFactors[factorId])
-    ); // Only grab name and category
-    // Set formData factors to formatted selectedItems (selected items will be array of ids)
+    );
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
     try {
       // Update the new entry in async storage so singleEntry view can use it
       await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
 
       // Write form inputs to firebase
-      // TODO: Grab ref for specific entry using entryId
       const sleepEntriesRef = database.ref(
-        `sleepEntries/${userId}/MvGYT9zMsrtAz5LpekK`
+        `sleepEntries/${userId}/${entryId}`
       );
       sleepEntriesRef.set(formData);
-      // Success alert
       Alert.alert("Changes submitted!");
-      navigation.navigate("SingleEntry");
+      navigation.navigate("NavBar");
     } catch (error) {
       console.log("Error updating firebase", error);
     }
   };
 
   const handleCancel = () => {
-    navigation.navigate("SingleEntry");
+    navigation.navigate("NavBar");
   };
 
   return (
     <View style={styles.container}>
       <Text>Edit Entry</Text>
-      {date && (
-        <View style={styles.formContainer}>
-          <Text>Sleep Duration</Text>
-          <Text>Sleep time</Text>
-          <Button
-            title={startTime ? convertToAmPm(startTime) : "Select"}
-            onPress={() => {
-              setStartTimePickerVisible(true);
-            }}
-          />
-          <DateTimePickerModal
-            isVisible={startTimePickerVisible}
-            mode="time"
-            onConfirm={handleConfirmStart}
-            onCancel={hideTimePickers}
-          />
-          <Text>Wake time</Text>
-          <Button
-            title={endTime ? convertToAmPm(endTime) : "Select"}
-            onPress={() => {
-              setEndTimePickerVisible(true);
-            }}
-          />
-          <DateTimePickerModal
-            isVisible={endTimePickerVisible}
-            mode="time"
-            onConfirm={handleConfirmEnd}
-            onCancel={hideTimePickers}
-          />
-          <Text>Sleep Quality</Text>
-          <Slider
-            step={1}
-            minimumValue={0}
-            maximumValue={100}
-            value={quality}
-            onValueChange={handleSelectQuality}
-            minimumTrackTintColor="#3395ff"
-            maximumTrackTintColor="#d3d3d3"
-            thumbTintColor="#eeeeee"
-          />
-          <Text>Factors</Text>
-          <MultiSelect
-            hideTags
-            items={userFactorsArr}
-            uniqueKey="id"
-            onSelectedItemsChange={onEntryFactorsChange}
-            selectedItems={entryFactorsArr}
-            selectText="Select factors..."
-            searchInputPlaceholderText="Search factors..."
-            ref={multiSelectRef}
-            onChangeInput={(text) => console.log(text)}
-            tagRemoveIconColor="#CCC"
-            tagBorderColor="#CCC"
-            tagTextColor="#CCC"
-            selectedItemTextColor="#CCC"
-            selectedItemIconColor="#CCC"
-            itemTextColor="#000"
-            displayKey="name"
-            searchInputStyle={{ color: "#CCC" }}
-            submitButtonColor="#CCC"
-            submitButtonText="Submit"
-          />
-          <Text>Notes</Text>
-          <TextInput
-            multiline={true}
-            numberOfLines={4}
-            placeholder="Enter notes..."
-            onChangeText={(input) => setNotes(input)}
-            value={notes}
-          />
-          <Button
-            onPress={handleSubmit}
-            title="Submit"
-            color="#3395ff"
-            accessibilityLabel="Submit edit sleep entry form"
-          />
-          <Button
-            onPress={handleCancel}
-            title="Cancel"
-            color="#3395ff"
-            accessibilityLabel="Cancel edit sleep entry"
-          />
-        </View>
-      )}
+      <View style={styles.formContainer}>
+        <Text>Sleep Duration</Text>
+        <Text>Sleep time</Text>
+        <Button
+          title={startTime ? convertToAmPm(startTime) : "Select"}
+          onPress={() => {
+            setStartTimePickerVisible(true);
+          }}
+        />
+        <DateTimePickerModal
+          isVisible={startTimePickerVisible}
+          mode="time"
+          onConfirm={handleConfirmStart}
+          onCancel={hideTimePickers}
+        />
+        <Text>Wake time</Text>
+        <Button
+          title={endTime ? convertToAmPm(endTime) : "Select"}
+          onPress={() => {
+            setEndTimePickerVisible(true);
+          }}
+        />
+        <DateTimePickerModal
+          isVisible={endTimePickerVisible}
+          mode="time"
+          onConfirm={handleConfirmEnd}
+          onCancel={hideTimePickers}
+        />
+        <Text>Sleep Quality</Text>
+        <Slider
+          step={1}
+          minimumValue={0}
+          maximumValue={100}
+          value={quality}
+          onValueChange={handleSelectQuality}
+          minimumTrackTintColor="#3395ff"
+          maximumTrackTintColor="#d3d3d3"
+          thumbTintColor="#eeeeee"
+        />
+        <Text>Factors</Text>
+        <MultiSelect
+          hideTags
+          items={userFactorsArr}
+          uniqueKey="id"
+          onSelectedItemsChange={onEntryFactorsChange}
+          selectedItems={entryFactorsArr}
+          selectText="Select factors..."
+          searchInputPlaceholderText="Search factors..."
+          ref={multiSelectRef}
+          onChangeInput={(text) => console.log(text)}
+          tagRemoveIconColor="#CCC"
+          tagBorderColor="#CCC"
+          tagTextColor="#CCC"
+          selectedItemTextColor="#CCC"
+          selectedItemIconColor="#CCC"
+          itemTextColor="#000"
+          displayKey="name"
+          searchInputStyle={{ color: "#CCC" }}
+          submitButtonColor="#CCC"
+          submitButtonText="Submit"
+        />
+        <Text>Notes</Text>
+        <TextInput
+          multiline={true}
+          numberOfLines={4}
+          placeholder="Enter notes..."
+          onChangeText={(input) => setNotes(input)}
+          value={notes}
+        />
+        <Button
+          onPress={handleSubmit}
+          title="Submit"
+          color="#3395ff"
+          accessibilityLabel="Submit edit sleep entry form"
+        />
+        <Button
+          onPress={handleCancel}
+          title="Cancel"
+          color="#3395ff"
+          accessibilityLabel="Cancel edit sleep entry"
+        />
+      </View>
     </View>
   );
 };
 
-export default AddEntry;
+export default EditEntry;
 
 const styles = StyleSheet.create({
   container: {
