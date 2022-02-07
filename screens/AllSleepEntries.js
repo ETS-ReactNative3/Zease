@@ -8,13 +8,18 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import { convertToAmPm } from "../Util.js";
 import tw from "tailwind-react-native-classnames";
+import { useSelector, useDispatch } from "react-redux";
 import { auth, database } from "../firebase";
+
+import { convertToAmPm } from "../Util.js";
 import SingleEntry from "./SingleEntry";
+import { fetchUserEntries } from "../store/userEntries";
 
 export const AllSleepEntries = () => {
-  const [entryList, setEntryList] = useState([]);
+  //const [entryList, setEntryList] = useState([]);
+  let dispatch = useDispatch();
+  let entryList = useSelector((state) => state.userEntries);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState({});
 
@@ -25,15 +30,16 @@ export const AllSleepEntries = () => {
   const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
 
   useEffect(() => {
-    const entryRef = database.ref(`sleepEntries/${userId}`);
-    entryRef.on("value", (snapshot) => {
-      const entries = snapshot.val();
-      const entryList = [];
-      for (let id in entries) {
-        entryList.push(entries[id]);
-      }
-      setEntryList(entryList);
-    });
+    // const entryRef = database.ref(`sleepEntries/${userId}`);
+    // entryRef.on("value", (snapshot) => {
+    //   const entries = snapshot.val();
+    //   const entryList = [];
+    //   for (let id in entries) {
+    //     entryList.push(entries[id]);
+    //   }
+    //   setEntryList(entryList);
+    // });
+    dispatch(fetchUserEntries(userId));
   }, []);
 
   return (
