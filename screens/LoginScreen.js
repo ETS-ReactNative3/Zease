@@ -12,6 +12,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { auth, database } from '../firebase';
 import BuildProfile from './BuildProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import tw from 'tailwind-react-native-classnames';
+import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -41,6 +43,9 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior='padding'>
+      <Text style={tw`text-white text-4xl font-black`}>
+        {<Ionicons name={'bed'} size={36} color={'white'} />}ZEASE
+      </Text>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder='Email'
@@ -80,20 +85,18 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   inputContainer: {
-    width: '80%'
+    width: '80%',
+    marginTop: 100
   },
   input: {
     backgroundColor: 'white',
     fontWeight: 'bold',
     paddingHorizontal: 15,
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 5,
     marginVertical: 10
   },
   buttonContainer: {
-    width: '60%',
-    justifyContent: 'center',
-    alignItems: 'center',
     marginTop: 40,
     alignItems: 'center'
   },
