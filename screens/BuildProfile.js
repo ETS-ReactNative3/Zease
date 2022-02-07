@@ -25,8 +25,6 @@ import {
 } from "../Util";
 
 const BuildProfile = ({ navigation }) => {
-  //is user creating a new profile or editing an exiting one.
-  const [editMode, setEditMode] = useState(false);
   //sleep factor options from the DB (not specific to user)
   const [sleepFactors, setSleepFactors] = useState({});
 
@@ -45,44 +43,18 @@ const BuildProfile = ({ navigation }) => {
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
   //visibility of modals
-  //passwords should be shown when edit mode is off OR when a user has chosen to reset their password in editmode (if we choose to allow that)
-  const [showPasswords, setShowPasswords] = useState(true);
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
     useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
-  //when the page loads get info from db
+  //when the page loads get the sleep factors from db
   useEffect(() => {
-    //get the sleep factors from db
     let sleepFactorsRef = database.ref("sleepFactors");
     sleepFactorsRef.on("value", (snapshot) => {
       const data = snapshot.val();
       setSleepFactors(data);
     });
-
-    //if a user is logged in get their information and put it on local state/asyncStorage
-    if (auth.currentUser) {
-      const userId = auth.currentUser.uid;
-      //console.log("userId", userId);
-      const userRef = database.ref("users/" + userId);
-      userRef.on("value", async (snapshot) => {
-        const user = snapshot.val();
-        //console.log("user.userFactors", user.userFactors);
-        setEmail(auth.currentUser.email);
-        setName(user.name);
-        setsleepGoalStart(user.sleepGoalStart);
-        setsleepGoalEnd(user.sleepGoalEnd);
-        setSleepReminder(user.sleepReminderOn);
-        setLogReminder(user.logReminderOn);
-        await AsyncStorage.setItem(
-          "userFactors",
-          JSON.stringify(user.userFactors)
-        );
-        setEditMode(true);
-        setShowPasswords(false);
-      });
-    }
   }, []);
 
   //when email changes update state about whether it is a valid email
@@ -96,7 +68,7 @@ const BuildProfile = ({ navigation }) => {
     );
   }, [email]);
 
-  //whena password changes update state about whether they match
+  //when a password changes update state about whether they match
   useEffect(() => {
     setPasswordsMatch(password === passwordConfirm);
   }, [passwordConfirm, password]);
@@ -125,8 +97,7 @@ const BuildProfile = ({ navigation }) => {
       validated = false;
     }
 
-    //showPasswords is false if the user is in edit mode and has not chosen to update their password.  in that case password validation isn't needed.
-    if (showPasswords && password === "") {
+    if (password === "") {
       Alert.alert("Error", "Please enter a password for account creation.");
       validated = false;
     }
@@ -163,44 +134,12 @@ const BuildProfile = ({ navigation }) => {
           logReminderOn,
           sleepReminderOn,
         };
-        // console.log("newUser about to be added/updated in db", newUser)
-        if (editMode) {
-          updateUserinDB(newUser);
-        }
-        if (!editMode) {
-          putUserinDB(newUser);
-        }
+        // console.log("newUser about to be added in db", newUser)
+        putUserinDB(newUser);
       }
     } catch (error) {
       console.log(
         "there was an error in fetching the user's sleep factors from async storage: ",
-        error
-      );
-    }
-  };
-
-  const updateUserinDB = (updatedUser) => {
-    //update the user in firebase auth
-    try {
-      auth.currentUser.updateEmail(updatedUser.email);
-      // if (showPasswords) {
-      //   getAuth().updateUser(auth.currentUser.uid, { password });
-      // }
-    } catch (error) {
-      console.log(
-        "There was an error updating this user's email in firbase auth: ",
-        error
-      );
-    }
-    //update the user in firebase realtimee
-    try {
-      database.ref("users/" + auth.currentUser.uid).set(updatedUser);
-
-      //go back to the navbar when done
-      navigation.navigate("NavBar");
-    } catch (error) {
-      console.log(
-        "There was an error updating this user's information in the reatime database: ",
         error
       );
     }
@@ -240,37 +179,23 @@ const BuildProfile = ({ navigation }) => {
             <Ionicons name="alert-outline" size={20} color="red" />
           )}
         </View>
-        {/* {editMode && (
-          <Pressable onPress={() => setShowPasswords(true)}>
-            <Text>Update Password</Text>
-          </Pressable>
-        )} */}
-        {showPasswords && (
-          <View>
-            <View style={tw`flex-row`}>
-              <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                secureTextEntry
-              />
-              {!passwordsMatch && (
-                <Ionicons name="alert-outline" size={20} color="red" />
-              )}
-            </View>
-            <TextInput
-              placeholder="Confirm Password"
-              value={passwordConfirm}
-              onChangeText={(text) => setPasswordConfirm(text)}
-              secureTextEntry
-            />
-            {/* {editMode && (
-              <Pressable onPress={() => setShowPasswords(false)}>
-                <Text>Cancel Password Update</Text>
-              </Pressable>
-            )} */}
-          </View>
-        )}
+        <View style={tw`flex-row`}>
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry
+          />
+          {!passwordsMatch && (
+            <Ionicons name="alert-outline" size={20} color="red" />
+          )}
+        </View>
+        <TextInput
+          placeholder="Confirm Password"
+          value={passwordConfirm}
+          onChangeText={(text) => setPasswordConfirm(text)}
+          secureTextEntry
+        />
         <TextInput
           placeholder="Name"
           value={name}
@@ -368,13 +293,7 @@ const BuildProfile = ({ navigation }) => {
           <TouchableOpacity onPress={handleSubmit}>
             <Text>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              editMode
-                ? navigation.navigate("NavBar")
-                : navigation.navigate("LoginScreen")
-            }
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
             <Text>Cancel</Text>
           </TouchableOpacity>
         </View>
