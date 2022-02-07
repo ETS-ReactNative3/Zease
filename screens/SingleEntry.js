@@ -14,6 +14,9 @@ import { useEffect, useState } from "react";
 import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import {
   reformatDate,
   calculateSleepLength,
@@ -23,7 +26,7 @@ import {
 
 //if this view is accessed from the AllEntries list then the entry data will be passed on props from the parent component.
 //if this view is accessed from the Today button in the nav bar the entry data needs to be pulled from async storage
-const SingleEntry = (props, { navigation }) => {
+const SingleEntry = (props) => {
   const [entry, setEntry] = useState(props.entry || {});
   const [factorNames, setFactorNames] = useState([]);
   const [isYesterdaysEntry, setIsYesterdaysEntry] = useState(false);
@@ -97,8 +100,8 @@ const SingleEntry = (props, { navigation }) => {
         </View>
       </View>
       {isYesterdaysEntry && (
-        <Pressable onPress={() => navigation.navigate("EditEntry")}>
-          <Text>Edit This Entry</Text>
+        <Pressable onPress={() => props.navigation.navigate("EditEntry")}>
+          <Text>Edit Entry</Text>
         </Pressable>
       )}
     </View>

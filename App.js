@@ -5,6 +5,7 @@ import LoginScreen from "./screens/LoginScreen";
 import BuildProfile from "./screens/BuildProfile";
 import NavBar from "./screens/NavBar";
 import SingleEntry from "./screens/SingleEntry";
+import EditEntry from "./screens/EditEntry";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,11 @@ export default function App() {
 
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="EditEntry"
+          component={EditEntry}
+        />
         <Stack.Screen
           options={{ headerShown: false }}
           name="LoginScreen"
