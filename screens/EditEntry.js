@@ -86,6 +86,7 @@ const AddEntry = ({ navigation }) => {
     const yesterdaysEntry = await AsyncStorage.getItem("yesterdaysEntry").then(
       (data) => JSON.parse(data)
     );
+    console.log(yesterdaysEntry)
     setDate(yesterdaysEntry.date);
     setStartTime(yesterdaysEntry.startTime);
     setEndTime(yesterdaysEntry.endTime);
