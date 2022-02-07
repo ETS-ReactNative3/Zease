@@ -24,8 +24,8 @@ const AddEntry = ({ navigation }) => {
 
   const handleEdit = () => {
     console.log("Edit profile");
-    // TODO: Navigate to EditProfile component
-    // navigation.navigate("EditProfile")
+
+    navigation.navigate("EditProfile");
   };
 
   const handleLogOut = async () => {
@@ -33,6 +33,7 @@ const AddEntry = ({ navigation }) => {
     await AsyncStorage.removeItem("oldestEntry");
     await AsyncStorage.removeItem("mostRecentEntry");
     await AsyncStorage.removeItem("userFactors");
+    await AsyncStorage.removeItem("yesterdaysEntry");
     auth
       .signOut()
       .then(() => {
@@ -42,6 +43,8 @@ const AddEntry = ({ navigation }) => {
       .catch((error) => {
         console.log("Error logging out", error);
       });
+
+    await AsyncStorage.setItem("userFactors", JSON.stringify({}));
   };
 
   return (

@@ -24,14 +24,12 @@ import {
   reformatFactors,
 } from "../Util";
 
-const BuildProfile = ({ navigation }) => {
+const EditProfile = ({ navigation }) => {
   //sleep factor options from the DB (not specific to user)
   const [sleepFactors, setSleepFactors] = useState({});
 
   //Manage form inputs
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [name, setName] = useState("");
   const [sleepGoalStart, setsleepGoalStart] = useState(null);
   const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
@@ -40,7 +38,6 @@ const BuildProfile = ({ navigation }) => {
 
   //form validation
   const [emailValid, setEmailValid] = useState(true);
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
 
   //visibility of modals
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
@@ -48,12 +45,30 @@ const BuildProfile = ({ navigation }) => {
     useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
-  //when the page loads get the sleep factors from db
+  //when the page loads get info from db
   useEffect(() => {
+    //get the sleep factors from db
     let sleepFactorsRef = database.ref("sleepFactors");
     sleepFactorsRef.on("value", (snapshot) => {
       const data = snapshot.val();
       setSleepFactors(data);
+    });
+
+    //Get logged in user's information and put it on local state/asyncStorage
+    const userId = auth.currentUser.uid;
+    const userRef = database.ref("users/" + userId);
+    userRef.on("value", async (snapshot) => {
+      const user = snapshot.val();
+      setEmail(auth.currentUser.email);
+      setName(user.name);
+      setsleepGoalStart(user.sleepGoalStart);
+      setsleepGoalEnd(user.sleepGoalEnd);
+      setSleepReminder(user.sleepReminderOn);
+      setLogReminder(user.logReminderOn);
+      await AsyncStorage.setItem(
+        "userFactors",
+        JSON.stringify(user.userFactors)
+      );
     });
   }, []);
 
@@ -67,11 +82,6 @@ const BuildProfile = ({ navigation }) => {
         )
     );
   }, [email]);
-
-  //when a password changes update state about whether they match
-  useEffect(() => {
-    setPasswordsMatch(password === passwordConfirm);
-  }, [passwordConfirm, password]);
 
   const handleBedTimeConfirm = (time) => {
     setsleepGoalStart(convertToMilitaryString(time));
@@ -87,18 +97,8 @@ const BuildProfile = ({ navigation }) => {
   const handleSubmit = async () => {
     let validated = true;
 
-    if (!passwordsMatch) {
-      Alert.alert("Error", "Password and Confirm Password do not match.");
-      validated = false;
-    }
-
     if (!emailValid) {
       Alert.alert("Error", "Please enter a valid email address");
-      validated = false;
-    }
-
-    if (password === "") {
-      Alert.alert("Error", "Please enter a password for account creation.");
       validated = false;
     }
 
@@ -125,7 +125,7 @@ const BuildProfile = ({ navigation }) => {
       }
 
       if (validated) {
-        let newUser = {
+        let updatedUser = {
           email,
           name,
           sleepGoalStart,
@@ -134,8 +134,8 @@ const BuildProfile = ({ navigation }) => {
           logReminderOn,
           sleepReminderOn,
         };
-        // console.log("newUser about to be added in db", newUser)
-        putUserinDB(newUser);
+        // console.log("newUser about to be updated in db", newUser)
+        updateUserinDB(updatedUser);
       }
     } catch (error) {
       console.log(
@@ -145,21 +145,25 @@ const BuildProfile = ({ navigation }) => {
     }
   };
 
-  //once form entry has been validated write it to auth and Realtime db
-  const putUserinDB = async (newUser) => {
+  const updateUserinDB = (updatedUser) => {
+    //update the user in firebase auth
     try {
-      auth
-        .createUserWithEmailAndPassword(email, password)
-        .then((userCredentials) => {
-          const userId = userCredentials.user.uid;
-          database.ref("users/" + userId).set(newUser);
-        })
-        .catch((error) => alert(error.message));
+      auth.currentUser.updateEmail(updatedUser.email);
+    } catch (error) {
+      console.log(
+        "There was an error updating this user's email in firbase auth: ",
+        error
+      );
+    }
+    //update the user in firebase realtimee
+    try {
+      database.ref("users/" + auth.currentUser.uid).set(updatedUser);
 
+      //go back to the navbar when done
       navigation.navigate("NavBar");
     } catch (error) {
       console.log(
-        "there was an error in attempting to add this user to the database: ",
+        "There was an error updating this user's information in the reatime database: ",
         error
       );
     }
@@ -167,7 +171,6 @@ const BuildProfile = ({ navigation }) => {
 
   return (
     <View style={tw`flex-1 items-center justify-center`}>
-      <Text>Welcome!</Text>
       <View>
         <View style={tw`flex-row`}>
           <TextInput
@@ -179,23 +182,6 @@ const BuildProfile = ({ navigation }) => {
             <Ionicons name="alert-outline" size={20} color="red" />
           )}
         </View>
-        <View style={tw`flex-row`}>
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            secureTextEntry
-          />
-          {!passwordsMatch && (
-            <Ionicons name="alert-outline" size={20} color="red" />
-          )}
-        </View>
-        <TextInput
-          placeholder="Confirm Password"
-          value={passwordConfirm}
-          onChangeText={(text) => setPasswordConfirm(text)}
-          secureTextEntry
-        />
         <TextInput
           placeholder="Name"
           value={name}
@@ -293,7 +279,7 @@ const BuildProfile = ({ navigation }) => {
           <TouchableOpacity onPress={handleSubmit}>
             <Text>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+          <TouchableOpacity onPress={() => navigation.navigate("NavBar")}>
             <Text>Cancel</Text>
           </TouchableOpacity>
         </View>
@@ -302,4 +288,4 @@ const BuildProfile = ({ navigation }) => {
   );
 };
 
-export default BuildProfile;
+export default EditProfile;
