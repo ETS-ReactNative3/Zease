@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { database, auth } from "../firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector, useDispatch } from "react-redux";
 
 import DataVisualization from "./DataVisualization";
 import ViewProfile from "./ViewProfile";
@@ -18,7 +19,8 @@ const Tab = createBottomTabNavigator();
 export default function NavBar() {
   //determine if the user has an entry that was made yesterday.
   const [loggedYesterday, setLoggedYesterday] = useState(false);
-  const userId = auth.currentUser ? auth.currentUser.uid : null;
+  //const userId = auth.currentUser ? auth.currentUser.uid : null;
+  let entryList = useSelector((state) => state.userEntries);
 
   //if an entry was made yesterday set it on local state.
   useEffect(() => {
