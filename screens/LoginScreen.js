@@ -14,6 +14,7 @@ import BuildProfile from './BuildProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'tailwind-react-native-classnames';
 import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -61,7 +62,6 @@ const LoginScreen = ({ navigation }) => {
           secureTextEntry
         />
       </View>
-
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
@@ -73,6 +73,7 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
+      <StatusBar style='light' />
     </KeyboardAvoidingView>
   );
 };
