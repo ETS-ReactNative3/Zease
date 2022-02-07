@@ -64,9 +64,11 @@ const BuildProfile = ({ navigation }) => {
     //if a user is logged in get their information and put it on local state/asyncStorage
     if (auth.currentUser) {
       const userId = auth.currentUser.uid;
+      //console.log("userId", userId);
       const userRef = database.ref("users/" + userId);
       userRef.on("value", async (snapshot) => {
         const user = snapshot.val();
+        //console.log("user.userFactors", user.userFactors);
         setEmail(auth.currentUser.email);
         setName(user.name);
         setsleepGoalStart(user.sleepGoalStart);
@@ -178,8 +180,9 @@ const BuildProfile = ({ navigation }) => {
   };
 
   const updateUserinDB = (updatedUser) => {
+    //update the user in firebase auth
     try {
-      auth.updateEmail(updatedUser.email);
+      auth.currentUser.updateEmail(updatedUser.email);
       // if (showPasswords) {
       //   getAuth().updateUser(auth.currentUser.uid, { password });
       // }
@@ -189,8 +192,12 @@ const BuildProfile = ({ navigation }) => {
         error
       );
     }
+    //update the user in firebase realtimee
     try {
-      database.ref("users" + auth.currentUser.uid).set(updatedUser);
+      database.ref("users/" + auth.currentUser.uid).set(updatedUser);
+
+      //go back to the navbar when done
+      navigation.navigate("NavBar");
     } catch (error) {
       console.log(
         "There was an error updating this user's information in the reatime database: ",

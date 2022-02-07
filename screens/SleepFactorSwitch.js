@@ -15,6 +15,10 @@ const SleepFactorSwitch = (props) => {
     const userFactors = userFactorsString
       ? JSON.parse(userFactorsString)
       : null;
+    // console.log(
+    //   "userFactors from useEffect in sleepFactor switch",
+    //   userFactors
+    // );
     setUserFactors(userFactors);
   }, []);
 
