@@ -15,7 +15,8 @@ const DataVisualization = () => {
 
   //get sleep entry data from firebase
   useEffect(async () => {
-    const userId = auth.currentUser.uid;
+    // const userId = auth.currentUser.uid;
+    const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2";
 
     //get data from firebase. This is getting a "snapshot" of the data
     const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
@@ -43,7 +44,9 @@ const DataVisualization = () => {
           <Pressable onPress={() => setViewChartA(false)}>
             <Text
               style={tw`w-20 px-3 py-2 my-2 rounded-full ${
-                !viewChartA ? `bg-blue-500 text-white` : `bg-gray-300 text-black`
+                !viewChartA
+                  ? `bg-blue-500 text-white`
+                  : `bg-gray-300 text-black`
               } text-center`}
             >
               Line
@@ -54,7 +57,9 @@ const DataVisualization = () => {
           <Pressable onPress={() => setTimeRange("week")}>
             <Text
               style={tw`w-20 px-3 py-2 my-2 ${
-                timeRange==="week" ? `bg-blue-500 text-white` : `bg-gray-300 text-black`
+                timeRange === "week"
+                  ? `bg-blue-500 text-white`
+                  : `bg-gray-300 text-black`
               } text-center`}
             >
               1W
@@ -63,7 +68,9 @@ const DataVisualization = () => {
           <Pressable onPress={() => setTimeRange("month")}>
             <Text
               style={tw`w-20 px-3 py-2 my-2 ${
-                timeRange==="month" ? `bg-blue-500 text-white` : `bg-gray-300 text-black`
+                timeRange === "month"
+                  ? `bg-blue-500 text-white`
+                  : `bg-gray-300 text-black`
               } text-center`}
             >
               1M
@@ -72,7 +79,9 @@ const DataVisualization = () => {
           <Pressable onPress={() => setTimeRange("year")}>
             <Text
               style={tw`w-20 px-3 py-2 my-2 ${
-                timeRange==="year"? `bg-blue-500 text-white` : `bg-gray-300 text-black`
+                timeRange === "year"
+                  ? `bg-blue-500 text-white`
+                  : `bg-gray-300 text-black`
               } text-center`}
             >
               1Y
@@ -81,14 +90,20 @@ const DataVisualization = () => {
           <Pressable onPress={() => setTimeRange("all")}>
             <Text
               style={tw`w-20 px-3 py-2 my-2 ${
-                timeRange==="all" ? `bg-blue-500 text-white` : `bg-gray-300 text-black`
+                timeRange === "all"
+                  ? `bg-blue-500 text-white`
+                  : `bg-gray-300 text-black`
               } text-center`}
             >
               All
             </Text>
           </Pressable>
         </View>
-        {viewChartA ? <ChartA data={data} /> : <ChartB data={data} />}
+        {viewChartA ? (
+          <ChartA data={data} timeRange={timeRange} />
+        ) : (
+          <ChartB data={data} timeRange={timeRange} />
+        )}
       </View>
     </View>
   );

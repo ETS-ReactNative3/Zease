@@ -12,15 +12,14 @@ import { Picker } from "@react-native-picker/picker";
 import { database, auth } from "../firebase";
 import { reformatDate, calculateSleepLength } from "../Util";
 
-const ChartA = (props) => {
-  const data = props.data;
+const ChartA = ({data, timeRange}) => {
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
 
   //get sleep factors for this user from firebase.
   useEffect(async () => {
-
-    const userId = auth.currentUser.uid;
+    // const userId = auth.currentUser.uid;
+    const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2";
 
     //get data from firebase. This is getting a "snapshot" of the data
     const userRef = database.ref(`users/${userId}`);
@@ -65,66 +64,77 @@ const ChartA = (props) => {
   const structureData = (dataRaw, timeRange) => {
     console.log(dataRaw);
     const timeMap = {
-      "week": 7 * (1000 * 60 * 60 * 24),
-      "month": 30 * (1000 * 60 * 60 * 24),
-      "year": 365 * (1000 * 60 * 60 * 24),
-    }
-    const today = new Date()
-    today.setHours(0,0,0,)
+      week: 7 * (1000 * 60 * 60 * 24),
+      month: 30 * (1000 * 60 * 60 * 24),
+      year: 365 * (1000 * 60 * 60 * 24),
+    };
+    const today = new Date();
+    today.setHours(0, 0, 0);
     const chartData = [];
-    let sleepDurationMin = 0;
+    let sleepDurationMin = 24;
     let sleepDurationMax = 0;
-    let sleepQualityMin = 0;
+    let sleepQualityMin = 100;
     let sleepQualityMax = 0;
-    Object.values(dataRaw).forEach(entry => {
-      console.log("today", today)
-      console.log("entry date", new Date(entry.date))
-      console.log("timeMap", timeMap[timeRange])
-      if (timeRange === "all" || today - new Date(entry.date) < timeMap[timeRange]) {
+    Object.values(dataRaw).forEach((entry) => {
+      // console.log("today", today)
+      // console.log("entry date", new Date(entry.date))
+      // console.log("timeMap", timeMap[timeRange])
+      if (
+        timeRange === "all" ||
+        today - new Date(entry.date) < timeMap[timeRange]
+      ) {
         let formatEntry = {
           sleepDuration: calculateSleepLength(entry),
           sleepQuality: entry.quality,
           date: entry.date,
           label: reformatDate(entry.date),
         };
-        Object.values(entry.entryFactors).forEach(factor => {
+        Object.values(entry.entryFactors).forEach((factor) => {
           formatEntry[factor.name] = true;
-        })
+        });
         chartData.push(formatEntry);
-        sleepDurationMin = Math.min(sleepDurationMin, formatEntry.sleepDuration)
-        sleepDurationMax =  Math.max(sleepDurationMax, formatEntry.sleepDuration)
-        sleepQualityMin =  Math.min(sleepQualityMin, formatEntry.sleepQuality)
-        sleepQualityMax = Math.max(sleepQualityMax, formatEntry.sleepDuration)
+        sleepDurationMin = Math.min(
+          sleepDurationMin,
+          formatEntry.sleepDuration
+        );
+        sleepDurationMax = Math.max(
+          sleepDurationMax,
+          formatEntry.sleepDuration
+        );
+        sleepQualityMin = Math.min(sleepQualityMin, formatEntry.sleepQuality);
+        sleepQualityMax = Math.max(sleepQualityMax, formatEntry.sleepQuality);
       }
-    })
-    return {chartData, sleepDurationMin, sleepDurationMax, sleepQualityMin, sleepQualityMax}
-  } 
-  const structuredData = structureData(data, "week");
-  console.log("structuredData", structuredData)
-  console.log("structuredData.chartData", structuredData.chartData)
-  console.log("current data", reformatDataForChart(data))
-  
+    });
+    return {
+      chartData,
+      sleepDurationMin,
+      sleepDurationMax,
+      sleepQualityMin,
+      sleepQualityMax,
+    };
+  };
+  const structuredData = structureData(data, timeRange);
 
   return (
     <View>
-      <VictoryChart
-          domainPadding={{x: [10, 10], y: [10, 10]}}
-          >
+      <VictoryChart domainPadding={{ x: [10, 10], y: [10, 10] }}>
         <VictoryAxis
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Quality (%)"
           dependentAxis
+          domain={[structuredData.sleepQualityMin, structuredData.sleepQualityMax]}
+
         />
         <VictoryAxis
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Duration (Hours)"
-          domain={[5.5, 10.5]}
+          domain={[structuredData.sleepDurationMin, structuredData.sleepDurationMax]}
         />
         {data && (
           <VictoryScatter
-            data={reformatDataForChart(data)}
-            x="SleepLength"
-            y="SleepQuality"
+            data={structuredData.chartData}
+            x="sleepDuration"
+            y="sleepQuality"
             style={{
               data: {
                 fill: ({ datum }) =>
