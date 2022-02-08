@@ -43,6 +43,7 @@ export const AllSleepEntries = () => {
         {entryList.map((entry) => (
           <View key={entry.id}>
             <TouchableOpacity
+              style={styles.entryCard}
               onPress={() => {
                 setSelectedEntry(entry);
                 setModalOpen(!modalOpen);
@@ -103,6 +104,9 @@ export const AllSleepEntries = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white'
+  },
+  entryCard: {
     backgroundColor: '#1C3F52'
   }
 });

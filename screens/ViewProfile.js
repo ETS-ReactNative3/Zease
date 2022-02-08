@@ -53,7 +53,7 @@ const AddEntry = ({ navigation }) => {
       {profileData.name && (
         <View style={styles.contentContainer}>
           <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Your Profile</Text>
-          <View style={styles.accountContainer}>
+          <View>
             <View style={styles.accountItem}>
               <Text
                 style={tw`font-semibold text-white`}
@@ -98,7 +98,7 @@ const AddEntry = ({ navigation }) => {
           <Text style={tw`font-semibold text-white mt-10 mb-2`}>Your Sleep Factors:</Text>
           <View>
             {Object.keys(profileData.userFactors).map((key) => (
-              <Text key={key} style={tw`font-extrabold text-white`}>
+              <Text key={key} style={tw`font-extrabold text-white mb-1`}>
                 {profileData.userFactors[key].name}
               </Text>
             ))}
@@ -128,9 +128,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: '80%'
-  },
-  accounttContainer: {
-    paddingLeft: 5
   },
   accountItem: {
     flexDirection: 'row',
