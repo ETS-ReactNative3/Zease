@@ -115,7 +115,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   cardContainer: {
-    width: '90%'
+    width: '90%',
+    opacity: 0.95
   },
   accountItem: {
     flexDirection: 'row',
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
   },
   entryCard: {
     backgroundColor: '#1C3F52',
-    borderRadius: 5,
+    borderRadius: 15,
     margin: 10,
     shadowColor: '#171717',
     shadowOffset: { width: -2, height: 6 },

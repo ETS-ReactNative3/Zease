@@ -162,7 +162,7 @@ const BuildProfile = ({ navigation }) => {
         <Text style={tw`text-white text-xs font-bold mb-6 text-center`}>
           Please complete your user profile below
         </Text>
-        <View style={tw`bg-white rounded px-10 pt-6`}>
+        <View style={tw`bg-white rounded-xl px-10 pt-6`}>
           <View style>
             <TextInput
               style={styles.input}
@@ -230,7 +230,9 @@ const BuildProfile = ({ navigation }) => {
               value={logReminderOn}
               onValueChange={() => setLogReminder((previousValue) => !previousValue)}
             />
-            <Text style={tw`mt-2 ml-1`}>Remind me to enter daily sleep log</Text>
+            <Text style={tw`font-semibold text-gray-800 mt-2 ml-1`}>
+              Remind me to enter daily sleep log
+            </Text>
           </View>
           <View style={tw`flex-row mb-4`}>
             <Switch
@@ -238,12 +240,16 @@ const BuildProfile = ({ navigation }) => {
               value={sleepReminderOn}
               onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
             />
-            <Text style={tw`mt-2 ml-1`}>Remind me to go to sleep</Text>
+            <Text style={tw`font-semibold text-gray-800 mt-2 ml-1`}>Remind me to go to sleep</Text>
           </View>
-          <View style={tw`flex-row`}>
-            <Text style={tw`mr-1 mb-2`}>Sleep Factors</Text>
+          <View style={tw`flex-row mt-5`}>
+            <Text style={tw`font-bold text-lg text-gray-800 mr-2 mb-3`}>Sleep Factors</Text>
             <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
-              <Ionicons name='information-circle-outline' size={16} />
+              <Ionicons
+                style={tw`mt-1 text-gray-800`}
+                name='information-circle-outline'
+                size={20}
+              />
             </TouchableOpacity>
           </View>
           <Modal
@@ -288,6 +294,7 @@ const BuildProfile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#1C3F52',
+    opacity: 0.95,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
@@ -302,6 +309,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 40,
+    marginBottom: 20,
     alignItems: 'center'
   },
   buttonText: {

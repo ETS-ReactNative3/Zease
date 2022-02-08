@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C3F52',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    opacity: 0.95
   },
   contentContainer: {
     width: '80%'

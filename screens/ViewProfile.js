@@ -122,6 +122,7 @@ export default AddEntry;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#1C3F52',
+    opacity: 0.95,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
