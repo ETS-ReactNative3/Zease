@@ -19,8 +19,8 @@ const ChartA = (props) => {
 
   //get sleep factors for this user from firebase.
   useEffect(async () => {
-    //get the userId from async storage
-    const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
+
+    const userId = auth.currentUser.uid;
 
     //get data from firebase. This is getting a "snapshot" of the data
     const userRef = database.ref(`users/${userId}`);
@@ -62,9 +62,54 @@ const ChartA = (props) => {
     return dbDataArray;
   };
 
+  const structureData = (dataRaw, timeRange) => {
+    console.log(dataRaw);
+    const timeMap = {
+      "week": 7 * (1000 * 60 * 60 * 24),
+      "month": 30 * (1000 * 60 * 60 * 24),
+      "year": 365 * (1000 * 60 * 60 * 24),
+    }
+    const today = new Date()
+    today.setHours(0,0,0,)
+    const chartData = [];
+    let sleepDurationMin = 0;
+    let sleepDurationMax = 0;
+    let sleepQualityMin = 0;
+    let sleepQualityMax = 0;
+    Object.values(dataRaw).forEach(entry => {
+      console.log("today", today)
+      console.log("entry date", new Date(entry.date))
+      console.log("timeMap", timeMap[timeRange])
+      if (timeRange === "all" || today - new Date(entry.date) < timeMap[timeRange]) {
+        let formatEntry = {
+          sleepDuration: calculateSleepLength(entry),
+          sleepQuality: entry.quality,
+          date: entry.date,
+          label: reformatDate(entry.date),
+        };
+        Object.values(entry.entryFactors).forEach(factor => {
+          formatEntry[factor.name] = true;
+        })
+        chartData.push(formatEntry);
+        sleepDurationMin = Math.min(sleepDurationMin, formatEntry.sleepDuration)
+        sleepDurationMax =  Math.max(sleepDurationMax, formatEntry.sleepDuration)
+        sleepQualityMin =  Math.min(sleepQualityMin, formatEntry.sleepQuality)
+        sleepQualityMax = Math.max(sleepQualityMax, formatEntry.sleepDuration)
+      }
+    })
+    return {chartData, sleepDurationMin, sleepDurationMax, sleepQualityMin, sleepQualityMax}
+  } 
+  const structuredData = structureData(data, "week");
+  console.log("structuredData", structuredData)
+  console.log("structuredData.chartData", structuredData.chartData)
+  console.log("current data", reformatDataForChart(data))
+  
+
   return (
     <View>
-      <VictoryChart>
+      <VictoryChart
+          domainPadding={{x: [10, 10], y: [10, 10]}}
+          >
         <VictoryAxis
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Quality (%)"
@@ -73,6 +118,7 @@ const ChartA = (props) => {
         <VictoryAxis
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Duration (Hours)"
+          domain={[5.5, 10.5]}
         />
         {data && (
           <VictoryScatter
@@ -94,7 +140,7 @@ const ChartA = (props) => {
         <Text>Select a Sleep Factor:</Text>
         <Picker
           selectedValue={selectedFactor}
-          onValueChange={(factor, idx) => setSelectedFactor(factor)}
+          onValueChange={(factor) => setSelectedFactor(factor)}
         >
           {userFactors.map((factor) => {
             return (
