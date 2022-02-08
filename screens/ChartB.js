@@ -15,18 +15,18 @@ import { getDateObj, calculateSleepLength } from "../Util";
 const ChartB = () => {
   //get data in array form from redux, but it still needs to be rearranged for the chart
   let userEntries = useSelector((state) => state.userEntries);
+  let newestEntry = useSelector((state) => state.newestEntry);
+  let oldestEntry = useSelector((state) => state.oldestEntry);
   const [xDomain, setXDomain] = useState([
     new Date(2022, 2, 1),
     new Date(2022, 2, 14),
   ]);
   const [xTickValues, setXTickValues] = useState([]);
 
-  //on page load get oldest and newst entrys from async storage.  This is needed to determine x axis domain
-  useEffect(async () => {
-    const newestEntryString = await AsyncStorage.getItem("mostRecentEntry");
-    const newestDateObj = getDateObj(JSON.parse(newestEntryString).date);
-    const oldestEntryString = await AsyncStorage.getItem("oldestEntry");
-    const oldestDateObj = getDateObj(JSON.parse(oldestEntryString).date);
+  //on page load determine x axis domain based on oldest and newest date
+  useEffect(() => {
+    const newestDateObj = getDateObj(newestEntry.date);
+    const oldestDateObj = getDateObj(oldestEntry.date);
     setXDomain([oldestDateObj, newestDateObj]);
     //console.log("oldest date object", oldestDateObj);
     //console.log("newestDateObj", JSON.parse(newestEntryString).date);
