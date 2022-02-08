@@ -7,43 +7,30 @@ import {
   VictoryScatter,
   VictoryTooltip,
 } from "victory-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
-import { database, auth } from "../firebase";
 import { reformatDate, calculateSleepLength } from "../Util";
 
-const ChartA = (props) => {
-  const data = props.data;
+const ChartA = () => {
+  let userEntries = useSelector((state) => state.userEntries);
+
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
+  const userFactorsObj = useSelector((state) => state.userFactors);
 
   //get sleep factors for this user from firebase.
-  useEffect(async () => {
-    //get the userId from async storage
-    const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
+  useEffect(() => {
+    const userFactorsArr = [];
+    for (let factorId in userFactorsObj) {
+      let factor = userFactorsObj[factorId];
+      factor.id = factorId;
+      userFactorsArr.push(factor);
+    }
+    setUserFactors(userFactorsArr);
+  }, [userFactorsObj]);
 
-    //get data from firebase. This is getting a "snapshot" of the data
-    const userRef = database.ref(`users/${userId}`);
-
-    //this on method gets the value of the data at that reference.
-    userRef.on("value", (snapshot) => {
-      const user = snapshot.val();
-      const userFactorsObj = user.userFactors;
-      const userFactorsArr = [];
-      for (let factorId in userFactorsObj) {
-        let factor = userFactorsObj[factorId];
-        factor.id = factorId;
-        userFactorsArr.push(factor);
-      }
-      setUserFactors(userFactorsArr);
-    });
-  }, []);
-
-  const reformatDataForChart = (dbDataObject) => {
-    const dbDataArray = [];
-    for (let entryId in dbDataObject) {
-      let entry = dbDataObject[entryId];
-
+  const reformatDataForChart = (userEntriesArray) => {
+    return userEntriesArray.map((entry) => {
       let entryForChart = {
         SleepLength: calculateSleepLength(entry),
         SleepQuality: entry.quality,
@@ -56,10 +43,8 @@ const ChartA = (props) => {
         let entryFactor = entry.entryFactors[entryFactorId];
         entryForChart[entryFactor.name] = true;
       }
-
-      dbDataArray.push(entryForChart);
-    }
-    return dbDataArray;
+      return entryForChart;
+    });
   };
 
   return (
@@ -74,9 +59,9 @@ const ChartA = (props) => {
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Duration (Hours)"
         />
-        {data && (
+        {userEntries && (
           <VictoryScatter
-            data={reformatDataForChart(data)}
+            data={reformatDataForChart(userEntries)}
             x="SleepLength"
             y="SleepQuality"
             style={{

@@ -3,14 +3,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { database, auth } from "../firebase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector, useDispatch } from "react-redux";
 
 import DataVisualization from "./DataVisualization";
 import ViewProfile from "./ViewProfile";
 import AllSleepEntries from "./AllSleepEntries";
 import AddEntry from "./AddEntry";
 import SingleEntry from "./SingleEntry";
+import { setOldestEntry } from "../store/oldestEntry";
+import { setNewestEntry } from "../store/newestEntry";
 import { yesterday, getDateNumber } from "../Util";
 
 const Tab = createBottomTabNavigator();
@@ -18,49 +19,37 @@ const Tab = createBottomTabNavigator();
 export default function NavBar() {
   //determine if the user has an entry that was made yesterday.
   const [loggedYesterday, setLoggedYesterday] = useState(false);
-  const userId = auth.currentUser ? auth.currentUser.uid : null;
+  //const userId = auth.currentUser ? auth.currentUser.uid : null;
+  let userEntries = useSelector((state) => state.userEntries);
+  const dispatch = useDispatch();
 
-  //if an entry was made yesterday set it on local state.
+  //if an entry was made yesterday indicate that on local state.
   useEffect(() => {
-    //get the sleep entries for this user
-    const entryRef = database.ref(`sleepEntries/${userId}`);
-    entryRef.on("value", async (snapshot) => {
-      const entries = snapshot.val();
-
-      //identify which entry was made most recently, and which is oldest.
-      let mostRecentEntry = { date: "0" };
-      let oldestEntry = { date: "3000-00-00" };
-      for (let id in entries) {
-        let currentEntry = entries[id];
-        let currentEntryDateNum = getDateNumber(currentEntry.date);
-        if (currentEntryDateNum > getDateNumber(mostRecentEntry.date)) {
-          mostRecentEntry = currentEntry;
-        }
-        if (currentEntryDateNum < getDateNumber(oldestEntry.date)) {
-          oldestEntry = currentEntry;
-        }
+    //identify oldest and newest entries for this user.
+    let newestEntry = { date: "0" };
+    let oldestEntry = { date: "3000-00-00" };
+    userEntries.forEach((entry) => {
+      let currentEntryDateNum = getDateNumber(entry.date);
+      if (currentEntryDateNum > getDateNumber(newestEntry.date)) {
+        newestEntry = entry;
       }
-
-      //put the oldest and most recent entries in async storage (this is determining the correct domain of x axis in ChartB)
-      await AsyncStorage.setItem(
-        "mostRecentEntry",
-        JSON.stringify(mostRecentEntry)
-      );
-      await AsyncStorage.setItem("oldestEntry", JSON.stringify(oldestEntry));
-
-      // console.log("most recent entry date: ", mostRecentEntry.date);
-      // console.log("yesterday: ", yesterday());
-
-      //if the most recent entry was made yesterday put it in async storage, and note on local state that an entry has been made today
-      if (mostRecentEntry.date === yesterday()) {
-        setLoggedYesterday(true);
-        await AsyncStorage.setItem(
-          "yesterdaysEntry",
-          JSON.stringify(mostRecentEntry)
-        );
+      if (currentEntryDateNum < getDateNumber(oldestEntry.date)) {
+        oldestEntry = entry;
       }
     });
-  }, []);
+    //put the oldest and newest entries in redux store
+    //(this is determining the correct domain of x axis in ChartB)
+    dispatch(setNewestEntry(newestEntry));
+    dispatch(setOldestEntry(oldestEntry));
+
+    // console.log("newest entry date: ", newestEntry.date);
+    // console.log("yesterday: ", yesterday());
+
+    //if the most recent entry was made yesterday note that on local state
+    if (newestEntry.date === yesterday()) {
+      setLoggedYesterday(true);
+    }
+  }, [userEntries]);
 
   return (
     <Tab.Navigator
