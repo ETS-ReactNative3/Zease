@@ -14,10 +14,11 @@ const DataVisualization = () => {
   const [timeRange, setTimeRange] = useState("week");
   const [data, setData] = useState([]);
 
-  const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2";
+  // const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2"; // Whitney ID
+  // const userId = "AbNQWuHhkpSGbArIfJ17twjyuum1" // Alston ID
   //get sleep entry data from firebase
-  useEffect(async () => {
-    // const userId = auth.currentUser.uid;
+  useEffect(() => {
+    const userId = auth.currentUser.uid;
 
     //get data from firebase. This is getting a "snapshot" of the data
     const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
@@ -27,10 +28,10 @@ const DataVisualization = () => {
       const sleepEntryData = snapshot.val();
       setData(sleepEntryData);
     });
-  }, [userId]);
+  }, []);
 
   const structureData = (dataRaw, timeRange) => {
-    console.log(dataRaw);
+    console.log("dataRaw", dataRaw)
     const timeMap = {
       week: 7 * (1000 * 60 * 60 * 24),
       month: 30 * (1000 * 60 * 60 * 24),
@@ -173,10 +174,9 @@ const DataVisualization = () => {
           </Pressable>
         </View>
         {viewChartA ? (
-          <ChartA data={structuredData[timeRange]} timeRange={timeRange} />
+          <ChartA data={structuredData[timeRange]} />
         ) : (
-          // <ChartB data={data} timeRange={timeRange} />
-          <ChartB data={structuredData[timeRange]} timeRange={timeRange} />
+          <ChartB data={structuredData[timeRange]} />
         )}
       </View>
     </View>
