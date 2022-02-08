@@ -16,6 +16,7 @@ import { StatusBar } from "expo-status-bar";
 import { useDispatch } from "react-redux";
 
 import { login } from "../store/profile";
+import { fetchDBFactors } from "../store/dbFactors";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = () => {
     dispatch(login(email, password, navigation));
+    dispatch(fetchDBFactors());
   };
 
   return (

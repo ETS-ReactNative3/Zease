@@ -24,12 +24,14 @@ import {
   reformatFactors,
 } from "../Util";
 import { createProfile } from "../store/profile";
+import { fetchDBFactors } from "../store/dbFactors";
 
 const BuildProfile = ({ navigation }) => {
   const dispatch = useDispatch();
 
   //sleep factor options from the DB (not specific to user)
-  const [sleepFactors, setSleepFactors] = useState({});
+  //const [sleepFactors, setSleepFactors] = useState({});
+  const sleepFactors = useSelector((state) => state.dbFactors);
 
   //Manage form inputs
   const [email, setEmail] = useState("");
@@ -54,16 +56,7 @@ const BuildProfile = ({ navigation }) => {
 
   //when the page loads get the sleep factors from db
   useEffect(() => {
-    let sleepFactorsRef = database.ref("sleepFactors");
-    sleepFactorsRef.on("value", (snapshot) => {
-      const dBSleepFactors = snapshot.val();
-      //put each factor's id as a prop on the factor
-      for (let factorId in dBSleepFactors) {
-        let factor = dBSleepFactors[factorId];
-        factor.id = factorId;
-      }
-      setSleepFactors(dBSleepFactors);
-    });
+    dispatch(fetchDBFactors());
   }, []);
 
   //when email changes update state about whether it is a valid email

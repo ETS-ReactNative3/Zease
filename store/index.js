@@ -7,6 +7,7 @@ import userEntries from "./userEntries";
 import newestEntry from "./newestEntry";
 import oldestEntry from "./oldestEntry";
 import userFactors from "./userFactors";
+import dbFactors from "./dbFactors";
 
 const rootReducer = combineReducers({
   profile,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   newestEntry,
   oldestEntry,
   userFactors,
+  dbFactors,
 });
 
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));

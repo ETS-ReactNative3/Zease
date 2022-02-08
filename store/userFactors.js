@@ -38,7 +38,7 @@ export default function userFactors(state = {}, action) {
     case SET_FACTORS:
       return action.factors;
     case ADD_FACTOR:
-      //console.log("action.factor.id", action.factor.id);
+      console.log("action.factor.id from add factor", action.factor.id);
       return { ...state, [action.factor.id]: action.factor };
     case REMOVE_FACTOR:
       let newUserFactors = { ...state };

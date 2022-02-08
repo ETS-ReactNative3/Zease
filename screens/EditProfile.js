@@ -29,7 +29,8 @@ const EditProfile = ({ navigation }) => {
   const dispatch = useDispatch();
 
   //sleep factor options from the DB (not specific to user)
-  const [sleepFactors, setSleepFactors] = useState({});
+  //const [sleepFactors, setSleepFactors] = useState({});
+  const sleepFactors = useSelector((state) => state.dbFactors);
 
   //Manage form inputs
   let user = useSelector((state) => state.profile);
@@ -54,15 +55,15 @@ const EditProfile = ({ navigation }) => {
     useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
-  //when the page loads get info from db
-  useEffect(() => {
-    //get the sleep factors from db
-    let sleepFactorsRef = database.ref("sleepFactors");
-    sleepFactorsRef.on("value", (snapshot) => {
-      const data = snapshot.val();
-      setSleepFactors(data);
-    });
-  }, []);
+  // //when the page loads get info from db
+  // useEffect(() => {
+  //   //get the sleep factors from db
+  //   let sleepFactorsRef = database.ref("sleepFactors");
+  //   sleepFactorsRef.on("value", (snapshot) => {
+  //     const data = snapshot.val();
+  //     setSleepFactors(data);
+  //   });
+  // }, []);
 
   //when email changes update state about whether it is a valid email
   useEffect(() => {
