@@ -23,9 +23,15 @@ export const clearUserEntries = () => {
 export const fetchUserEntries = () => {
   return async (dispatch) => {
     try {
+      const userId = auth.currentUser && auth.currentUser.uid;
+      console.log("userId from fetchuserEnteries thunk, ", userId);
       const entriesRef = database.ref(`sleepEntries/${userId}`);
       entriesRef.on("value", (snapshot) => {
         const entriesObject = snapshot.val();
+        console.log(
+          "entriesObject from fetchUserentries thunk snapshot",
+          entriesObject
+        );
         const entriesArray = [];
         for (let entryId in entriesObject) {
           entriesArray.push(entriesObject[entryId]);
@@ -46,6 +52,10 @@ export const fetchUserEntries = () => {
 export default function userEntries(state = [], action) {
   switch (action.type) {
     case SET_USER_ENTRIES:
+      console.log(
+        "action.entriesArray from userEntries reducer for setentries case",
+        action.entriesArray
+      );
       return action.entriesArray;
     case CLEAR_USER_ENTRIES:
       return [];

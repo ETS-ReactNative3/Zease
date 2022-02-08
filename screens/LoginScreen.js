@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useDispatch } from "react-redux";
 
+import { login } from "../store/profile";
 import { fetchUserEntries } from "../store/userEntries";
 
 const LoginScreen = ({ navigation }) => {
@@ -25,19 +26,20 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const handleLogin = () => {
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then(async (userCredentials) => {
-        const user = userCredentials.user;
-        const userId = user.uid;
-        console.log("Logged In with", user.email);
-        console.log("userId", userId);
-        dispatch(fetchUserEntries());
+    dispatch(login(email, password));
+    // auth
+    //   .signInWithEmailAndPassword(email, password)
+    //   .then(async (userCredentials) => {
+    //     const user = userCredentials.user;
+    //     const userId = user.uid;
+    //     console.log("Logged In with", user.email);
+    //     console.log("userId", userId);
+    //     dispatch(fetchUserEntries());
 
-        //show the navbar screen after login
-        navigation.navigate("NavBar");
-      })
-      .catch((error) => alert(error.message));
+    //     //show the navbar screen after login
+    //     navigation.navigate("NavBar");
+    //   })
+    //   .catch((error) => alert(error.message));
   };
 
   return (

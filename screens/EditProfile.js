@@ -12,9 +12,10 @@ import {
 import React from "react";
 import { useEffect, useState } from "react";
 import { auth, database } from "../firebase";
+import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+//import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
 import SleepFactorCategory from "./SleepFactorCategory";
@@ -23,18 +24,27 @@ import {
   convertToAmPm,
   reformatFactors,
 } from "../Util";
+import { updateProfile } from "../store/profile";
 
 const EditProfile = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   //sleep factor options from the DB (not specific to user)
   const [sleepFactors, setSleepFactors] = useState({});
 
   //Manage form inputs
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [sleepGoalStart, setsleepGoalStart] = useState(null);
-  const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
-  const [logReminderOn, setLogReminder] = useState(false);
-  const [sleepReminderOn, setSleepReminder] = useState(false);
+  let user = useSelector((state) => state.profile);
+  const [email, setEmail] = useState(user.email || "");
+  const [name, setName] = useState(user.name || "");
+  const [sleepGoalStart, setsleepGoalStart] = useState(
+    user.sleepGoalStart || null
+  );
+  const [sleepGoalEnd, setsleepGoalEnd] = useState(user.sleepGoalEnd || null);
+  const [logReminderOn, setLogReminder] = useState(user.logReminderOn || false);
+  const [sleepReminderOn, setSleepReminder] = useState(
+    user.sleepReminderOn || false
+  );
+  let userFactors = useSelector((state) => state.userFactors);
 
   //form validation
   const [emailValid, setEmailValid] = useState(true);
@@ -54,22 +64,29 @@ const EditProfile = ({ navigation }) => {
       setSleepFactors(data);
     });
 
-    //Get logged in user's information and put it on local state/asyncStorage
-    const userId = auth.currentUser.uid;
-    const userRef = database.ref("users/" + userId);
-    userRef.on("value", async (snapshot) => {
-      const user = snapshot.val();
-      setEmail(auth.currentUser.email);
-      setName(user.name);
-      setsleepGoalStart(user.sleepGoalStart);
-      setsleepGoalEnd(user.sleepGoalEnd);
-      setSleepReminder(user.sleepReminderOn);
-      setLogReminder(user.logReminderOn);
-      await AsyncStorage.setItem(
-        "userFactors",
-        JSON.stringify(user.userFactors)
-      );
-    });
+    //Get logged in user's information and put it on local state
+    setEmail(user.email);
+    setName(user.name);
+    setsleepGoalStart(user.sleepGoalStart);
+    setsleepGoalEnd(user.sleepGoalEnd);
+    setSleepReminder(user.sleepReminderOn);
+    setLogReminder(user.logReminderOn);
+
+    // const userId = auth.currentUser.uid;
+    // const userRef = database.ref("users/" + userId);
+    // userRef.on("value", async (snapshot) => {
+    //   const user = snapshot.val();
+    //   setEmail(auth.currentUser.email);
+    //   setName(user.name);
+    //   setsleepGoalStart(user.sleepGoalStart);
+    //   setsleepGoalEnd(user.sleepGoalEnd);
+    //   setSleepReminder(user.sleepReminderOn);
+    //   setLogReminder(user.logReminderOn);
+    //   await AsyncStorage.setItem(
+    //     "userFactors",
+    //     JSON.stringify(user.userFactors)
+    //   );
+    // });
   }, []);
 
   //when email changes update state about whether it is a valid email
@@ -103,11 +120,11 @@ const EditProfile = ({ navigation }) => {
     }
 
     try {
-      //get the user's selected sleep factors from async storage
-      const userFactorsString = await AsyncStorage.getItem("userFactors");
-      const userFactors = userFactorsString
-        ? JSON.parse(userFactorsString)
-        : {};
+      // //get the user's selected sleep factors from async storage
+      // const userFactorsString = await AsyncStorage.getItem("userFactors");
+      // const userFactors = userFactorsString
+      //   ? JSON.parse(userFactorsString)
+      //   : {};
       if (Object.keys(userFactors).length === 0) {
         Alert.alert("Error", "Please select at least one sleep factor");
         validated = false;
@@ -135,7 +152,8 @@ const EditProfile = ({ navigation }) => {
           sleepReminderOn,
         };
         // console.log("newUser about to be updated in db", newUser)
-        updateUserinDB(updatedUser);
+        dispatch(updateProfile(updatedUser));
+        navigation.navigate("NavBar");
       }
     } catch (error) {
       console.log(
@@ -145,29 +163,29 @@ const EditProfile = ({ navigation }) => {
     }
   };
 
-  const updateUserinDB = (updatedUser) => {
-    //update the user in firebase auth
-    try {
-      auth.currentUser.updateEmail(updatedUser.email);
-    } catch (error) {
-      console.log(
-        "There was an error updating this user's email in firbase auth: ",
-        error
-      );
-    }
-    //update the user in firebase realtimee
-    try {
-      database.ref("users/" + auth.currentUser.uid).set(updatedUser);
+  // const updateUserinDB = (updatedUser) => {
+  //   //update the user in firebase auth
+  //   try {
+  //     auth.currentUser.updateEmail(updatedUser.email);
+  //   } catch (error) {
+  //     console.log(
+  //       "There was an error updating this user's email in firbase auth: ",
+  //       error
+  //     );
+  //   }
+  //   //update the user in firebase realtimee
+  //   try {
+  //     database.ref("users/" + auth.currentUser.uid).set(updatedUser);
 
-      //go back to the navbar when done
-      navigation.navigate("NavBar");
-    } catch (error) {
-      console.log(
-        "There was an error updating this user's information in the reatime database: ",
-        error
-      );
-    }
-  };
+  //     //go back to the navbar when done
+  //     navigation.navigate("NavBar");
+  //   } catch (error) {
+  //     console.log(
+  //       "There was an error updating this user's information in the reatime database: ",
+  //       error
+  //     );
+  //   }
+  // };
 
   return (
     <View style={tw`flex-1 items-center justify-center`}>
