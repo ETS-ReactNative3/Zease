@@ -1,13 +1,10 @@
 import { StyleSheet, View, Text, Button, TextInput, Alert } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import Slider from "@react-native-community/slider";
 import MultiSelect from "react-native-multiple-select";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector, useDispatch } from "react-redux";
-import { auth, database } from "../firebase";
-// import { convertToMilitaryString, convertToAmPm } from "../utils";
+
 import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
 import { goAddUserEntry } from "../store/userEntries";
 
@@ -62,13 +59,8 @@ const AddEntry = () => {
   };
 
   const onEntryFactorsChange = (selectedItems) => {
-    console.log("selected items from onEntryFactorsChange", selectedItems);
     setEntryFactorsArr(selectedItems);
   };
-
-  // const alstonUserId = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID, delete once component incorporated to main app
-  // // Grab userId from the firebase auth component
-  // const userId = auth.currentUser ? auth.currentUser.uid : alstonUserId;
 
   // Reformat factors to array of objects, with keys id, name, and category
   useEffect(() => {
@@ -76,7 +68,6 @@ const AddEntry = () => {
     for (let key in userFactors) {
       formattedFactors.push({ ...userFactors[key], id: key });
     }
-    //console.log("userFactors from useEffect", formattedFactors);
     setUserFactorsArr(formattedFactors);
   }, [userFactors]);
 
@@ -98,12 +89,7 @@ const AddEntry = () => {
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
     //console.log("formData", formData);
 
-    //put the new entry in async storage so singleEntry view can use it.
-    //await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
-
-    // Write form inputs to firebase
-    // const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
-    // sleepEntriesRef.push(formData);
+    // Write form inputs to firebase.  this will also dispatch function to put set this new entry as the newest entry in redux and for this new entry to be included in userEntries.
     dispatch(goAddUserEntry(formData));
     // Success alert
     Alert.alert("Entry submitted!");
@@ -114,10 +100,6 @@ const AddEntry = () => {
     setEntryFactorsArr([]);
     setNotes("");
     // TODO: Take user to SingleEntry view of submitted entry
-
-    //update userEntries in redux so it includes this new entry
-    //dispatch(fetchUserEntries())
-    //dispatch(setNewestEntry(formData));
   };
 
   return (
