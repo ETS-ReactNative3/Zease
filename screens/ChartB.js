@@ -7,7 +7,6 @@ import {
   VictoryAxis,
   VictoryLine,
 } from "victory-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { G } from "react-native-svg";
 import { useSelector } from "react-redux";
 import { getDateObj, calculateSleepLength } from "../Util";

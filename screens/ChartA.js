@@ -12,17 +12,16 @@ import { Picker } from "@react-native-picker/picker";
 import { database, auth } from "../firebase";
 import { reformatDate, calculateSleepLength } from "../Util";
 
-const ChartA = (props) => {
-  const data = props.data;
+const ChartA = () => {
   let userEntries = useSelector((state) => state.userEntries);
 
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
 
   //get sleep factors for this user from firebase.
-  useEffect(async () => {
+  useEffect(() => {
     //get the userId from async storage
-    const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
+    const userId = auth.currentUser && auth.currentUser.uid;
 
     //get data from firebase. This is getting a "snapshot" of the data
     const userRef = database.ref(`users/${userId}`);
@@ -71,7 +70,7 @@ const ChartA = (props) => {
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Duration (Hours)"
         />
-        {data && (
+        {userEntries && (
           <VictoryScatter
             data={reformatDataForChart(userEntries)}
             x="SleepLength"
