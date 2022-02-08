@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -9,11 +9,10 @@ import {
   Pressable,
 } from "react-native";
 import tw from "tailwind-react-native-classnames";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { convertToAmPm } from "../Util.js";
 import SingleEntry from "./SingleEntry";
-import { fetchUserEntries } from "../store/userEntries";
 
 export const AllSleepEntries = () => {
   let entryList = useSelector((state) => state.userEntries);

@@ -1,17 +1,21 @@
 import { auth, database } from "../firebase";
 
-const userId = auth.currentUser
-  ? auth.currentUser.uid
-  : "v3fmHEk6CiTxbU5o8M6tFxuawEI3";
+const userId = auth.currentUser && auth.currentUser.uid;
 
 //action types
 const SET_USER_ENTRIES = "SET_USER_ENTRIES";
-
+const CLEAR_USER_ENTRIES = "CLEAR_USER_ENTRIES";
 //action creators
 const setUserEntries = (entriesArray) => {
   return {
     type: SET_USER_ENTRIES,
     entriesArray,
+  };
+};
+
+export const clearUserEntries = () => {
+  return {
+    type: CLEAR_USER_ENTRIES,
   };
 };
 
@@ -42,6 +46,8 @@ export default function userEntries(state = [], action) {
   switch (action.type) {
     case SET_USER_ENTRIES:
       return action.entriesArray;
+    case CLEAR_USER_ENTRIES:
+      return [];
     default:
       return state;
   }

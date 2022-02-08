@@ -1,13 +1,19 @@
 import { StyleSheet, View, Text, Button } from "react-native";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { auth, database } from "../firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { convertToAmPm } from "../Util";
+import { clearNewest } from "../store/newestEntry";
+import { clearOldest } from "../store/oldestEntry";
+import { clearUserEntries } from "../store/userEntries";
 
 const AddEntry = ({ navigation }) => {
   // User sleep factors (pulled in from firebase)
   const [profileData, setProfileData] = useState({});
+
+  const dispatch = useDispatch();
 
   // Grab userId from the firebase auth component
   const userId = auth.currentUser.uid;
@@ -30,10 +36,11 @@ const AddEntry = ({ navigation }) => {
 
   const handleLogOut = async () => {
     console.log("Logging out");
-    await AsyncStorage.removeItem("oldestEntry");
-    await AsyncStorage.removeItem("mostRecentEntry");
-    await AsyncStorage.removeItem("userFactors");
-    await AsyncStorage.removeItem("yesterdaysEntry");
+    // await AsyncStorage.removeItem("oldestEntry");
+    // await AsyncStorage.removeItem("mostRecentEntry");
+    // await AsyncStorage.removeItem("userFactors");
+    // await AsyncStorage.removeItem("yesterdaysEntry");
+
     auth
       .signOut()
       .then(() => {
@@ -43,6 +50,9 @@ const AddEntry = ({ navigation }) => {
       .catch((error) => {
         console.log("Error logging out", error);
       });
+    dispatch(clearNewest());
+    dispatch(clearOldest());
+    dispatch(clearUserEntries());
 
     await AsyncStorage.setItem("userFactors", JSON.stringify({}));
   };

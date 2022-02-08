@@ -11,11 +11,8 @@ import {
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
-import { auth, database } from "../firebase";
+import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import {
   reformatDate,
@@ -30,16 +27,19 @@ const SingleEntry = (props) => {
   const [entry, setEntry] = useState(props.entry || {});
   const [factorNames, setFactorNames] = useState([]);
   const [isYesterdaysEntry, setIsYesterdaysEntry] = useState(false);
+  let newestEntry = useSelector((state) => {
+    return state.newestEntry;
+  });
 
-  //go get entry from the async storage if needed
-  useEffect(async () => {
-    //if no entry was passed to this component through props then entry.date will be undefined, so we need to get the entry from async storage.
-    if (!entry.date) {
-      const yesterdaysEntry = await AsyncStorage.getItem("yesterdaysEntry");
-      setEntry(JSON.parse(yesterdaysEntry));
+  //reset Entry on local state to newest entry if needed
+  useEffect(() => {
+    //entry will be undefined if no entry was passed to this component through props
+    //if nothing was passed through props this component is accessed from the Today tab.  This can only be accessed through the today tab if the newest entry is for yesterday's sleep
+    if (entry && !entry.date) {
+      setEntry(newestEntry);
       setIsYesterdaysEntry(true);
     }
-  }, []);
+  }, [newestEntry]);
 
   //When the entry object is changed set the factors array using factors object from the entry object.
   useEffect(() => {

@@ -5,12 +5,15 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Slider from "@react-native-community/slider";
 import MultiSelect from "react-native-multiple-select";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { useSelector, useDispatch } from "react-redux";
 import { auth, database } from "../firebase";
 // import { convertToMilitaryString, convertToAmPm } from "../utils";
 import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
+import { fetchUserEntries } from "../store/userEntries";
+import { setNewestEntry } from "../store/newestEntry";
 
 const AddEntry = () => {
+  const dispatch = useDispatch();
   // User sleep factors (pulled in from firebase)
   const [userFactors, setUserFactors] = useState({});
   const [userFactorsArr, setUserFactorsArr] = useState([]);
@@ -101,7 +104,7 @@ const AddEntry = () => {
     //console.log("formData", formData);
 
     //put the new entry in async storage so singleEntry view can use it.
-    await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
+    //await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
 
     // Write form inputs to firebase
     const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
@@ -115,6 +118,10 @@ const AddEntry = () => {
     setEntryFactorsArr([]);
     setNotes("");
     // TODO: Take user to SingleEntry view of submitted entry
+
+    //update userEntries in redux so it includes this new entry
+    dispatch(fetchUserEntries());
+    dispatch(setNewestEntry(formData));
   };
 
   return (
