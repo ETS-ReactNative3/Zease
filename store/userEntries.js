@@ -1,5 +1,5 @@
 import { auth, database } from "../firebase";
-
+import { setNewestEntry } from "./newestEntry";
 const userId = auth.currentUser && auth.currentUser.uid;
 
 //action types
@@ -41,6 +41,24 @@ export const fetchUserEntries = () => {
     } catch (error) {
       console.log(
         "there was an error fetching this user's entries from firebase realtime database: ",
+        error
+      );
+    }
+  };
+};
+
+export const goAddUserEntry = (formData) => {
+  return async (dispatch) => {
+    try {
+      const userId = auth.currentUser && auth.currentUser.uid;
+      const sleepEntriesRef = await database.ref(`sleepEntries/${userId}`);
+      await sleepEntriesRef.push(formData);
+
+      dispatch(fetchUserEntries());
+      dispatch(setNewestEntry(formData));
+    } catch (error) {
+      console.log(
+        "there was an error adding this entry to the firebase realtime database: ",
         error
       );
     }

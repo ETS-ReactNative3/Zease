@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
-import { auth, database } from "../firebase";
 import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -29,7 +28,6 @@ const EditProfile = ({ navigation }) => {
   const dispatch = useDispatch();
 
   //sleep factor options from the DB (not specific to user)
-  //const [sleepFactors, setSleepFactors] = useState({});
   const sleepFactors = useSelector((state) => state.dbFactors);
 
   //Manage form inputs
@@ -54,16 +52,6 @@ const EditProfile = ({ navigation }) => {
   const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
     useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
-
-  // //when the page loads get info from db
-  // useEffect(() => {
-  //   //get the sleep factors from db
-  //   let sleepFactorsRef = database.ref("sleepFactors");
-  //   sleepFactorsRef.on("value", (snapshot) => {
-  //     const data = snapshot.val();
-  //     setSleepFactors(data);
-  //   });
-  // }, []);
 
   //when email changes update state about whether it is a valid email
   useEffect(() => {
@@ -96,11 +84,6 @@ const EditProfile = ({ navigation }) => {
     }
 
     try {
-      // //get the user's selected sleep factors from async storage
-      // const userFactorsString = await AsyncStorage.getItem("userFactors");
-      // const userFactors = userFactorsString
-      //   ? JSON.parse(userFactorsString)
-      //   : {};
       if (Object.keys(userFactors).length === 0) {
         Alert.alert("Error", "Please select at least one sleep factor");
         validated = false;
@@ -138,30 +121,6 @@ const EditProfile = ({ navigation }) => {
       );
     }
   };
-
-  // const updateUserinDB = (updatedUser) => {
-  //   //update the user in firebase auth
-  //   try {
-  //     auth.currentUser.updateEmail(updatedUser.email);
-  //   } catch (error) {
-  //     console.log(
-  //       "There was an error updating this user's email in firbase auth: ",
-  //       error
-  //     );
-  //   }
-  //   //update the user in firebase realtimee
-  //   try {
-  //     database.ref("users/" + auth.currentUser.uid).set(updatedUser);
-
-  //     //go back to the navbar when done
-  //     navigation.navigate("NavBar");
-  //   } catch (error) {
-  //     console.log(
-  //       "There was an error updating this user's information in the reatime database: ",
-  //       error
-  //     );
-  //   }
-  // };
 
   return (
     <View style={tw`flex-1 items-center justify-center`}>

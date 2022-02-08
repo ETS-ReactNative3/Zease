@@ -9,13 +9,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { auth, database } from "../firebase";
 // import { convertToMilitaryString, convertToAmPm } from "../utils";
 import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
-import { fetchUserEntries } from "../store/userEntries";
-import { setNewestEntry } from "../store/newestEntry";
+import { goAddUserEntry } from "../store/userEntries";
 
 const AddEntry = () => {
   const dispatch = useDispatch();
-  // User sleep factors (pulled in from firebase)
-  const [userFactors, setUserFactors] = useState({});
+  // User sleep factors (pulled in from redux)
+  let userFactors = useSelector((state) => state.userFactors);
   const [userFactorsArr, setUserFactorsArr] = useState([]);
 
   // Form state
@@ -63,27 +62,23 @@ const AddEntry = () => {
   };
 
   const onEntryFactorsChange = (selectedItems) => {
+    console.log("selected items from onEntryFactorsChange", selectedItems);
     setEntryFactorsArr(selectedItems);
   };
 
-  const alstonUserId = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID, delete once component incorporated to main app
-  // Grab userId from the firebase auth component
-  const userId = auth.currentUser ? auth.currentUser.uid : alstonUserId;
+  // const alstonUserId = "AbNQWuHhkpSGbArIfJ17twjyuum1"; // User alston ID, delete once component incorporated to main app
+  // // Grab userId from the firebase auth component
+  // const userId = auth.currentUser ? auth.currentUser.uid : alstonUserId;
 
+  // Reformat factors to array of objects, with keys id, name, and category
   useEffect(() => {
-    // Load user's sleep factors from firebase
-    const factorsRef = database.ref(`users/${userId}/userFactors`);
-    factorsRef.on("value", (snapshot) => {
-      const factors = snapshot.val();
-      setUserFactors(factors);
-      // Reformat factors to array of objects, with keys id, name, and category
-      const formattedFactors = [];
-      for (let key in factors) {
-        formattedFactors.push({ ...factors[key], id: key });
-      }
-      setUserFactorsArr(formattedFactors);
-    });
-  }, []);
+    const formattedFactors = [];
+    for (let key in userFactors) {
+      formattedFactors.push({ ...userFactors[key], id: key });
+    }
+    //console.log("userFactors from useEffect", formattedFactors);
+    setUserFactorsArr(formattedFactors);
+  }, [userFactors]);
 
   const handleSubmit = async () => {
     // Validate form data
@@ -107,8 +102,9 @@ const AddEntry = () => {
     //await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
 
     // Write form inputs to firebase
-    const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
-    sleepEntriesRef.push(formData);
+    // const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
+    // sleepEntriesRef.push(formData);
+    dispatch(goAddUserEntry(formData));
     // Success alert
     Alert.alert("Entry submitted!");
     // Reset form data
@@ -120,8 +116,8 @@ const AddEntry = () => {
     // TODO: Take user to SingleEntry view of submitted entry
 
     //update userEntries in redux so it includes this new entry
-    dispatch(fetchUserEntries());
-    dispatch(setNewestEntry(formData));
+    //dispatch(fetchUserEntries())
+    //dispatch(setNewestEntry(formData));
   };
 
   return (
