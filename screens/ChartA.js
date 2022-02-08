@@ -17,28 +17,29 @@ const ChartA = () => {
 
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
+  const userFactorsObj = useSelector((state) => state.userFactors);
 
   //get sleep factors for this user from firebase.
   useEffect(() => {
-    //get the userId from async storage
-    const userId = auth.currentUser && auth.currentUser.uid;
+    // //get the userId from async storage
+    // const userId = auth.currentUser && auth.currentUser.uid;
 
-    //get data from firebase. This is getting a "snapshot" of the data
-    const userRef = database.ref(`users/${userId}`);
+    // //get data from firebase. This is getting a "snapshot" of the data
+    // const userRef = database.ref(`users/${userId}`);
 
-    //this on method gets the value of the data at that reference.
-    userRef.on("value", (snapshot) => {
-      const user = snapshot.val();
-      const userFactorsObj = user.userFactors;
-      const userFactorsArr = [];
-      for (let factorId in userFactorsObj) {
-        let factor = userFactorsObj[factorId];
-        factor.id = factorId;
-        userFactorsArr.push(factor);
-      }
-      setUserFactors(userFactorsArr);
-    });
-  }, []);
+    // //this on method gets the value of the data at that reference.
+    // userRef.on("value", (snapshot) => {
+    //   const user = snapshot.val();
+    //   const userFactorsObj = user.userFactors;
+    const userFactorsArr = [];
+    for (let factorId in userFactorsObj) {
+      let factor = userFactorsObj[factorId];
+      factor.id = factorId;
+      userFactorsArr.push(factor);
+    }
+    setUserFactors(userFactorsArr);
+    //});
+  }, [userFactorsObj]);
 
   const reformatDataForChart = (userEntriesArray) => {
     return userEntriesArray.map((entry) => {

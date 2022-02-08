@@ -8,8 +8,6 @@ import MultiSelect from "react-native-multiple-select";
 // import { NavigationContainer } from "@react-navigation/native";
 // import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { auth, database } from "../firebase";
-
 import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
 import { goUpdateUserEntry } from "../store/userEntries";
 // import NativePushNotificationManagerIOS from "react-native/Libraries/PushNotificationIOS/NativePushNotificationManagerIOS";

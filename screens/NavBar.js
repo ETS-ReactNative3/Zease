@@ -3,8 +3,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { database, auth } from "../firebase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector, useDispatch } from "react-redux";
 
 import DataVisualization from "./DataVisualization";

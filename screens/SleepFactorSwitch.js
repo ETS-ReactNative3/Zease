@@ -2,7 +2,6 @@ import { View, Text, Switch } from "react-native";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-//import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "tailwind-react-native-classnames";
 
 import { addFactor, removeFactor } from "../store/userFactors";
