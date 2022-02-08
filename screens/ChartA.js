@@ -9,7 +9,6 @@ import {
 } from "victory-native";
 import { useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
-import { database, auth } from "../firebase";
 import { reformatDate, calculateSleepLength } from "../Util";
 
 const ChartA = () => {
@@ -21,16 +20,6 @@ const ChartA = () => {
 
   //get sleep factors for this user from firebase.
   useEffect(() => {
-    // //get the userId from async storage
-    // const userId = auth.currentUser && auth.currentUser.uid;
-
-    // //get data from firebase. This is getting a "snapshot" of the data
-    // const userRef = database.ref(`users/${userId}`);
-
-    // //this on method gets the value of the data at that reference.
-    // userRef.on("value", (snapshot) => {
-    //   const user = snapshot.val();
-    //   const userFactorsObj = user.userFactors;
     const userFactorsArr = [];
     for (let factorId in userFactorsObj) {
       let factor = userFactorsObj[factorId];
@@ -38,7 +27,6 @@ const ChartA = () => {
       userFactorsArr.push(factor);
     }
     setUserFactors(userFactorsArr);
-    //});
   }, [userFactorsObj]);
 
   const reformatDataForChart = (userEntriesArray) => {

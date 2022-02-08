@@ -21,7 +21,7 @@ const SleepFactorSwitch = (props) => {
     }
   }, []);
 
-  //update userFactors for local state and async storage when switch is toggled
+  //update userFactors for local state and redux when switch is toggled
   const toggleSwitch = () => {
     setFactorRelevance((previousValue) => !previousValue);
     //if the factor is already on userfactors it should be removed

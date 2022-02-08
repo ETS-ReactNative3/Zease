@@ -22,7 +22,7 @@ import {
 } from "../Util";
 
 //if this view is accessed from the AllEntries list then the entry data will be passed on props from the parent component.
-//if this view is accessed from the Today button in the nav bar the entry data needs to be pulled from async storage
+//if this view is accessed from the Today button in the nav bar the entry data needs to be pulled from redux
 const SingleEntry = (props) => {
   const [entry, setEntry] = useState(props.entry || {});
   const [factorNames, setFactorNames] = useState([]);

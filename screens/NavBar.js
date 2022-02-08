@@ -45,7 +45,7 @@ export default function NavBar() {
     // console.log("newest entry date: ", newestEntry.date);
     // console.log("yesterday: ", yesterday());
 
-    //if the most recent entry was made yesterday put it in async storage, and note on local state that an entry has been made today
+    //if the most recent entry was made yesterday note that on local state
     if (newestEntry.date === yesterday()) {
       setLoggedYesterday(true);
     }

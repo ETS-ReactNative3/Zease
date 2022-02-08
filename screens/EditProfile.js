@@ -83,42 +83,35 @@ const EditProfile = ({ navigation }) => {
       validated = false;
     }
 
-    try {
-      if (Object.keys(userFactors).length === 0) {
-        Alert.alert("Error", "Please select at least one sleep factor");
-        validated = false;
-      }
+    if (Object.keys(userFactors).length === 0) {
+      Alert.alert("Error", "Please select at least one sleep factor");
+      validated = false;
+    }
 
-      //make sure that all required fields are filled in
-      if (
-        email === "" ||
-        name === "" ||
-        sleepGoalStart === null ||
-        sleepGoalEnd === null
-      ) {
-        Alert.alert("Error", "Please fill in all required fields.");
-        validated = false;
-      }
+    //make sure that all required fields are filled in
+    if (
+      email === "" ||
+      name === "" ||
+      sleepGoalStart === null ||
+      sleepGoalEnd === null
+    ) {
+      Alert.alert("Error", "Please fill in all required fields.");
+      validated = false;
+    }
 
-      if (validated) {
-        let updatedUser = {
-          email,
-          name,
-          sleepGoalStart,
-          sleepGoalEnd,
-          userFactors,
-          logReminderOn,
-          sleepReminderOn,
-        };
-        // console.log("newUser about to be updated in db", newUser)
-        dispatch(updateProfile(updatedUser));
-        navigation.navigate("NavBar");
-      }
-    } catch (error) {
-      console.log(
-        "there was an error in fetching the user's sleep factors from async storage: ",
-        error
-      );
+    if (validated) {
+      let updatedUser = {
+        email,
+        name,
+        sleepGoalStart,
+        sleepGoalEnd,
+        userFactors,
+        logReminderOn,
+        sleepReminderOn,
+      };
+      // console.log("newUser about to be updated in db", newUser)
+      dispatch(updateProfile(updatedUser));
+      navigation.navigate("NavBar");
     }
   };
 
