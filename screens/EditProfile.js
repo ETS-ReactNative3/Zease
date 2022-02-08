@@ -15,7 +15,6 @@ import { auth, database } from "../firebase";
 import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-//import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
 import SleepFactorCategory from "./SleepFactorCategory";
@@ -63,30 +62,6 @@ const EditProfile = ({ navigation }) => {
       const data = snapshot.val();
       setSleepFactors(data);
     });
-
-    //Get logged in user's information and put it on local state
-    setEmail(user.email);
-    setName(user.name);
-    setsleepGoalStart(user.sleepGoalStart);
-    setsleepGoalEnd(user.sleepGoalEnd);
-    setSleepReminder(user.sleepReminderOn);
-    setLogReminder(user.logReminderOn);
-
-    // const userId = auth.currentUser.uid;
-    // const userRef = database.ref("users/" + userId);
-    // userRef.on("value", async (snapshot) => {
-    //   const user = snapshot.val();
-    //   setEmail(auth.currentUser.email);
-    //   setName(user.name);
-    //   setsleepGoalStart(user.sleepGoalStart);
-    //   setsleepGoalEnd(user.sleepGoalEnd);
-    //   setSleepReminder(user.sleepReminderOn);
-    //   setLogReminder(user.logReminderOn);
-    //   await AsyncStorage.setItem(
-    //     "userFactors",
-    //     JSON.stringify(user.userFactors)
-    //   );
-    // });
   }, []);
 
   //when email changes update state about whether it is a valid email

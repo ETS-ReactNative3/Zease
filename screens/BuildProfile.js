@@ -15,7 +15,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { auth, database } from "../firebase";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-//import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
 import SleepFactorCategory from "./SleepFactorCategory";
@@ -114,11 +113,6 @@ const BuildProfile = ({ navigation }) => {
     }
 
     try {
-      // //get the user's selected sleep factors from async storage
-      // const userFactorsString = await AsyncStorage.getItem("userFactors");
-      // const userFactors = userFactorsString
-      //   ? JSON.parse(userFactorsString)
-      //   : {};
       if (Object.keys(userFactors).length === 0) {
         Alert.alert("Error", "Please select at least one sleep factor");
         validated = false;
@@ -148,7 +142,6 @@ const BuildProfile = ({ navigation }) => {
         console.log("newUser about to be added in db", newUser);
 
         dispatch(createProfile(newUser, password, navigation));
-        //putUserinDB(newUser);
       }
     } catch (error) {
       console.log(
@@ -157,26 +150,6 @@ const BuildProfile = ({ navigation }) => {
       );
     }
   };
-
-  //once form entry has been validated write it to auth and Realtime db
-  // const putUserinDB = async (newUser) => {
-  //   try {
-  //     auth
-  //       .createUserWithEmailAndPassword(email, password)
-  //       .then((userCredentials) => {
-  //         const userId = userCredentials.user.uid;
-  //         database.ref("users/" + userId).set(newUser);
-  //       })
-  //       .catch((error) => alert(error.message));
-
-  //     navigation.navigate("NavBar");
-  //   } catch (error) {
-  //     console.log(
-  //       "there was an error in attempting to add this user to the database: ",
-  //       error
-  //     );
-  //   }
-  // };
 
   return (
     <View style={tw`flex-1 items-center justify-center`}>

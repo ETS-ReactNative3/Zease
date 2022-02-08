@@ -9,16 +9,13 @@ import {
 import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { auth, database } from "../firebase";
 import BuildProfile from "./BuildProfile";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useDispatch } from "react-redux";
 
 import { login } from "../store/profile";
-import { fetchUserEntries } from "../store/userEntries";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -27,20 +24,6 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = () => {
     dispatch(login(email, password, navigation));
-
-    // auth
-    //   .signInWithEmailAndPassword(email, password)
-    //   .then(async (userCredentials) => {
-    //     const user = userCredentials.user;
-    //     const userId = user.uid;
-    //     console.log("Logged In with", user.email);
-    //     console.log("userId", userId);
-    //     dispatch(fetchUserEntries());
-
-    //     //show the navbar screen after login
-    //     navigation.navigate("NavBar");
-    //   })
-    //   .catch((error) => alert(error.message));
   };
 
   return (

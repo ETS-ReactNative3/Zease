@@ -1,6 +1,9 @@
 import { auth, database } from "../firebase";
-import { setUserFactors } from "./userFactors";
-import { fetchUserEntries } from "./userEntries";
+import { setUserFactors, clearFactors } from "./userFactors";
+import { fetchUserEntries, clearUserEntries } from "./userEntries";
+import { clearNewest } from "./newestEntry";
+import { clearOldest } from "./oldestEntry";
+
 const userId = auth.currentUser && auth.currentUser.uid;
 
 //action types
@@ -137,6 +140,27 @@ export const updateProfile = (newProfile) => {
         error
       );
     }
+  };
+};
+
+export const logout = (navigation) => {
+  return async (dispatch) => {
+    auth
+      .signOut()
+      .then(() => {
+        console.log("Log out sucess");
+        navigation.navigate("LoginScreen");
+      })
+      .catch((error) => {
+        console.log("Error logging out", error);
+      })
+      .then(() => {
+        dispatch(clearNewest());
+        dispatch(clearOldest());
+        dispatch(clearUserEntries());
+        dispatch(clearFactors());
+        dispatch(clearProfile());
+      });
   };
 };
 
