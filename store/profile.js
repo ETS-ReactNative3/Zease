@@ -4,8 +4,8 @@ import { fetchUserEntries } from "./userEntries";
 const userId = auth.currentUser && auth.currentUser.uid;
 
 //action types
-const SET_PROFILE = "SET_USER_ENTRIES";
-const CLEAR_PROFILE = "CLEAR_USER_ENTRIES";
+const SET_PROFILE = "SET_PROFILE";
+const CLEAR_PROFILE = "CLEAR_PROFILE";
 
 //action creators
 const setProfile = (profile) => {
@@ -50,7 +50,7 @@ export const fetchProfile = () => {
   };
 };
 
-export const login = (email, password) => {
+export const login = (email, password, navigation) => {
   return async (dispatch) => {
     try {
       auth
@@ -63,7 +63,12 @@ export const login = (email, password) => {
         })
         .then(() => {
           dispatch(fetchProfile());
+        })
+        .then(() => {
           dispatch(fetchUserEntries());
+        })
+        .then(() => {
+          navigation.navigate("NavBar");
         });
     } catch (error) {
       console.log(

@@ -26,7 +26,8 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const handleLogin = () => {
-    dispatch(login(email, password));
+    dispatch(login(email, password, navigation));
+
     // auth
     //   .signInWithEmailAndPassword(email, password)
     //   .then(async (userCredentials) => {

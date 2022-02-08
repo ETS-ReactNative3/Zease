@@ -33,8 +33,10 @@ export const fetchUserEntries = () => {
           entriesObject
         );
         const entriesArray = [];
-        for (let entryId in entriesObject) {
-          entriesArray.push(entriesObject[entryId]);
+        if (entriesObject) {
+          for (let entryId in entriesObject) {
+            entriesArray.push(entriesObject[entryId]);
+          }
         }
         //console.log("entries array from fetchEntries thunk", entriesArray);
         dispatch(setUserEntries(entriesArray));
@@ -53,8 +55,9 @@ export default function userEntries(state = [], action) {
   switch (action.type) {
     case SET_USER_ENTRIES:
       console.log(
-        "action.entriesArray from userEntries reducer for setentries case",
-        action.entriesArray
+        "action.entriesArray from userEntries reducer for setEntries case",
+        action.entriesArray,
+        action
       );
       return action.entriesArray;
     case CLEAR_USER_ENTRIES:
