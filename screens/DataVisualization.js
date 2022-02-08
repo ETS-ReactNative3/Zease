@@ -23,10 +23,6 @@ const DataVisualization = () => {
     //this on method gets the value of the data at that reference.
     sleepEntriesRef.on("value", (snapshot) => {
       const sleepEntryData = snapshot.val();
-      // console.log(
-      //   "sleep entry data pulled from db before it is put on local state",
-      //   sleepEntryData
-      // );
       setData(sleepEntryData);
     });
   }, []);

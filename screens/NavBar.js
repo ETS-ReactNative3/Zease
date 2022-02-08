@@ -44,8 +44,8 @@ export default function NavBar() {
     dispatch(setNewestEntry(newestEntry));
     dispatch(setOldestEntry(oldestEntry));
 
-    console.log("newest entry date: ", newestEntry.date);
-    console.log("yesterday: ", yesterday());
+    // console.log("newest entry date: ", newestEntry.date);
+    // console.log("yesterday: ", yesterday());
 
     //if the most recent entry was made yesterday put it in async storage, and note on local state that an entry has been made today
     if (newestEntry.date === yesterday()) {

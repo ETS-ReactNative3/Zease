@@ -14,6 +14,7 @@ import { reformatDate, calculateSleepLength } from "../Util";
 
 const ChartA = (props) => {
   const data = props.data;
+
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
 
