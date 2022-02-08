@@ -39,42 +39,47 @@ export const AllSleepEntries = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView style={styles.cardContainer}>
         {entryList.map((entry) => (
           <View key={entry.id}>
             <TouchableOpacity
-              style={styles.entryCard}
               onPress={() => {
                 setSelectedEntry(entry);
                 setModalOpen(!modalOpen);
               }}
-              style={tw`bg-gray-50 rounded drop-shadow-xl my-4 mx-3`}
+              style={styles.entryCard}
             >
               <View style={tw`px-6 py-4`}>
-                <Text style={tw`font-extrabold text-2xl mb-2 text-gray-900`}>{`${entry.date.slice(
+                <Text style={tw`font-bold text-2xl text-white mb-3`}>{`${entry.date.slice(
                   5,
                   7
                 )} / ${entry.date.slice(8, 10)} / ${entry.date.slice(0, 4)}`}</Text>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold leading-7`}>
-                  <Text style={tw`font-semibold`}>{`Sleep Start Time:    `}</Text>
-                  {`${convertToAmPm(entry.startTime)}`}
-                </Text>
+                <View style={styles.accountItem}>
+                  <Text style={tw`font-semibold text-white`}>{`Sleep Start Time:          `}</Text>
+                  <Text style={tw`font-extrabold text-white`}>{`${convertToAmPm(
+                    entry.startTime
+                  )}`}</Text>
+                </View>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold leading-7 bg-gray-200`}>
-                  <Text style={tw`font-semibold`}>{`Sleep End Time:    `}</Text>
-                  {`${convertToAmPm(entry.endTime)}`}
-                </Text>
+                <View style={styles.accountItem}>
+                  <Text style={tw`font-semibold text-white`}>{`Sleep End Time:            `}</Text>
+                  <Text style={tw`font-extrabold text-white`}>{`${convertToAmPm(
+                    entry.endTime
+                  )}`}</Text>
+                </View>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold leading-7`}>
-                  <Text style={tw`font-semibold`}>{`Sleep Quality Score:    `}</Text>
-                  {entry.quality}
-                </Text>
+                <View style={styles.accountItem}>
+                  <Text style={tw`font-semibold text-white`}>{`Sleep Quality Score:    `}</Text>
+                  <Text style={tw`font-extrabold text-white`}>{entry.quality}</Text>
+                </View>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold leading-7 bg-gray-200`}>
-                  <Text style={tw`font-semibold`}>{`Sleep Factor Count:    `}</Text>
-                  {`${(entry.entryFactors && Object.keys(entry.entryFactors).length) || '0'}`}
-                </Text>
+                <View style={styles.accountItem}>
+                  <Text style={tw`font-semibold text-white`}>{`Sleep Factor Count:     `}</Text>
+                  <Text style={tw`font-extrabold text-white`}>{`${
+                    (entry.entryFactors && Object.keys(entry.entryFactors).length) || '0'
+                  }`}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           </View>
@@ -104,10 +109,26 @@ export const AllSleepEntries = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  cardContainer: {
+    width: '90%'
+  },
+  accountItem: {
+    flexDirection: 'row',
+    paddingTop: 10
   },
   entryCard: {
-    backgroundColor: '#1C3F52'
+    backgroundColor: '#1C3F52',
+    borderRadius: 5,
+    margin: 10,
+    shadowColor: '#171717',
+    shadowOffset: { width: -2, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5
   }
 });
 
