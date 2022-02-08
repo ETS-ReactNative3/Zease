@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "tailwind-react-native-classnames";
 
+import { reformatDate, calculateSleepLength, getDateObj } from "../Util";
 import { database, auth } from "../firebase";
 import ChartA from "./ChartA";
 import ChartB from "./ChartB";
@@ -13,10 +14,10 @@ const DataVisualization = () => {
   const [timeRange, setTimeRange] = useState("week");
   const [data, setData] = useState([]);
 
+  const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2";
   //get sleep entry data from firebase
   useEffect(async () => {
     // const userId = auth.currentUser.uid;
-    const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2";
 
     //get data from firebase. This is getting a "snapshot" of the data
     const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
@@ -26,7 +27,79 @@ const DataVisualization = () => {
       const sleepEntryData = snapshot.val();
       setData(sleepEntryData);
     });
-  }, []);
+  }, [userId]);
+
+  const structureData = (dataRaw, timeRange) => {
+    console.log(dataRaw);
+    const timeMap = {
+      week: 7 * (1000 * 60 * 60 * 24),
+      month: 30 * (1000 * 60 * 60 * 24),
+      year: 365 * (1000 * 60 * 60 * 24),
+    };
+    const today = new Date();
+    today.setHours(0, 0, 0);
+    const scatterData = [];
+    const lineDurationData = [];
+    const lineQualityData = [];
+    let sleepDurationMin = 24;
+    let sleepDurationMax = 0;
+    let sleepQualityMin = 100;
+    let sleepQualityMax = 0;
+    let firstDate = "3022-01-01";
+    let lastDate = "1022-01-01";
+    Object.values(dataRaw).forEach((entry) => {
+      if (
+        timeRange === "all" ||
+        today - new Date(entry.date) < timeMap[timeRange]
+      ) {
+        let formatEntry = {
+          sleepDuration: calculateSleepLength(entry),
+          sleepQuality: entry.quality,
+          date: entry.date,
+          label: reformatDate(entry.date),
+        };
+        Object.values(entry.entryFactors).forEach((factor) => {
+          formatEntry[factor.name] = true;
+        });
+        scatterData.push(formatEntry);
+        lineDurationData.push({
+          x: getDateObj(entry.date),
+          y: calculateSleepLength(entry),
+        });
+        lineQualityData.push({ x: getDateObj(entry.date), y: entry.quality });
+        sleepDurationMin = Math.min(
+          sleepDurationMin,
+          formatEntry.sleepDuration
+        );
+        sleepDurationMax = Math.max(
+          sleepDurationMax,
+          formatEntry.sleepDuration
+        );
+        sleepQualityMin = Math.min(sleepQualityMin, formatEntry.sleepQuality);
+        sleepQualityMax = Math.max(sleepQualityMax, formatEntry.sleepQuality);
+        if (firstDate > entry.date) firstDate = entry.date;
+        if (lastDate < entry.date) lastDate = entry.date;
+      }
+    });
+    return {
+      scatterData,
+      lineDurationData,
+      lineQualityData,
+      sleepDurationMin,
+      sleepDurationMax,
+      sleepQualityMin,
+      sleepQualityMax,
+      firstDate,
+      lastDate,
+    };
+  };
+
+  const structuredData = {
+    week: structureData(data, "week"),
+    month: structureData(data, "month"),
+    year: structureData(data, "year"),
+    all: structureData(data, "all"),
+  };
 
   return (
     <View>
@@ -100,9 +173,10 @@ const DataVisualization = () => {
           </Pressable>
         </View>
         {viewChartA ? (
-          <ChartA data={data} timeRange={timeRange} />
+          <ChartA data={structuredData[timeRange]} timeRange={timeRange} />
         ) : (
-          <ChartB data={data} timeRange={timeRange} />
+          // <ChartB data={data} timeRange={timeRange} />
+          <ChartB data={structuredData[timeRange]} timeRange={timeRange} />
         )}
       </View>
     </View>

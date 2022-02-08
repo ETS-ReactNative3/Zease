@@ -12,12 +12,13 @@ import { G } from "react-native-svg";
 
 import { getDateObj, calculateSleepLength } from "../Util";
 
-const ChartB = (props) => {
+const ChartB = ({ data }) => {
   //data from db has already been pulled in by parent component.  However it still needs to be reformatted.
-  const sleepEntryDbData = props.data;
+  // const sleepEntryDbData = props.data;
   const [xDomain, setXDomain] = useState([
-    new Date(2022, 2, 1),
-    new Date(2022, 2, 14),
+    // new Date(2022, 2, 1),
+    // new Date(2022, 2, 14),
+    getDateObj(data.firstDate), getDateObj(data.lastDate)
   ]);
   const [xTickValues, setXTickValues] = useState([]);
 
@@ -27,10 +28,8 @@ const ChartB = (props) => {
     const newestDateObj = getDateObj(JSON.parse(newestEntryString).date);
     const oldestEntryString = await AsyncStorage.getItem("oldestEntry");
     const oldestDateObj = getDateObj(JSON.parse(oldestEntryString).date);
-    setXDomain([oldestDateObj, newestDateObj]);
-    //console.log("oldest date object", oldestDateObj);
-    //console.log("newestDateObj", JSON.parse(newestEntryString).date);
-    //console.log("oldest Date", JSON.parse(oldestEntryString).date);
+    // setXDomain([oldestDateObj, newestDateObj]);
+    // setXDomain([getDateObj(data.firstDate), getDateObj(data.lastDate)]);
     //get the timespan between the oldest and newest entries.
     const msPerDay = 1000 * 60 * 60 * 24;
     const timeSpan = newestDateObj.getTime() - oldestDateObj.getTime();
@@ -49,31 +48,31 @@ const ChartB = (props) => {
     setXTickValues(tickValues);
   }, []);
 
-  const getSleepLengthData = (dbDataObj) => {
-    const dataArray = [];
-    for (let entryId in dbDataObj) {
-      let entry = dbDataObj[entryId];
-      let entryForChart = {
-        x: getDateObj(entry.date),
-        y: calculateSleepLength(entry),
-      };
-      dataArray.push(entryForChart);
-    }
-    return dataArray;
-  };
+  // const getSleepLengthData = (dbDataObj) => {
+  //   const dataArray = [];
+  //   for (let entryId in dbDataObj) {
+  //     let entry = dbDataObj[entryId];
+  //     let entryForChart = {
+  //       x: getDateObj(entry.date),
+  //       y: calculateSleepLength(entry),
+  //     };
+  //     dataArray.push(entryForChart);
+  //   }
+  //   return dataArray;
+  // };
 
-  const getSleepQualityData = (dbDataObj) => {
-    const dataArray = [];
-    for (let entryId in dbDataObj) {
-      let entry = dbDataObj[entryId];
-      let entryForChart = {
-        x: getDateObj(entry.date),
-        y: entry.quality,
-      };
-      dataArray.push(entryForChart);
-    }
-    return dataArray;
-  };
+  // const getSleepQualityData = (dbDataObj) => {
+  //   const dataArray = [];
+  //   for (let entryId in dbDataObj) {
+  //     let entry = dbDataObj[entryId];
+  //     let entryForChart = {
+  //       x: getDateObj(entry.date),
+  //       y: entry.quality,
+  //     };
+  //     dataArray.push(entryForChart);
+  //   }
+  //   return dataArray;
+  // };
 
   return (
     <View>
@@ -85,7 +84,7 @@ const ChartB = (props) => {
           text={"Sleep Length (Hours)"}
         />
         <VictoryLabel
-          x={310}
+          x={260}
           y={20}
           style={{ fill: "#1C3F52" }}
           text={"Sleep Quality (%)"}
@@ -100,6 +99,7 @@ const ChartB = (props) => {
           {/*y axis for duration */}
           <VictoryAxis
             domain={[0, 17]}
+            // domain={[data.sleepDurationMin, data.sleepDurationMax]}
             dependentAxis
             orientation="left"
             standalone={false}
@@ -107,10 +107,13 @@ const ChartB = (props) => {
           />
           {/*line chart for sleep duration */}
           <VictoryLine
-            data={getSleepLengthData(sleepEntryDbData)}
+            // data={getSleepLengthData(sleepEntryDbData)}
+            data={data.lineDurationData}
             domain={{
               x: xDomain,
               y: [0, 17],
+              // y: [data.sleepDurationMin, data.sleepDurationMax]
+
             }}
             scale={{ x: "time", y: "linear" }}
             standalone={false}
@@ -120,6 +123,7 @@ const ChartB = (props) => {
           <VictoryAxis
             offsetX={50}
             domain={[0, 100]}
+            // domain={[data.sleepQualityMin, data.sleepQualityMax]}
             dependentAxis
             orientation="right"
             standalone={false}
@@ -127,10 +131,12 @@ const ChartB = (props) => {
           />
           {/*line chart for sleep quality */}
           <VictoryLine
-            data={getSleepQualityData(sleepEntryDbData)}
+            // data={getSleepQualityData(sleepEntryDbData)}
+            data={data.lineQualityData}
             domain={{
               x: xDomain,
               y: [0, 100],
+              // y = [data.sleepQualityMin, data.sleepQualityMax]
             }}
             scale={{ x: "time", y: "linear" }}
             standalone={false}
