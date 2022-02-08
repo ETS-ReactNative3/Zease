@@ -93,14 +93,15 @@ export const AllSleepEntries = () => {
           }}
         >
           <SingleEntry entry={selectedEntry} />
-          <Pressable
-            style={tw`flex-1 items-center justify-center`}
+          <TouchableOpacity
+            // style={tw`items-center justify-center h-20`}
+            style={styles.modal}
             onPress={() => {
               setModalOpen(!modalOpen);
             }}
           >
-            <Text>Back To Entries</Text>
-          </Pressable>
+            <Text style={styles.buttonText}>Back To Entries</Text>
+          </TouchableOpacity>
         </Modal>
       </ScrollView>
     </SafeAreaView>
@@ -122,6 +123,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10
   },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18
+  },
   entryCard: {
     backgroundColor: '#1C3F52',
     borderRadius: 15,
@@ -130,6 +136,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 5
+  },
+  modal: {
+    height: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F78A03',
+    opacity: 0.95
   }
 });
 

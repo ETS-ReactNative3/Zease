@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  SafeAreaView,
   StyleSheet
 } from 'react-native';
 import React from 'react';
@@ -52,7 +53,7 @@ const SingleEntry = (props) => {
   }, [entry]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={tw`font-bold text-2xl text-white mb-5 text-center`}>
         Overview for {entry.date && reformatDate(entry.date)}
       </Text>
@@ -119,7 +120,7 @@ const SingleEntry = (props) => {
           <Text style={styles.buttonText}>Edit Entry</Text>
         </TouchableOpacity>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
