@@ -31,7 +31,6 @@ const DataVisualization = () => {
   }, []);
 
   const structureData = (dataRaw, timeRange) => {
-    console.log("dataRaw", dataRaw)
     const timeMap = {
       week: 7 * (1000 * 60 * 60 * 24),
       month: 30 * (1000 * 60 * 60 * 24),

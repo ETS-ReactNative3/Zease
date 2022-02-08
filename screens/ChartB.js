@@ -7,20 +7,11 @@ import {
   VictoryAxis,
   VictoryLine,
 } from "victory-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { G } from "react-native-svg";
 
-import { getDateObj, calculateSleepLength } from "../Util";
+import { getDateObj } from "../Util";
 
 const ChartB = ({ data }) => {
-  //data from db has already been pulled in by parent component.  However it still needs to be reformatted.
-  // const sleepEntryDbData = props.data;
-  // const [xDomain, setXDomain] = useState([
-  //   new Date(2022, 2, 1),
-  //   new Date(2022, 2, 14),
-  // ]);
-  // const [xTickValues, setXTickValues] = useState([]);
-
   const xDomain = [getDateObj(data.firstDate), getDateObj(data.lastDate)];
 
   let xTickValues = [];
@@ -33,58 +24,6 @@ const ChartB = ({ data }) => {
     );
     xTickValues.push(tickMarkDate);
   }
-
-  //on page load get oldest and newst entrys from async storage.  This is needed to determine x axis domain
-  // useEffect(async () => {
-    // const newestEntryString = await AsyncStorage.getItem("mostRecentEntry");
-    // const newestDateObj = getDateObj(JSON.parse(newestEntryString).date);
-    // const oldestEntryString = await AsyncStorage.getItem("oldestEntry");
-    // const oldestDateObj = getDateObj(JSON.parse(oldestEntryString).date);
-    // setXDomain([oldestDateObj, newestDateObj]);
-    // setXDomain([getDateObj(data.firstDate), getDateObj(data.lastDate)]);
-    //get the timespan between the oldest and newest entries.
-    // const msPerDay = 1000 * 60 * 60 * 24;
-    // const timeSpan = newestDateObj.getTime() - oldestDateObj.getTime();
-
-    //divide the timeSpan by 4 and convert it from ms to days.  That's how often a tick mark should appear on the x axis
-    // const tickMarkFrequency = Math.floor(timeSpan / msPerDay / 4);
-
-    //make four tick marks, start from the oldest date, and add the tickMarkFrequency
-    // let tickValues = [];
-    // for (let i = 0; i < 5; i++) {
-    //   let tickMarkDate = new Date(
-    //     oldestDateObj.getTime() + tickMarkFrequency * i * msPerDay
-    //   );
-    //   tickValues.push(tickMarkDate);
-    // }
-    // setXTickValues(tickValues);
-  // }, []);
-
-  // const getSleepLengthData = (dbDataObj) => {
-  //   const dataArray = [];
-  //   for (let entryId in dbDataObj) {
-  //     let entry = dbDataObj[entryId];
-  //     let entryForChart = {
-  //       x: getDateObj(entry.date),
-  //       y: calculateSleepLength(entry),
-  //     };
-  //     dataArray.push(entryForChart);
-  //   }
-  //   return dataArray;
-  // };
-
-  // const getSleepQualityData = (dbDataObj) => {
-  //   const dataArray = [];
-  //   for (let entryId in dbDataObj) {
-  //     let entry = dbDataObj[entryId];
-  //     let entryForChart = {
-  //       x: getDateObj(entry.date),
-  //       y: entry.quality,
-  //     };
-  //     dataArray.push(entryForChart);
-  //   }
-  //   return dataArray;
-  // };
 
   return (
     <View>

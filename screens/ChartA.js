@@ -7,19 +7,16 @@ import {
   VictoryScatter,
   VictoryTooltip,
 } from "victory-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { database, auth } from "../firebase";
-import { reformatDate, calculateSleepLength } from "../Util";
 
-const ChartA = ({data, timeRange}) => {
+const ChartA = ({ data }) => {
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
 
   //get sleep factors for this user from firebase.
   useEffect(async () => {
-    // const userId = auth.currentUser.uid;
-    const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2";
+    const userId = auth.currentUser.uid;
 
     //get data from firebase. This is getting a "snapshot" of the data
     const userRef = database.ref(`users/${userId}`);
@@ -38,80 +35,6 @@ const ChartA = ({data, timeRange}) => {
     });
   }, []);
 
-  // const reformatDataForChart = (dbDataObject) => {
-  //   const dbDataArray = [];
-  //   for (let entryId in dbDataObject) {
-  //     let entry = dbDataObject[entryId];
-
-  //     let entryForChart = {
-  //       SleepLength: calculateSleepLength(entry),
-  //       SleepQuality: entry.quality,
-  //       date: entry.date,
-  //       label: reformatDate(entry.date),
-  //     };
-
-  //     //put the name of the factor directly on the entry object. (perhaps it should be the id of the factor?)
-  //     for (let entryFactorId in entry.entryFactors) {
-  //       let entryFactor = entry.entryFactors[entryFactorId];
-  //       entryForChart[entryFactor.name] = true;
-  //     }
-
-  //     dbDataArray.push(entryForChart);
-  //   }
-  //   return dbDataArray;
-  // };
-
-  // const structureData = (dataRaw, timeRange) => {
-  //   console.log(dataRaw);
-  //   const timeMap = {
-  //     week: 7 * (1000 * 60 * 60 * 24),
-  //     month: 30 * (1000 * 60 * 60 * 24),
-  //     year: 365 * (1000 * 60 * 60 * 24),
-  //   };
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0);
-  //   const scatterData = [];
-  //   let sleepDurationMin = 24;
-  //   let sleepDurationMax = 0;
-  //   let sleepQualityMin = 100;
-  //   let sleepQualityMax = 0;
-  //   Object.values(dataRaw).forEach((entry) => {
-  //     if (
-  //       timeRange === "all" ||
-  //       today - new Date(entry.date) < timeMap[timeRange]
-  //     ) {
-  //       let formatEntry = {
-  //         sleepDuration: calculateSleepLength(entry),
-  //         sleepQuality: entry.quality,
-  //         date: entry.date,
-  //         label: reformatDate(entry.date),
-  //       };
-  //       Object.values(entry.entryFactors).forEach((factor) => {
-  //         formatEntry[factor.name] = true;
-  //       });
-  //       scatterData.push(formatEntry);
-  //       sleepDurationMin = Math.min(
-  //         sleepDurationMin,
-  //         formatEntry.sleepDuration
-  //       );
-  //       sleepDurationMax = Math.max(
-  //         sleepDurationMax,
-  //         formatEntry.sleepDuration
-  //       );
-  //       sleepQualityMin = Math.min(sleepQualityMin, formatEntry.sleepQuality);
-  //       sleepQualityMax = Math.max(sleepQualityMax, formatEntry.sleepQuality);
-  //     }
-  //   });
-  //   return {
-  //     scatterData,
-  //     sleepDurationMin,
-  //     sleepDurationMax,
-  //     sleepQualityMin,
-  //     sleepQualityMax,
-  //   };
-  // };
-  // const structuredData = structureData(data, timeRange);
-
   return (
     <View>
       <VictoryChart domainPadding={{ x: [10, 10], y: [10, 10] }}>
@@ -120,7 +43,6 @@ const ChartA = ({data, timeRange}) => {
           label="Sleep Quality (%)"
           dependentAxis
           domain={[data.sleepQualityMin, data.sleepQualityMax]}
-
         />
         <VictoryAxis
           style={{ axisLabel: { padding: 36 } }}

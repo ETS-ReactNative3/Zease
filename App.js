@@ -7,7 +7,6 @@ import EditProfile from "./screens/EditProfile";
 import NavBar from "./screens/NavBar";
 import SingleEntry from "./screens/SingleEntry";
 import EditEntry from "./screens/EditEntry";
-import DataVisualization from "./screens/DataVisualization";
 
 const Stack = createNativeStackNavigator();
 
