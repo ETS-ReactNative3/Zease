@@ -8,31 +8,30 @@ import {
   Alert,
   Modal,
   Pressable,
-} from "react-native";
-import React from "react";
-import { useEffect, useState } from "react";
-import { auth, database } from "../firebase";
-import tw from "tailwind-react-native-classnames";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
+  StyleSheet,
+  ScrollView,
+  SafeAreaView
+} from 'react-native';
+import React from 'react';
+import { useEffect, useState } from 'react';
+import { auth, database } from '../firebase';
+import tw from 'tailwind-react-native-classnames';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
-import SleepFactorCategory from "./SleepFactorCategory";
-import {
-  convertToMilitaryString,
-  convertToAmPm,
-  reformatFactors,
-} from "../Util";
+import SleepFactorCategory from './SleepFactorCategory';
+import { convertToMilitaryString, convertToAmPm, reformatFactors } from '../Util';
 
 const BuildProfile = ({ navigation }) => {
   //sleep factor options from the DB (not specific to user)
   const [sleepFactors, setSleepFactors] = useState({});
 
   //Manage form inputs
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [name, setName] = useState('');
   const [sleepGoalStart, setsleepGoalStart] = useState(null);
   const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
   const [logReminderOn, setLogReminder] = useState(false);
@@ -44,14 +43,13 @@ const BuildProfile = ({ navigation }) => {
 
   //visibility of modals
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
-    useState(false);
+  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
   //when the page loads get the sleep factors from db
   useEffect(() => {
-    let sleepFactorsRef = database.ref("sleepFactors");
-    sleepFactorsRef.on("value", (snapshot) => {
+    let sleepFactorsRef = database.ref('sleepFactors');
+    sleepFactorsRef.on('value', (snapshot) => {
       const data = snapshot.val();
       setSleepFactors(data);
     });
@@ -88,39 +86,32 @@ const BuildProfile = ({ navigation }) => {
     let validated = true;
 
     if (!passwordsMatch) {
-      Alert.alert("Error", "Password and Confirm Password do not match.");
+      Alert.alert('Error', 'Password and Confirm Password do not match.');
       validated = false;
     }
 
     if (!emailValid) {
-      Alert.alert("Error", "Please enter a valid email address");
+      Alert.alert('Error', 'Please enter a valid email address');
       validated = false;
     }
 
-    if (password === "") {
-      Alert.alert("Error", "Please enter a password for account creation.");
+    if (password === '') {
+      Alert.alert('Error', 'Please enter a password for account creation.');
       validated = false;
     }
 
     try {
       //get the user's selected sleep factors from async storage
-      const userFactorsString = await AsyncStorage.getItem("userFactors");
-      const userFactors = userFactorsString
-        ? JSON.parse(userFactorsString)
-        : {};
+      const userFactorsString = await AsyncStorage.getItem('userFactors');
+      const userFactors = userFactorsString ? JSON.parse(userFactorsString) : {};
       if (Object.keys(userFactors).length === 0) {
-        Alert.alert("Error", "Please select at least one sleep factor");
+        Alert.alert('Error', 'Please select at least one sleep factor');
         validated = false;
       }
 
       //make sure that all required fields are filled in
-      if (
-        email === "" ||
-        name === "" ||
-        sleepGoalStart === null ||
-        sleepGoalEnd === null
-      ) {
-        Alert.alert("Error", "Please fill in all required fields.");
+      if (email === '' || name === '' || sleepGoalStart === null || sleepGoalEnd === null) {
+        Alert.alert('Error', 'Please fill in all required fields.');
         validated = false;
       }
 
@@ -132,7 +123,7 @@ const BuildProfile = ({ navigation }) => {
           sleepGoalEnd,
           userFactors,
           logReminderOn,
-          sleepReminderOn,
+          sleepReminderOn
         };
         // console.log("newUser about to be added in db", newUser)
         putUserinDB(newUser);
@@ -152,154 +143,185 @@ const BuildProfile = ({ navigation }) => {
         .createUserWithEmailAndPassword(email, password)
         .then((userCredentials) => {
           const userId = userCredentials.user.uid;
-          database.ref("users/" + userId).set(newUser);
+          database.ref('users/' + userId).set(newUser);
         })
         .catch((error) => alert(error.message));
 
-      navigation.navigate("NavBar");
+      navigation.navigate('NavBar');
     } catch (error) {
-      console.log(
-        "there was an error in attempting to add this user to the database: ",
-        error
-      );
+      console.log('there was an error in attempting to add this user to the database: ', error);
     }
   };
 
   return (
-    <View style={tw`flex-1 items-center justify-center`}>
-      <Text>Welcome!</Text>
-      <View>
-        <View style={tw`flex-row`}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <Text style={tw`text-white text-3xl font-extrabold mb-2 text-center mt-4`}>
+          Welcome to Zease!
+        </Text>
+        <Text style={tw`text-white text-xs font-bold mb-6 text-center`}>
+          Please complete your user profile below
+        </Text>
+        <View style={tw`bg-white rounded px-10 pt-6`}>
+          <View>
+            <TextInput
+              style={styles.input}
+              placeholder='Email*'
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+            {!emailValid && <Ionicons name='alert-outline' size={20} color='red' />}
+          </View>
+          <View>
+            <TextInput
+              style={styles.input}
+              placeholder='Password*'
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry
+            />
+            {!passwordsMatch && <Ionicons name='alert-outline' size={20} color='red' />}
+          </View>
           <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-          {!emailValid && (
-            <Ionicons name="alert-outline" size={20} color="red" />
-          )}
-        </View>
-        <View style={tw`flex-row`}>
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
+            style={styles.input}
+            placeholder='Confirm Password*'
+            value={passwordConfirm}
+            onChangeText={(text) => setPasswordConfirm(text)}
             secureTextEntry
           />
-          {!passwordsMatch && (
-            <Ionicons name="alert-outline" size={20} color="red" />
-          )}
-        </View>
-        <TextInput
-          placeholder="Confirm Password"
-          value={passwordConfirm}
-          onChangeText={(text) => setPasswordConfirm(text)}
-          secureTextEntry
-        />
-        <TextInput
-          placeholder="Name"
-          value={name}
-          onChangeText={(text) => setName(text)}
-        />
-        <View>
-          <Text>
-            Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}
-          </Text>
+          <TextInput
+            style={styles.input}
+            placeholder='Your Name*'
+            value={name}
+            onChangeText={(text) => setName(text)}
+          />
+          <View>
+            <Text>Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}</Text>
 
-          <DateTimePickerModal
-            isVisible={isBedTimePickerVisible}
-            mode="time"
-            onConfirm={handleBedTimeConfirm}
-            onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
-            minuteInterval={15}
-          />
-          <Button
-            title="Set Time"
-            onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
-          />
-        </View>
-        <View>
-          <Text>
-            Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
-          </Text>
-          <DateTimePickerModal
-            isVisible={isWakeTimePickerVisible}
-            mode="time"
-            onConfirm={handleWakeTimeConfirm}
-            onCancel={() =>
-              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
-            }
-            minuteInterval={15}
-          />
-          <Button
-            title="Set Time"
-            onPress={() =>
-              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
-            }
-          />
-        </View>
-        <View style={tw`flex-row`}>
-          <Switch
-            value={logReminderOn}
-            onValueChange={() =>
-              setLogReminder((previousValue) => !previousValue)
-            }
-          />
-          <Text>Remind me to enter daily sleep log</Text>
-        </View>
-        <View style={tw`flex-row`}>
-          <Switch
-            value={sleepReminderOn}
-            onValueChange={() =>
-              setSleepReminder((previousValue) => !previousValue)
-            }
-          />
-          <Text>Remind me to go to sleep</Text>
-        </View>
-        <View style={tw`flex-row`}>
-          <Text>Sleep Factors</Text>
-          <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
-            <Ionicons name="information-circle-outline" size={25} />
-          </TouchableOpacity>
-        </View>
-        <Modal
-          transparent={false}
-          animationType="slide"
-          visible={isFactorInfoVisible}
-          onRequestClose={() => setFactorInfoVisibility(!isFactorInfoVisible)}
-        >
-          <View style={tw`flex-1 items-center justify-center`}>
-            <Text>
-              A sleep factor is something that has the potential to affect your
-              sleep. When you are making a daily sleep entry you will be able to
-              select any number of the sleep factors you choose here. When
-              viewing visualizations of your sleep entries you will be able to
-              see any correlations that may exist between factors you have
-              chosen to track and the quality or duration of your sleep.
-            </Text>
-            <Pressable
-              onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}
-            >
-              <Text>Close</Text>
-            </Pressable>
+            <DateTimePickerModal
+              isVisible={isBedTimePickerVisible}
+              mode='time'
+              onConfirm={handleBedTimeConfirm}
+              onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+              minuteInterval={15}
+            />
+            <Button
+              title='Set Time'
+              onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+            />
           </View>
-        </Modal>
-        {reformatFactors(sleepFactors).map((category) => {
-          return (
-            <SleepFactorCategory key={category.name} category={category} />
-          );
-        })}
-        <View style={tw`items-center `}>
+          <View>
+            <Text>Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}</Text>
+            <DateTimePickerModal
+              isVisible={isWakeTimePickerVisible}
+              mode='time'
+              onConfirm={handleWakeTimeConfirm}
+              onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
+              minuteInterval={15}
+            />
+            <Button
+              title='Set Time'
+              onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
+            />
+          </View>
+          <View style={tw`flex-row`}>
+            <Switch
+              value={logReminderOn}
+              onValueChange={() => setLogReminder((previousValue) => !previousValue)}
+            />
+            <Text>Remind me to enter daily sleep log</Text>
+          </View>
+          <View style={tw`flex-row`}>
+            <Switch
+              value={sleepReminderOn}
+              onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
+            />
+            <Text>Remind me to go to sleep</Text>
+          </View>
+          <View style={tw`flex-row`}>
+            <Text>Sleep Factors</Text>
+            <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
+              <Ionicons name='information-circle-outline' size={25} />
+            </TouchableOpacity>
+          </View>
+          <Modal
+            transparent={false}
+            animationType='slide'
+            visible={isFactorInfoVisible}
+            onRequestClose={() => setFactorInfoVisibility(!isFactorInfoVisible)}
+          >
+            <View style={tw`flex-1 items-center justify-center`}>
+              <Text>
+                A sleep factor is something that has the potential to affect your sleep. When you
+                are making a daily sleep entry you will be able to select any number of the sleep
+                factors you choose here. When viewing visualizations of your sleep entries you will
+                be able to see any correlations that may exist between factors you have chosen to
+                track and the quality or duration of your sleep.
+              </Text>
+              <Pressable onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}>
+                <Text>Close</Text>
+              </Pressable>
+            </View>
+          </Modal>
+          {reformatFactors(sleepFactors).map((category) => {
+            return <SleepFactorCategory key={category.name} category={category} />;
+          })}
+          {/* <View style={tw`items-center `}>
           <TouchableOpacity onPress={handleSubmit}>
             <Text>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
             <Text>Cancel</Text>
           </TouchableOpacity>
+        </View> */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('LoginScreen')}
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#1C3F52',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#F78A03',
+    paddingVertical: 12,
+    width: 150,
+    marginVertical: 10,
+    borderRadius: 10
+  },
+  buttonContainer: {
+    marginTop: 40,
+    alignItems: 'center'
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold'
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    borderColor: '#1C3F52',
+    borderRadius: 2,
+    padding: 10
+  }
+});
 
 export default BuildProfile;

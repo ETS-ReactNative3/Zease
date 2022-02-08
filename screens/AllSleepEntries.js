@@ -47,7 +47,7 @@ export const AllSleepEntries = () => {
                 setSelectedEntry(entry);
                 setModalOpen(!modalOpen);
               }}
-              style={tw`bg-white rounded drop-shadow-xl my-4 mx-3`}
+              style={tw`bg-gray-50 rounded drop-shadow-xl my-4 mx-3`}
             >
               <View style={tw`px-6 py-4`}>
                 <Text style={tw`font-extrabold text-2xl mb-2 text-gray-900`}>{`${entry.date.slice(
@@ -55,22 +55,22 @@ export const AllSleepEntries = () => {
                   7
                 )} / ${entry.date.slice(8, 10)} / ${entry.date.slice(0, 4)}`}</Text>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                <Text style={tw`text-gray-700 text-base font-extrabold leading-7`}>
                   <Text style={tw`font-semibold`}>{`Sleep Start Time:    `}</Text>
                   {`${convertToAmPm(entry.startTime)}`}
                 </Text>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                <Text style={tw`text-gray-700 text-base font-extrabold leading-7 bg-gray-200`}>
                   <Text style={tw`font-semibold`}>{`Sleep End Time:    `}</Text>
                   {`${convertToAmPm(entry.endTime)}`}
                 </Text>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                <Text style={tw`text-gray-700 text-base font-extrabold leading-7`}>
                   <Text style={tw`font-semibold`}>{`Sleep Quality Score:    `}</Text>
                   {entry.quality}
                 </Text>
 
-                <Text style={tw`text-gray-700 text-base font-extrabold`}>
+                <Text style={tw`text-gray-700 text-base font-extrabold leading-7 bg-gray-200`}>
                   <Text style={tw`font-semibold`}>{`Sleep Factor Count:    `}</Text>
                   {`${(entry.entryFactors && Object.keys(entry.entryFactors).length) || '0'}`}
                 </Text>
