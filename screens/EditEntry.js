@@ -1,35 +1,46 @@
 import { StyleSheet, View, Text, Button, TextInput, Alert } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import Slider from "@react-native-community/slider";
 import MultiSelect from "react-native-multiple-select";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import { NavigationContainer } from "@react-navigation/native";
+// import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { auth, database } from "../firebase";
-// import { convertToMilitaryString, convertToAmPm } from "../utils";
+
 import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
-import NativePushNotificationManagerIOS from "react-native/Libraries/PushNotificationIOS/NativePushNotificationManagerIOS";
-import { withSafeAreaInsets } from "react-native-safe-area-context";
+import { goUpdateUserEntry } from "../store/userEntries";
+// import NativePushNotificationManagerIOS from "react-native/Libraries/PushNotificationIOS/NativePushNotificationManagerIOS";
+// import { withSafeAreaInsets } from "react-native-safe-area-context";
 
 const EditEntry = ({ navigation }) => {
-  // Entry ID (pulled in from firebase)
+  let dispatch = useDispatch();
+
+  //all entries pulled from redux
+  //(this will be needed to identify entryId)
+  let entryList = useSelector((state) => state.userEntries);
   const [entryId, setEntryId] = useState("");
 
-  // User sleep factors (pulled in from firebase)
-  const [userFactors, setUserFactors] = useState({});
+  // User and DB factors (pulled in from redux)
+  let userFactors = useSelector((state) => state.userFactors);
+  //DB factors are needed to convert the factor IDarray to an object
+  let dbFactors = useSelector((state) => state.dbFactors);
   const [userFactorsArr, setUserFactorsArr] = useState([]);
 
+  //users can only edit yesterday's entry, so the newest entry should display
+  const yesterdaysEntry = useSelector((state) => state.newestEntry);
+
   // Form state
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [quality, setQuality] = useState(0);
-  const [entryFactorsArr, setEntryFactorsArr] = useState([]);
-  const [notes, setNotes] = useState("");
-  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState(yesterdaysEntry.startTime || "");
+  const [endTime, setEndTime] = useState(yesterdaysEntry.endTime || "");
+  const [quality, setQuality] = useState(yesterdaysEntry.quality || 0);
+  const [entryFactorsArr, setEntryFactorsArr] = useState(
+    Object.keys(yesterdaysEntry.entryFactors) || []
+  );
+  const [notes, setNotes] = useState(yesterdaysEntry.notes || "");
+  const [date, setDate] = useState(yesterdaysEntry.date || "");
 
   // Time picker state
   const [startTimePickerVisible, setStartTimePickerVisible] = useState(false);
@@ -65,50 +76,20 @@ const EditEntry = ({ navigation }) => {
     setEntryFactorsArr(selectedItems);
   };
 
-  // Grab userId from the firebase auth component
-  const userId = auth.currentUser.uid;
-
   useEffect(() => {
-    // Fetch user's sleep factors from firebase
-    const factorsRef = database.ref(`users/${userId}/userFactors`);
-    factorsRef.on("value", (snapshot) => {
-      const factors = snapshot.val();
-      setUserFactors(factors);
-      // Reformat factors to array of objects, with keys id, name, and category
-      const formattedFactors = [];
-      for (let key in factors) {
-        formattedFactors.push({ ...factors[key], id: key });
-      }
-      setUserFactorsArr(formattedFactors);
-    });
+    // reformat the sleep factors from redux
+    const formattedFactors = [];
+    for (let key in userFactors) {
+      formattedFactors.push({ ...userFactors[key], id: key });
+    }
+    setUserFactorsArr(formattedFactors);
 
-    // Fetch entry ID from firebase
-    const userEntriesRef = database.ref(`sleepEntries/${userId}/`);
-    userEntriesRef.on("value", (snapshot) => {
-      const allUserEntries = snapshot.val();
-      for (let key in allUserEntries) {
-        if (allUserEntries[key].date === yesterday()) {
-          setEntryId(key);
-          return;
-        }
+    //extract entryId from redux's list of entries
+    entryList.forEach((entry) => {
+      if (entry.date === yesterday()) {
+        setEntryId(entry.id);
       }
-      console.log("Entry ID not found");
     });
-  }, []);
-
-  // Fetch entry from the async storage and set form state
-  useEffect(async () => {
-    const yesterdaysEntry = await AsyncStorage.getItem("yesterdaysEntry").then(
-      (data) => JSON.parse(data)
-    );
-    setDate(yesterdaysEntry.date);
-    setStartTime(yesterdaysEntry.startTime);
-    setEndTime(yesterdaysEntry.endTime);
-    setQuality(yesterdaysEntry.quality);
-    setNotes(yesterdaysEntry.notes);
-    // Reformat factors to array of ids
-    const formattedFactors = Object.keys(yesterdaysEntry.entryFactors);
-    setEntryFactorsArr(formattedFactors);
   }, []);
 
   const handleSubmit = async () => {
@@ -120,17 +101,14 @@ const EditEntry = ({ navigation }) => {
 
     // Convert entryFactorsArr (arr of ids) for factor objects
     const entryFactors = {};
-    entryFactorsArr.forEach(
-      (factorId) => (entryFactors[factorId] = userFactors[factorId])
-    );
+    entryFactorsArr.forEach((factorId) => {
+      entryFactors[factorId] = dbFactors[factorId];
+    });
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
     try {
-      // Update the new entry in async storage so singleEntry view can use it
-      await AsyncStorage.setItem("yesterdaysEntry", JSON.stringify(formData));
-
       // Write form inputs to firebase
-      const sleepEntriesRef = database.ref(`sleepEntries/${userId}/${entryId}`);
-      sleepEntriesRef.set(formData);
+      dispatch(goUpdateUserEntry(formData, entryId));
+
       Alert.alert("Changes submitted!");
       navigation.navigate("NavBar");
     } catch (error) {

@@ -28,10 +28,12 @@ export const fetchUserEntries = () => {
       const entriesRef = database.ref(`sleepEntries/${userId}`);
       entriesRef.on("value", (snapshot) => {
         const entriesObject = snapshot.val();
-
+        //reformat they entries as an array and put the id as a prop on each entry
         const entriesArray = [];
         if (entriesObject) {
           for (let entryId in entriesObject) {
+            let entry = entriesObject[entryId];
+            entry.id = entryId;
             entriesArray.push(entriesObject[entryId]);
           }
         }
@@ -59,6 +61,25 @@ export const goAddUserEntry = (formData) => {
     } catch (error) {
       console.log(
         "there was an error adding this entry to the firebase realtime database: ",
+        error
+      );
+    }
+  };
+};
+
+export const goUpdateUserEntry = (formData, entryId) => {
+  return async (dispatch) => {
+    try {
+      //console.log("formData about to be updated in db", formData);
+      const userId = auth.currentUser && auth.currentUser.uid;
+      const sleepEntriesRef = database.ref(`sleepEntries/${userId}/${entryId}`);
+      sleepEntriesRef.set(formData);
+
+      dispatch(fetchUserEntries());
+      dispatch(setNewestEntry(formData));
+    } catch (error) {
+      console.log(
+        "there was an error updating this entry in the firebase realtime database: ",
         error
       );
     }
