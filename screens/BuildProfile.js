@@ -163,7 +163,7 @@ const BuildProfile = ({ navigation }) => {
           Please complete your user profile below
         </Text>
         <View style={tw`bg-white rounded px-10 pt-6`}>
-          <View>
+          <View style>
             <TextInput
               style={styles.input}
               placeholder='Email*'
@@ -195,8 +195,8 @@ const BuildProfile = ({ navigation }) => {
             value={name}
             onChangeText={(text) => setName(text)}
           />
-          <View>
-            <Text>Bed Time Goal: {sleepGoalStart && convertToAmPm(sleepGoalStart)}</Text>
+          <View style={tw`flex-row mb-2`}>
+            <Text>{sleepGoalStart && convertToAmPm(sleepGoalStart)}</Text>
 
             <DateTimePickerModal
               isVisible={isBedTimePickerVisible}
@@ -206,12 +206,12 @@ const BuildProfile = ({ navigation }) => {
               minuteInterval={15}
             />
             <Button
-              title='Set Time'
+              title='Set Bed Time Goal'
               onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
             />
           </View>
-          <View>
-            <Text>Wake Up Goal: {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}</Text>
+          <View style={tw`flex-row mb-4`}>
+            <Text>{sleepGoalEnd && convertToAmPm(sleepGoalEnd)}</Text>
             <DateTimePickerModal
               isVisible={isWakeTimePickerVisible}
               mode='time'
@@ -220,28 +220,30 @@ const BuildProfile = ({ navigation }) => {
               minuteInterval={15}
             />
             <Button
-              title='Set Time'
+              title='Set Wake Up Goal'
               onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
             />
           </View>
-          <View style={tw`flex-row`}>
+          <View style={tw`flex-row mb-4`}>
             <Switch
+              style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
               value={logReminderOn}
               onValueChange={() => setLogReminder((previousValue) => !previousValue)}
             />
-            <Text>Remind me to enter daily sleep log</Text>
+            <Text style={tw`mt-2 ml-1`}>Remind me to enter daily sleep log</Text>
           </View>
-          <View style={tw`flex-row`}>
+          <View style={tw`flex-row mb-4`}>
             <Switch
+              style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
               value={sleepReminderOn}
               onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
             />
-            <Text>Remind me to go to sleep</Text>
+            <Text style={tw`mt-2 ml-1`}>Remind me to go to sleep</Text>
           </View>
           <View style={tw`flex-row`}>
-            <Text>Sleep Factors</Text>
+            <Text style={tw`mr-1 mb-2`}>Sleep Factors</Text>
             <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
-              <Ionicons name='information-circle-outline' size={25} />
+              <Ionicons name='information-circle-outline' size={16} />
             </TouchableOpacity>
           </View>
           <Modal
@@ -266,14 +268,6 @@ const BuildProfile = ({ navigation }) => {
           {reformatFactors(sleepFactors).map((category) => {
             return <SleepFactorCategory key={category.name} category={category} />;
           })}
-          {/* <View style={tw`items-center `}>
-          <TouchableOpacity onPress={handleSubmit}>
-            <Text>Submit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-            <Text>Cancel</Text>
-          </TouchableOpacity>
-        </View> */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Submit</Text>
