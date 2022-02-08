@@ -30,6 +30,7 @@ export const fetchUserEntries = () => {
         for (let entryId in entriesObject) {
           entriesArray.push(entriesObject[entryId]);
         }
+        //console.log("entries array from fetchEntries thunk", entriesArray);
         dispatch(setUserEntries(entriesArray));
       });
     } catch (error) {

@@ -9,12 +9,12 @@ import {
 } from "victory-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { G } from "react-native-svg";
-
+import { useSelector } from "react-redux";
 import { getDateObj, calculateSleepLength } from "../Util";
 
-const ChartB = (props) => {
-  //data from db has already been pulled in by parent component.  However it still needs to be reformatted.
-  const sleepEntryDbData = props.data;
+const ChartB = () => {
+  //get data in array form from redux, but it still needs to be rearranged for the chart
+  let userEntries = useSelector((state) => state.userEntries);
   const [xDomain, setXDomain] = useState([
     new Date(2022, 2, 1),
     new Date(2022, 2, 14),
@@ -49,30 +49,22 @@ const ChartB = (props) => {
     setXTickValues(tickValues);
   }, []);
 
-  const getSleepLengthData = (dbDataObj) => {
-    const dataArray = [];
-    for (let entryId in dbDataObj) {
-      let entry = dbDataObj[entryId];
-      let entryForChart = {
+  const getSleepLengthData = (userEntriesArray) => {
+    return userEntriesArray.map((entry) => {
+      return {
         x: getDateObj(entry.date),
         y: calculateSleepLength(entry),
       };
-      dataArray.push(entryForChart);
-    }
-    return dataArray;
+    });
   };
 
-  const getSleepQualityData = (dbDataObj) => {
-    const dataArray = [];
-    for (let entryId in dbDataObj) {
-      let entry = dbDataObj[entryId];
-      let entryForChart = {
+  const getSleepQualityData = (userEntriesArray) => {
+    return userEntriesArray.map((entry) => {
+      return {
         x: getDateObj(entry.date),
         y: entry.quality,
       };
-      dataArray.push(entryForChart);
-    }
-    return dataArray;
+    });
   };
 
   return (
@@ -107,7 +99,7 @@ const ChartB = (props) => {
           />
           {/*line chart for sleep duration */}
           <VictoryLine
-            data={getSleepLengthData(sleepEntryDbData)}
+            data={getSleepLengthData(userEntries)}
             domain={{
               x: xDomain,
               y: [0, 17],
@@ -127,7 +119,7 @@ const ChartB = (props) => {
           />
           {/*line chart for sleep quality */}
           <VictoryLine
-            data={getSleepQualityData(sleepEntryDbData)}
+            data={getSleepQualityData(userEntries)}
             domain={{
               x: xDomain,
               y: [0, 100],

@@ -18,6 +18,7 @@ export const AllSleepEntries = () => {
   let entryList = useSelector((state) => state.userEntries);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState({});
+  //console.log("entryList from allsleepEntries", entryList);
 
   return (
     <SafeAreaView style={tw`bg-white`}>

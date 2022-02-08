@@ -7,13 +7,14 @@ import {
   VictoryScatter,
   VictoryTooltip,
 } from "victory-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
 import { database, auth } from "../firebase";
 import { reformatDate, calculateSleepLength } from "../Util";
 
 const ChartA = (props) => {
   const data = props.data;
+  let userEntries = useSelector((state) => state.userEntries);
 
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
@@ -40,11 +41,8 @@ const ChartA = (props) => {
     });
   }, []);
 
-  const reformatDataForChart = (dbDataObject) => {
-    const dbDataArray = [];
-    for (let entryId in dbDataObject) {
-      let entry = dbDataObject[entryId];
-
+  const reformatDataForChart = (userEntriesArray) => {
+    return userEntriesArray.map((entry) => {
       let entryForChart = {
         SleepLength: calculateSleepLength(entry),
         SleepQuality: entry.quality,
@@ -57,10 +55,8 @@ const ChartA = (props) => {
         let entryFactor = entry.entryFactors[entryFactorId];
         entryForChart[entryFactor.name] = true;
       }
-
-      dbDataArray.push(entryForChart);
-    }
-    return dbDataArray;
+      return entryForChart;
+    });
   };
 
   return (
@@ -77,7 +73,7 @@ const ChartA = (props) => {
         />
         {data && (
           <VictoryScatter
-            data={reformatDataForChart(data)}
+            data={reformatDataForChart(userEntries)}
             x="SleepLength"
             y="SleepQuality"
             style={{
