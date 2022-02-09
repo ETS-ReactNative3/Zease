@@ -8,32 +8,24 @@ import {
   VictoryTooltip,
 } from "victory-native";
 import { Picker } from "@react-native-picker/picker";
-import { database, auth } from "../firebase";
+import { useSelector } from "react-redux";
 
 const ChartA = ({ data }) => {
+
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
+  const userFactorsObj = useSelector((state) => state.userFactors);
 
   //get sleep factors for this user from firebase.
-  useEffect(async () => {
-    const userId = auth.currentUser.uid;
-
-    //get data from firebase. This is getting a "snapshot" of the data
-    const userRef = database.ref(`users/${userId}`);
-
-    //this on method gets the value of the data at that reference.
-    userRef.on("value", (snapshot) => {
-      const user = snapshot.val();
-      const userFactorsObj = user.userFactors;
-      const userFactorsArr = [];
-      for (let factorId in userFactorsObj) {
-        let factor = userFactorsObj[factorId];
-        factor.id = factorId;
-        userFactorsArr.push(factor);
-      }
-      setUserFactors(userFactorsArr);
-    });
-  }, []);
+  useEffect(() => {
+    const userFactorsArr = [];
+    for (let factorId in userFactorsObj) {
+      let factor = userFactorsObj[factorId];
+      factor.id = factorId;
+      userFactorsArr.push(factor);
+    }
+    setUserFactors(userFactorsArr);
+  }, [userFactorsObj]);
 
   return (
     <View>
@@ -49,20 +41,18 @@ const ChartA = ({ data }) => {
           label="Sleep Duration (Hours)"
           domain={[data.sleepDurationMin, data.sleepDurationMax]}
         />
-        {data && (
-          <VictoryScatter
-            data={data.scatterData}
-            x="sleepDuration"
-            y="sleepQuality"
-            style={{
-              data: {
-                fill: ({ datum }) =>
-                  datum[selectedFactor] ? "#F78A03" : "#1C3F52",
-              },
-            }}
-            labelComponent={<VictoryTooltip />}
-          />
-        )}
+        <VictoryScatter
+          data={data.scatterData}
+          x="sleepDuration"
+          y="sleepQuality"
+          style={{
+            data: {
+              fill: ({ datum }) =>
+                datum[selectedFactor] ? "#F78A03" : "#1C3F52",
+            },
+          }}
+          labelComponent={<VictoryTooltip />}
+        />
       </VictoryChart>
 
       <View>

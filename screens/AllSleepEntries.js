@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -8,33 +8,17 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import { convertToAmPm } from "../Util.js";
 import tw from "tailwind-react-native-classnames";
-import { auth, database } from "../firebase";
+import { useSelector } from "react-redux";
+
+import { convertToAmPm } from "../Util.js";
 import SingleEntry from "./SingleEntry";
 
 export const AllSleepEntries = () => {
-  const [entryList, setEntryList] = useState([]);
+  let entryList = useSelector((state) => state.userEntries);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState({});
-
-  const currentUserId = "v3fmHEk6CiTxbU5o8M6tFxuawEI3";
-  // User Sam ID, delete once component incorporated to main app
-  // Grab userId from the firebase auth component
-
-  const userId = auth.currentUser ? auth.currentUser.uid : currentUserId;
-
-  useEffect(() => {
-    const entryRef = database.ref(`sleepEntries/${userId}`);
-    entryRef.on("value", (snapshot) => {
-      const entries = snapshot.val();
-      const entryList = [];
-      for (let id in entries) {
-        entryList.push(entries[id]);
-      }
-      setEntryList(entryList);
-    });
-  }, []);
+  //console.log("entryList from allsleepEntries", entryList);
 
   return (
     <SafeAreaView style={tw`bg-white`}>

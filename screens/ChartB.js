@@ -8,7 +8,6 @@ import {
   VictoryLine,
 } from "victory-native";
 import { G } from "react-native-svg";
-
 import { getDateObj } from "../Util";
 
 const ChartB = ({ data }) => {
