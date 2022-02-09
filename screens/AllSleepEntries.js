@@ -10,7 +10,9 @@ import {
   StyleSheet
 } from 'react-native';
 import tw from 'tailwind-react-native-classnames';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
+import { StatusBar } from 'expo-status-bar';
 
 import { convertToAmPm } from '../Util.js';
 import SingleEntry from './SingleEntry';
@@ -66,6 +68,7 @@ export const AllSleepEntries = () => {
                 </View>
               </View>
             </TouchableOpacity>
+            <StatusBar style='dark' />
           </View>
         ))}
         <Modal
@@ -97,11 +100,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    opacity: 0.95
   },
   cardContainer: {
     width: '90%',
-    opacity: 0.95
+    marginTop: 60
   },
   accountItem: {
     flexDirection: 'row',
