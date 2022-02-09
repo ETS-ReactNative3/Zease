@@ -166,8 +166,6 @@ export const seedFirebase = (userId) => {
       startUTC.setHours(22 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0);
       let endUTC = new Date();
       endUTC.setHours(7 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0);
-      // console.log(startUTC)
-      // console.log(endUTC)
       let selectedFactors = {};
       Object.entries(sleepFactors).forEach(([key, val]) => {
         if (Math.random() < 0.2) selectedFactors[key] = val;

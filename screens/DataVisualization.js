@@ -16,6 +16,8 @@ const DataVisualization = () => {
   const data = useSelector((state) => state.userEntries);
 
   const structureData = (dataRaw, timeRange) => {
+    console.log("structuring data");
+    console.log("data", dataRaw);
     const timeMap = {
       week: 7 * (1000 * 60 * 60 * 24),
       month: 30 * (1000 * 60 * 60 * 24),
@@ -43,9 +45,11 @@ const DataVisualization = () => {
           date: entry.date,
           label: reformatDate(entry.date),
         };
-        Object.values(entry.entryFactors).forEach((factor) => {
-          formatEntry[factor.name] = true;
-        });
+        if (entry.entryFactors) {
+          Object.values(entry.entryFactors).forEach((factor) => {
+            formatEntry[factor.name] = true;
+          });
+        }
         scatterData.push(formatEntry);
         lineDurationData.push({
           x: getDateObj(entry.date),
@@ -78,15 +82,16 @@ const DataVisualization = () => {
       lastDate,
     };
   };
-  
-  if (data.length <= 1) return (
-    <View style={styles.container}>
-      <Text
-          style={tw`font-semibold text-white`}
-        > Come back to view the data once you have more entries!
+
+  if (data.length <= 1)
+    return (
+      <View style={styles.container}>
+        <Text style={tw`font-semibold text-white`}>
+          {" "}
+          Come back to view the data once you have more entries!
         </Text>
       </View>
-  )
+    );
   return (
     <View>
       <View style={tw`items-center`}>
@@ -172,10 +177,10 @@ export default DataVisualization;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1C3F52',
+    backgroundColor: "#1C3F52",
     opacity: 0.95,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
