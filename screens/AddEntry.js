@@ -24,11 +24,10 @@ const AddEntry = () => {
   // Time picker state
   const [startTimePickerVisible, setStartTimePickerVisible] = useState(false);
   const [endTimePickerVisible, setEndTimePickerVisible] = useState(false);
-  // TODO: Initialize time picker to user's goal times
-  // const [startTimeUTC, setStartTimeUTC] = useState(Date.now());
-  // const [endTimeUTC, setEndTimeUTC] = useState(Date.now());
-  // const [startTimeUTC, setStartTimeUTC] = useState(new Date().setHours(20,0,0,0));
-  // const [endTimeUTC, setEndTimeUTC] = useState(new Date().setHours(7,0,0,0));
+
+  // Initialize time picker
+  const bedTimeModalRef = useRef();
+  const wakeTimeModalRef = useRef();
 
   // Sleep factor multiselect ref (used to call prototype methods)
   const multiSelectRef = useRef();
@@ -41,14 +40,12 @@ const AddEntry = () => {
 
   // Set state for sleep startTime once modal picker selection confirmed
   const handleConfirmStart = (time) => {
-    // setStartTimeUTC(time);
     setStartTime(convertToMilitaryString(time));
     hideTimePickers();
   };
 
   // Set state for sleep endTime once modal picker selection confirmed
   const handleConfirmEnd = (time) => {
-    // setEndTimeUTC(time);
     setEndTime(convertToMilitaryString(time));
     hideTimePickers();
   };
@@ -87,8 +84,6 @@ const AddEntry = () => {
     ); // Only grab name and category
     // Set formData factors to formatted selectedItems (selected items will be array of ids)
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
-    //console.log("formData", formData);
-
     // Write form inputs to firebase.  this will also dispatch function to put set this new entry as the newest entry in redux and for this new entry to be included in userEntries.
     dispatch(goAddUserEntry(formData));
     // Success alert
@@ -99,7 +94,6 @@ const AddEntry = () => {
     setQuality(0);
     setEntryFactorsArr([]);
     setNotes("");
-    // TODO: Take user to SingleEntry view of submitted entry
   };
 
   return (
@@ -112,37 +106,31 @@ const AddEntry = () => {
           title={startTime ? convertToAmPm(startTime) : "Select"}
           onPress={() => {
             setStartTimePickerVisible(true);
+            bedTimeModalRef.current.state.currentDate.setHours(20,0,0,0)
           }}
         />
         <DateTimePickerModal
           isVisible={startTimePickerVisible}
           mode="time"
+          ref={bedTimeModalRef}
           onConfirm={handleConfirmStart}
           onCancel={hideTimePickers}
         />
-        {/* <DateTimePicker
-          value={startTimeUTC}
-          mode="time"
-          onChange={handleConfirmStart}
-        /> */}
         <Text>Wake time</Text>
         <Button
           title={endTime ? convertToAmPm(endTime) : "Select"}
           onPress={() => {
             setEndTimePickerVisible(true);
+            wakeTimeModalRef.current.state.currentDate.setHours(8,0,0,0)
           }}
         />
         <DateTimePickerModal
           isVisible={endTimePickerVisible}
           mode="time"
-          onConfirm={handleConfirmEnd}
+            ref = {wakeTimeModalRef}
+            onConfirm={handleConfirmEnd}
           onCancel={hideTimePickers}
         />
-        {/* <DateTimePicker
-          value={endTimeUTC}
-          mode="time"
-          onChange={handleConfirmEnd}
-        /> */}
         <Text>Sleep Quality</Text>
         <Slider
           step={1}
