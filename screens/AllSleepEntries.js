@@ -100,7 +100,7 @@ export const AllSleepEntries = () => {
               setModalOpen(!modalOpen);
             }}
           >
-            <Text style={styles.buttonText}>Back To Entries</Text>
+            <Text style={styles.buttonText}>Back To Sleep Entries</Text>
           </TouchableOpacity>
         </Modal>
       </ScrollView>
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5
   },
   modal: {
-    height: 80,
+    height: 90,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F78A03',
