@@ -1,10 +1,10 @@
-import { View, Text, Switch } from "react-native";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import tw from "tailwind-react-native-classnames";
+import { View, Text, Switch } from 'react-native';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import tw from 'tailwind-react-native-classnames';
 
-import { addFactor, removeFactor } from "../store/userFactors";
+import { addFactor, removeFactor } from '../store/userFactors';
 
 const SleepFactorSwitch = (props) => {
   const dispatch = useDispatch();
@@ -37,9 +37,13 @@ const SleepFactorSwitch = (props) => {
     }
   };
   return (
-    <View style={tw`flex-row`}>
-      <Switch value={factorRelevant} onValueChange={() => toggleSwitch()} />
-      <Text>{props.factor.name}</Text>
+    <View style={tw`flex-row mb-2`}>
+      <Switch
+        style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
+        value={factorRelevant}
+        onValueChange={() => toggleSwitch()}
+      />
+      <Text style={tw`font-semibold mt-2 ml-1 text-white`}>{props.factor.name}</Text>
     </View>
   );
 };
