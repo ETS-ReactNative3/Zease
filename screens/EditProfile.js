@@ -21,6 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import SleepFactorCategory from './SleepFactorCategory';
 import { convertToMilitaryString, convertToAmPm, reformatFactors } from '../Util';
 import { updateProfile } from '../store/profile';
+import { fetchUserFactors } from '../store/userFactors';
 
 const EditProfile = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -101,6 +102,11 @@ const EditProfile = ({ navigation }) => {
       dispatch(updateProfile(updatedUser));
       navigation.navigate('NavBar');
     }
+  };
+
+  const handleCancel = () => {
+    dispatch(fetchUserFactors());
+    navigation.navigate('NavBar');
   };
 
   return (
@@ -233,7 +239,7 @@ const EditProfile = ({ navigation }) => {
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NavBar')}>
+          <TouchableOpacity style={styles.button} onPress={() => handleCancel()}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
