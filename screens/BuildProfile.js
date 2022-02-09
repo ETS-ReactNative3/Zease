@@ -14,18 +14,22 @@ import {
 } from 'react-native';
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { auth, database } from '../firebase';
+import { useSelector, useDispatch } from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 
 import SleepFactorCategory from './SleepFactorCategory';
 import { convertToMilitaryString, convertToAmPm, reformatFactors } from '../Util';
+import { createProfile } from '../store/profile';
+import { fetchDBFactors } from '../store/dbFactors';
 
 const BuildProfile = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   //sleep factor options from the DB (not specific to user)
-  const [sleepFactors, setSleepFactors] = useState({});
+  //const [sleepFactors, setSleepFactors] = useState({});
+  const sleepFactors = useSelector((state) => state.dbFactors);
 
   //Manage form inputs
   const [email, setEmail] = useState('');
@@ -36,6 +40,7 @@ const BuildProfile = ({ navigation }) => {
   const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
   const [logReminderOn, setLogReminder] = useState(false);
   const [sleepReminderOn, setSleepReminder] = useState(false);
+  let userFactors = useSelector((state) => state.userFactors);
 
   //form validation
   const [emailValid, setEmailValid] = useState(true);
@@ -48,15 +53,12 @@ const BuildProfile = ({ navigation }) => {
 
   //when the page loads get the sleep factors from db
   useEffect(() => {
-    let sleepFactorsRef = database.ref('sleepFactors');
-    sleepFactorsRef.on('value', (snapshot) => {
-      const data = snapshot.val();
-      setSleepFactors(data);
-    });
+    dispatch(fetchDBFactors());
   }, []);
 
   //when email changes update state about whether it is a valid email
   useEffect(() => {
+    //console.log("dbSleepFactors, ", sleepFactors);
     setEmailValid(
       String(email)
         .toLowerCase()
@@ -100,56 +102,30 @@ const BuildProfile = ({ navigation }) => {
       validated = false;
     }
 
-    try {
-      //get the user's selected sleep factors from async storage
-      const userFactorsString = await AsyncStorage.getItem('userFactors');
-      const userFactors = userFactorsString ? JSON.parse(userFactorsString) : {};
-      if (Object.keys(userFactors).length === 0) {
-        Alert.alert('Error', 'Please select at least one sleep factor');
-        validated = false;
-      }
-
-      //make sure that all required fields are filled in
-      if (email === '' || name === '' || sleepGoalStart === null || sleepGoalEnd === null) {
-        Alert.alert('Error', 'Please fill in all required fields.');
-        validated = false;
-      }
-
-      if (validated) {
-        let newUser = {
-          email,
-          name,
-          sleepGoalStart,
-          sleepGoalEnd,
-          userFactors,
-          logReminderOn,
-          sleepReminderOn
-        };
-        // console.log("newUser about to be added in db", newUser)
-        putUserinDB(newUser);
-      }
-    } catch (error) {
-      console.log(
-        "there was an error in fetching the user's sleep factors from async storage: ",
-        error
-      );
+    if (Object.keys(userFactors).length === 0) {
+      Alert.alert('Error', 'Please select at least one sleep factor');
+      validated = false;
     }
-  };
 
-  //once form entry has been validated write it to auth and Realtime db
-  const putUserinDB = async (newUser) => {
-    try {
-      auth
-        .createUserWithEmailAndPassword(email, password)
-        .then((userCredentials) => {
-          const userId = userCredentials.user.uid;
-          database.ref('users/' + userId).set(newUser);
-        })
-        .catch((error) => alert(error.message));
+    //make sure that all required fields are filled in
+    if (email === '' || name === '' || sleepGoalStart === null || sleepGoalEnd === null) {
+      Alert.alert('Error', 'Please fill in all required fields.');
+      validated = false;
+    }
 
-      navigation.navigate('NavBar');
-    } catch (error) {
-      console.log('there was an error in attempting to add this user to the database: ', error);
+    if (validated) {
+      let newUser = {
+        email,
+        name,
+        sleepGoalStart,
+        sleepGoalEnd,
+        userFactors,
+        logReminderOn,
+        sleepReminderOn
+      };
+      console.log('newUser about to be added in db', newUser);
+
+      dispatch(createProfile(newUser, password, navigation));
     }
   };
 

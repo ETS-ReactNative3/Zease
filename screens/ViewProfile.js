@@ -1,51 +1,26 @@
 import { StyleSheet, View, Text, Button, Pressable, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { auth, database } from '../firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { convertToAmPm } from '../utils';
+import { convertToAmPm } from '../Util';
+import { logout } from '../store/profile';
 import tw from 'tailwind-react-native-classnames';
 
 const AddEntry = ({ navigation }) => {
-  // User sleep factors (pulled in from firebase)
-  const [profileData, setProfileData] = useState({});
+  let profileData = useSelector((state) => state.profile);
+  let userFactors = useSelector((state) => state.userFactors);
 
-  // Grab userId from the firebase auth component
-  const userId = auth.currentUser.uid;
-
-  useEffect(() => {
-    // Load user profile from firebase
-    const profileRef = database.ref(`users/${userId}`);
-    profileRef.on('value', (snapshot) => {
-      const profile = snapshot.val();
-      setProfileData(profile);
-      //console.log("useEffect profile", profile);
-    });
-  }, []);
+  const dispatch = useDispatch();
 
   const handleEdit = () => {
     console.log('Edit profile');
-
     navigation.navigate('EditProfile');
   };
 
   const handleLogOut = async () => {
     console.log('Logging out');
-    await AsyncStorage.removeItem('oldestEntry');
-    await AsyncStorage.removeItem('mostRecentEntry');
-    await AsyncStorage.removeItem('userFactors');
-    await AsyncStorage.removeItem('yesterdaysEntry');
-    auth
-      .signOut()
-      .then(() => {
-        console.log('Log out sucess');
-        navigation.navigate('LoginScreen');
-      })
-      .catch((error) => {
-        console.log('Error logging out', error);
-      });
-
-    await AsyncStorage.setItem('userFactors', JSON.stringify({}));
+    dispatch(logout(navigation));
   };
 
   return (
@@ -97,9 +72,9 @@ const AddEntry = ({ navigation }) => {
           </View>
           <Text style={tw`font-semibold text-white mt-10 mb-2`}>Your Sleep Factors:</Text>
           <View>
-            {Object.keys(profileData.userFactors).map((key) => (
+            {Object.keys(userFactors).map((key) => (
               <Text key={key} style={tw`font-extrabold text-white mb-1`}>
-                {profileData.userFactors[key].name}
+                {userFactors[key].name}
               </Text>
             ))}
           </View>

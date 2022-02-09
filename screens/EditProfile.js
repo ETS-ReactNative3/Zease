@@ -12,26 +12,30 @@ import {
 } from 'react-native';
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { auth, database } from '../firebase';
+import { useSelector, useDispatch } from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 
 import SleepFactorCategory from './SleepFactorCategory';
 import { convertToMilitaryString, convertToAmPm, reformatFactors } from '../Util';
+import { updateProfile } from '../store/profile';
 
 const EditProfile = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   //sleep factor options from the DB (not specific to user)
-  const [sleepFactors, setSleepFactors] = useState({});
+  const sleepFactors = useSelector((state) => state.dbFactors);
 
   //Manage form inputs
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [sleepGoalStart, setsleepGoalStart] = useState(null);
-  const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
-  const [logReminderOn, setLogReminder] = useState(false);
-  const [sleepReminderOn, setSleepReminder] = useState(false);
+  let user = useSelector((state) => state.profile);
+  const [email, setEmail] = useState(user.email || '');
+  const [name, setName] = useState(user.name || '');
+  const [sleepGoalStart, setsleepGoalStart] = useState(user.sleepGoalStart || null);
+  const [sleepGoalEnd, setsleepGoalEnd] = useState(user.sleepGoalEnd || null);
+  const [logReminderOn, setLogReminder] = useState(user.logReminderOn || false);
+  const [sleepReminderOn, setSleepReminder] = useState(user.sleepReminderOn || false);
+  let userFactors = useSelector((state) => state.userFactors);
 
   //form validation
   const [emailValid, setEmailValid] = useState(true);
@@ -40,30 +44,6 @@ const EditProfile = ({ navigation }) => {
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [isWakeTimePickerVisible, setWakeTimePickerVisibility] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
-
-  //when the page loads get info from db
-  useEffect(() => {
-    //get the sleep factors from db
-    let sleepFactorsRef = database.ref('sleepFactors');
-    sleepFactorsRef.on('value', (snapshot) => {
-      const data = snapshot.val();
-      setSleepFactors(data);
-    });
-
-    //Get logged in user's information and put it on local state/asyncStorage
-    const userId = auth.currentUser.uid;
-    const userRef = database.ref('users/' + userId);
-    userRef.on('value', async (snapshot) => {
-      const user = snapshot.val();
-      setEmail(auth.currentUser.email);
-      setName(user.name);
-      setsleepGoalStart(user.sleepGoalStart);
-      setsleepGoalEnd(user.sleepGoalEnd);
-      setSleepReminder(user.sleepReminderOn);
-      setLogReminder(user.logReminderOn);
-      await AsyncStorage.setItem('userFactors', JSON.stringify(user.userFactors));
-    });
-  }, []);
 
   //when email changes update state about whether it is a valid email
   useEffect(() => {
@@ -95,60 +75,30 @@ const EditProfile = ({ navigation }) => {
       validated = false;
     }
 
-    try {
-      //get the user's selected sleep factors from async storage
-      const userFactorsString = await AsyncStorage.getItem('userFactors');
-      const userFactors = userFactorsString ? JSON.parse(userFactorsString) : {};
-      if (Object.keys(userFactors).length === 0) {
-        Alert.alert('Error', 'Please select at least one sleep factor');
-        validated = false;
-      }
-
-      //make sure that all required fields are filled in
-      if (email === '' || name === '' || sleepGoalStart === null || sleepGoalEnd === null) {
-        Alert.alert('Error', 'Please fill in all required fields.');
-        validated = false;
-      }
-
-      if (validated) {
-        let updatedUser = {
-          email,
-          name,
-          sleepGoalStart,
-          sleepGoalEnd,
-          userFactors,
-          logReminderOn,
-          sleepReminderOn
-        };
-        // console.log("newUser about to be updated in db", newUser)
-        updateUserinDB(updatedUser);
-      }
-    } catch (error) {
-      console.log(
-        "there was an error in fetching the user's sleep factors from async storage: ",
-        error
-      );
+    if (Object.keys(userFactors).length === 0) {
+      Alert.alert('Error', 'Please select at least one sleep factor');
+      validated = false;
     }
-  };
 
-  const updateUserinDB = (updatedUser) => {
-    //update the user in firebase auth
-    try {
-      auth.currentUser.updateEmail(updatedUser.email);
-    } catch (error) {
-      console.log("There was an error updating this user's email in firbase auth: ", error);
+    //make sure that all required fields are filled in
+    if (email === '' || name === '' || sleepGoalStart === null || sleepGoalEnd === null) {
+      Alert.alert('Error', 'Please fill in all required fields.');
+      validated = false;
     }
-    //update the user in firebase realtimee
-    try {
-      database.ref('users/' + auth.currentUser.uid).set(updatedUser);
 
-      //go back to the navbar when done
+    if (validated) {
+      let updatedUser = {
+        email,
+        name,
+        sleepGoalStart,
+        sleepGoalEnd,
+        userFactors,
+        logReminderOn,
+        sleepReminderOn
+      };
+      // console.log("newUser about to be updated in db", newUser)
+      dispatch(updateProfile(updatedUser));
       navigation.navigate('NavBar');
-    } catch (error) {
-      console.log(
-        "There was an error updating this user's information in the reatime database: ",
-        error
-      );
     }
   };
 
