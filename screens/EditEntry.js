@@ -1,4 +1,14 @@
-import { StyleSheet, View, Text, Button, TextInput, Alert, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView
+} from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -120,8 +130,8 @@ const EditEntry = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
+    <KeyboardAvoidingView style={styles.container}>
+      <ScrollView style={styles.contentContainer}>
         <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Edit Entry</Text>
 
         <View style={styles.accountItem}>
@@ -216,8 +226,8 @@ const EditEntry = ({ navigation }) => {
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -232,7 +242,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   contentContainer: {
-    width: '80%'
+    width: '80%',
+    marginTop: 60
   },
   button: {
     alignItems: 'center',

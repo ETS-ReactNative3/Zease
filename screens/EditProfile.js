@@ -8,7 +8,8 @@ import {
   Alert,
   Modal,
   Pressable,
-  StyleSheet
+  StyleSheet,
+  ScrollView
 } from 'react-native';
 import React from 'react';
 import { useEffect, useState } from 'react';
@@ -104,7 +105,7 @@ const EditProfile = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
+      <ScrollView style={styles.contentContainer}>
         <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Edit Your Profile</Text>
 
         <View style={styles.accountItem}>
@@ -236,7 +237,7 @@ const EditProfile = ({ navigation }) => {
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -250,7 +251,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   contentContainer: {
-    width: '80%'
+    width: '80%',
+    marginTop: 60
   },
   accountItem: {
     flexDirection: 'row',

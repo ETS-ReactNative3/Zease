@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  SafeAreaView,
   StyleSheet
 } from 'react-native';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
+import { StatusBar } from 'expo-status-bar';
 
 import { reformatDate, calculateSleepLength, convertToAmPm } from '../Util';
 
@@ -38,7 +38,8 @@ const SingleEntry = (props) => {
   }, [entry]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.contentContainer}></View>
       <Text style={tw`font-bold text-2xl text-white mb-5 text-center`}>
         Overview for {entry.date && reformatDate(entry.date)}
       </Text>
@@ -105,7 +106,8 @@ const SingleEntry = (props) => {
           <Text style={styles.buttonText}>Edit Entry</Text>
         </TouchableOpacity>
       )}
-    </SafeAreaView>
+      <StatusBar style='light' />
+    </View>
   );
 };
 
@@ -118,7 +120,8 @@ const styles = StyleSheet.create({
     opacity: 0.95
   },
   contentContainer: {
-    width: '80%'
+    width: '80%',
+    marginTop: 60
   },
   accountItem: {
     flexDirection: 'row',
