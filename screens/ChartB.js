@@ -8,63 +8,21 @@ import {
   VictoryLine,
 } from "victory-native";
 import { G } from "react-native-svg";
-import { useSelector } from "react-redux";
-import { getDateObj, calculateSleepLength } from "../Util";
+import { getDateObj } from "../Util";
 
-const ChartB = () => {
-  //get data in array form from redux, but it still needs to be rearranged for the chart
-  let userEntries = useSelector((state) => state.userEntries);
-  let newestEntry = useSelector((state) => state.newestEntry);
-  let oldestEntry = useSelector((state) => state.oldestEntry);
-  const [xDomain, setXDomain] = useState([
-    new Date(2022, 2, 1),
-    new Date(2022, 2, 14),
-  ]);
-  const [xTickValues, setXTickValues] = useState([]);
+const ChartB = ({ data }) => {
+  const xDomain = [getDateObj(data.firstDate), getDateObj(data.lastDate)];
 
-  //on page load determine x axis domain based on oldest and newest date
-  useEffect(() => {
-    const newestDateObj = getDateObj(newestEntry.date);
-    const oldestDateObj = getDateObj(oldestEntry.date);
-    setXDomain([oldestDateObj, newestDateObj]);
-    //console.log("oldest date object", oldestDateObj);
-    //console.log("newestDateObj", JSON.parse(newestEntryString).date);
-    //console.log("oldest Date", JSON.parse(oldestEntryString).date);
-    //get the timespan between the oldest and newest entries.
-    const msPerDay = 1000 * 60 * 60 * 24;
-    const timeSpan = newestDateObj.getTime() - oldestDateObj.getTime();
-
-    //divide the timeSpan by 4 and convert it from ms to days.  That's how often a tick mark should appear on the x axis
-    const tickMarkFrequency = Math.floor(timeSpan / msPerDay / 4);
-
-    //make four tick marks, start from the oldest date, and add the tickMarkFrequency
-    let tickValues = [];
-    for (let i = 0; i < 5; i++) {
-      let tickMarkDate = new Date(
-        oldestDateObj.getTime() + tickMarkFrequency * i * msPerDay
-      );
-      tickValues.push(tickMarkDate);
-    }
-    setXTickValues(tickValues);
-  }, []);
-
-  const getSleepLengthData = (userEntriesArray) => {
-    return userEntriesArray.map((entry) => {
-      return {
-        x: getDateObj(entry.date),
-        y: calculateSleepLength(entry),
-      };
-    });
-  };
-
-  const getSleepQualityData = (userEntriesArray) => {
-    return userEntriesArray.map((entry) => {
-      return {
-        x: getDateObj(entry.date),
-        y: entry.quality,
-      };
-    });
-  };
+  let xTickValues = [];
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const timeSpan = xDomain[0].getTime() - xDomain[1].getTime();
+  const tickMarkFrequency = Math.floor(timeSpan / msPerDay / 4);
+  for (let i = 0; i < 5; i++) {
+    let tickMarkDate = new Date(
+      xDomain[0].getTime() + tickMarkFrequency * i * msPerDay
+    );
+    xTickValues.push(tickMarkDate);
+  }
 
   return (
     <View>
@@ -76,7 +34,7 @@ const ChartB = () => {
           text={"Sleep Length (Hours)"}
         />
         <VictoryLabel
-          x={310}
+          x={260}
           y={20}
           style={{ fill: "#1C3F52" }}
           text={"Sleep Quality (%)"}
@@ -91,6 +49,7 @@ const ChartB = () => {
           {/*y axis for duration */}
           <VictoryAxis
             domain={[0, 17]}
+            // domain={[data.sleepDurationMin, data.sleepDurationMax]}
             dependentAxis
             orientation="left"
             standalone={false}
@@ -98,10 +57,11 @@ const ChartB = () => {
           />
           {/*line chart for sleep duration */}
           <VictoryLine
-            data={getSleepLengthData(userEntries)}
+            data={data.lineDurationData}
             domain={{
               x: xDomain,
               y: [0, 17],
+              // y: [data.sleepDurationMin, data.sleepDurationMax]
             }}
             scale={{ x: "time", y: "linear" }}
             standalone={false}
@@ -111,6 +71,7 @@ const ChartB = () => {
           <VictoryAxis
             offsetX={50}
             domain={[0, 100]}
+            // domain={[data.sleepQualityMin, data.sleepQualityMax]}
             dependentAxis
             orientation="right"
             standalone={false}
@@ -118,10 +79,11 @@ const ChartB = () => {
           />
           {/*line chart for sleep quality */}
           <VictoryLine
-            data={getSleepQualityData(userEntries)}
+            data={data.lineQualityData}
             domain={{
               x: xDomain,
               y: [0, 100],
+              // y: [data.sleepQualityMin, data.sleepQualityMax]
             }}
             scale={{ x: "time", y: "linear" }}
             standalone={false}

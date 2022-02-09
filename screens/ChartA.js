@@ -7,13 +7,10 @@ import {
   VictoryScatter,
   VictoryTooltip,
 } from "victory-native";
-import { useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
-import { reformatDate, calculateSleepLength } from "../Util";
+import { useSelector } from "react-redux";
 
-const ChartA = () => {
-  let userEntries = useSelector((state) => state.userEntries);
-
+const ChartA = ({ data }) => {
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
   const userFactorsObj = useSelector((state) => state.userFactors);
@@ -29,57 +26,39 @@ const ChartA = () => {
     setUserFactors(userFactorsArr);
   }, [userFactorsObj]);
 
-  const reformatDataForChart = (userEntriesArray) => {
-    return userEntriesArray.map((entry) => {
-      let entryForChart = {
-        SleepLength: calculateSleepLength(entry),
-        SleepQuality: entry.quality,
-        date: entry.date,
-        label: reformatDate(entry.date),
-      };
-
-      //put the name of the factor directly on the entry object. (perhaps it should be the id of the factor?)
-      for (let entryFactorId in entry.entryFactors) {
-        let entryFactor = entry.entryFactors[entryFactorId];
-        entryForChart[entryFactor.name] = true;
-      }
-      return entryForChart;
-    });
-  };
-
   return (
     <View>
-      <VictoryChart>
+      <VictoryChart domainPadding={{ x: [10, 10], y: [10, 10] }}>
         <VictoryAxis
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Quality (%)"
           dependentAxis
+          domain={[data.sleepQualityMin, data.sleepQualityMax]}
         />
         <VictoryAxis
           style={{ axisLabel: { padding: 36 } }}
           label="Sleep Duration (Hours)"
+          domain={[data.sleepDurationMin, data.sleepDurationMax]}
         />
-        {userEntries && (
-          <VictoryScatter
-            data={reformatDataForChart(userEntries)}
-            x="SleepLength"
-            y="SleepQuality"
-            style={{
-              data: {
-                fill: ({ datum }) =>
-                  datum[selectedFactor] ? "#F78A03" : "#1C3F52",
-              },
-            }}
-            labelComponent={<VictoryTooltip />}
-          />
-        )}
+        <VictoryScatter
+          data={data.scatterData}
+          x="sleepDuration"
+          y="sleepQuality"
+          style={{
+            data: {
+              fill: ({ datum }) =>
+                datum[selectedFactor] ? "#F78A03" : "#1C3F52",
+            },
+          }}
+          labelComponent={<VictoryTooltip />}
+        />
       </VictoryChart>
 
       <View>
         <Text>Select a Sleep Factor:</Text>
         <Picker
           selectedValue={selectedFactor}
-          onValueChange={(factor, idx) => setSelectedFactor(factor)}
+          onValueChange={(factor) => setSelectedFactor(factor)}
         >
           {userFactors.map((factor) => {
             return (

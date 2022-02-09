@@ -1,15 +1,12 @@
 import { database } from "./firebase";
 
-//takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit string.
 export const convertToMilitaryString = (UTCTimeDate) => {
   let hoursString = String(UTCTimeDate.getHours());
   //make sure that the hours string has 2 characters even it is less than 10
   hoursString = hoursString.length < 2 ? 0 + hoursString : hoursString;
-
   let minutesString = String(UTCTimeDate.getMinutes());
   //make sure that the minutes string has 2 characters even it is less than 10
   minutesString = minutesString.length < 2 ? 0 + minutesString : minutesString;
-
   return hoursString + minutesString;
 };
 
@@ -23,95 +20,12 @@ export const convertToAmPm = (militaryString) => {
   if (hoursString === "00") {
     hoursString = "12";
   }
-
   let minString = militaryString.slice(-2);
   let AmPm = militaryHoursNum > 11 ? "PM" : "AM";
   return `${hoursString}:${minString} ${AmPm}`;
 };
 
-//takes in an object of sleep factors and returns an array of sleep factor categories each of which can be passed to the sleepFactorCategory component
-export const reformatFactors = (dbFactorsObject) => {
-  const categories = [
-    {
-      name: "Practices",
-      factors: [],
-    },
-    {
-      name: "Tools",
-      factors: [],
-    },
-    {
-      name: "Chemicals",
-      factors: [],
-    },
-  ];
-  for (const factorId in dbFactorsObject) {
-    let factor = dbFactorsObject[factorId];
-
-    switch (dbFactorsObject[factorId].category) {
-      case "practice":
-        categories[0].factors.push([factor, factorId]);
-        break;
-      case "tool":
-        categories[1].factors.push([factor, factorId]);
-        break;
-      case "chemical":
-        categories[2].factors.push([factor, factorId]);
-        break;
-    }
-  }
-
-  return categories;
-};
-
-//this takes in a sleep entry.  It used the starttime and endTime properties on the entry to calculate the number of hours of sleep
-export const calculateSleepLength = (entry) => {
-  let startHrs = Number(entry.startTime.slice(0, 2));
-  let startMin = Number(entry.startTime.slice(3));
-  let sleepMinBeforeMidnight = (23 - startHrs) * 60 + (60 - startMin);
-  //this line accounts for entries when they user went to sleep after midnight.
-  if (startHrs < 10) {
-    sleepMinBeforeMidnight = -(startHrs * 60 + startMin);
-  }
-
-  let endHrs = Number(entry.endTime.slice(0, 2));
-  let endMin = Number(entry.endTime.slice(3));
-  let sleepMinAfterMidnight = endHrs * 60 + endMin;
-
-  return (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60;
-};
-
-//get the date of yesterday formatted in a string of yyyy-mm-dd
-export const yesterday = () => {
-  const dateObj = new Date();
-
-  let timeZoneAdjust = -new Date().getTimezoneOffset() / 60;
-
-  dateObj.setTime(dateObj.getTime() - (24 + timeZoneAdjust) * 60 * 60 * 1000); // Subtract 24 hours because we want to give each entry the date of the night they went to sleep (not when they logged it)
-
-  const date = dateObj.toISOString().slice(0, 10);
-  return date;
-};
-
-//takes in a date string with format of yyyy-mm-dd and returns a number with format yyyymmdd
-export const getDateNumber = (dateString) => {
-  let noDashString = "";
-  for (let i = 0; i < dateString.length; i++) {
-    if (dateString[i] !== "-") {
-      noDashString += dateString[i];
-    }
-  }
-  return Number(noDashString);
-};
-
-//takes in a date string with format of yyyy-mm-dd and returns the corresponding date object
-export const getDateObj = (dateString) => {
-  const year = Number(dateString.slice(0, 4));
-  const month = Number(dateString.slice(5, 7));
-  const day = Number(dateString.slice(-2));
-  return new Date(year, month - 1, day);
-};
-
+//
 export const seedFirebase = (userId) => {
   // Push sleep factors to firebase
   const sleepFactorsRef = database.ref("sleepFactors");
