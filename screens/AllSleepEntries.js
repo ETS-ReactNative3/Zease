@@ -20,8 +20,16 @@ export const AllSleepEntries = () => {
   let entryList = useSelector((state) => state.userEntries);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState({});
-  //console.log("entryList from allsleepEntries", entryList);
 
+  if (entryList.length < 1){
+    return (
+      <View style={styles.container}>
+        <Text style={tw`font-semibold text-white`}>
+          Come back once you have created your first sleep entry!
+        </Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <ScrollView style={styles.cardContainer}>
