@@ -10,7 +10,7 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
-  SafeAreaView
+  KeyboardAvoidingView
 } from 'react-native';
 import React from 'react';
 import { useEffect, useState, useRef } from 'react';
@@ -133,7 +133,7 @@ const BuildProfile = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <ScrollView style={styles.contentContainer}>
         <Text style={tw`text-white text-3xl font-extrabold mb-2 text-center mt-10`}>
           Welcome to Zease!
@@ -294,7 +294,7 @@ const BuildProfile = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -307,7 +307,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   contentContainer: {
-    width: '100%'
+    width: '100%',
+    marginTop: 60
   },
   accountItem: {
     width: '90%',

@@ -9,21 +9,19 @@ import {
   Modal,
   Pressable,
   StyleSheet,
-} from "react-native";
-import React from "react";
-import { useEffect, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import tw from "tailwind-react-native-classnames";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { Ionicons } from "@expo/vector-icons";
+  ScrollView
+} from 'react-native';
+import React from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import tw from 'tailwind-react-native-classnames';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { Ionicons } from '@expo/vector-icons';
 
-import SleepFactorCategory from "./SleepFactorCategory";
-import {
-  convertToMilitaryString,
-  convertToAmPm,
-  reformatFactors,
-} from "../Util";
-import { updateProfile } from "../store/profile";
+import SleepFactorCategory from './SleepFactorCategory';
+import { convertToMilitaryString, convertToAmPm, reformatFactors } from '../Util';
+import { updateProfile } from '../store/profile';
+import { fetchUserFactors } from '../store/userFactors';
 
 const EditProfile = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -119,12 +117,15 @@ const EditProfile = ({ navigation }) => {
     }
   };
 
+  const handleCancel = () => {
+    dispatch(fetchUserFactors());
+    navigation.navigate('NavBar');
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>
-          Edit Your Profile
-        </Text>
+      <ScrollView style={styles.contentContainer}>
+        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Edit Your Profile</Text>
 
         <View style={styles.accountItem}>
           <Text
@@ -292,14 +293,11 @@ const EditProfile = ({ navigation }) => {
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("NavBar")}
-          >
+          <TouchableOpacity style={styles.button} onPress={() => handleCancel()}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -313,7 +311,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: {
-    width: "80%",
+    width: '80%',
+    marginTop: 60
   },
   accountItem: {
     flexDirection: "row",

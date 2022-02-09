@@ -6,13 +6,15 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import Slider from "@react-native-community/slider";
-import MultiSelect from "react-native-multiple-select";
-import tw from "tailwind-react-native-classnames";
+  KeyboardAvoidingView,
+  ScrollView
+} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import Slider from '@react-native-community/slider';
+import MultiSelect from 'react-native-multiple-select';
+import tw from 'tailwind-react-native-classnames';
 
 // import { NavigationContainer } from "@react-navigation/native";
 // import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -132,11 +134,9 @@ const EditEntry = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>
-          Edit Entry
-        </Text>
+    <KeyboardAvoidingView style={styles.container}>
+      <ScrollView style={styles.contentContainer}>
+        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Edit Entry</Text>
 
         <View style={styles.accountItem}>
           <Text style={tw`font-semibold text-white`}>{`Bed Time:`}</Text>
@@ -234,8 +234,8 @@ const EditEntry = ({ navigation }) => {
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -250,7 +250,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: {
-    width: "80%",
+    width: '80%',
+    marginTop: 60
   },
   button: {
     alignItems: "center",

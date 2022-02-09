@@ -6,6 +6,7 @@ import { auth, database } from '../firebase';
 import { convertToAmPm } from '../Util';
 import { logout } from '../store/profile';
 import tw from 'tailwind-react-native-classnames';
+import { StatusBar } from 'expo-status-bar';
 
 const AddEntry = ({ navigation }) => {
   let profileData = useSelector((state) => state.profile);
@@ -88,6 +89,7 @@ const AddEntry = ({ navigation }) => {
           <Text style={styles.buttonText}>Log Out</Text>
         </TouchableOpacity>
       </View>
+      <StatusBar style='light' />
     </View>
   );
 };

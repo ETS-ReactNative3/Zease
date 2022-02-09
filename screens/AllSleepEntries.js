@@ -1,16 +1,17 @@
 import { useState } from "react";
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
   TouchableOpacity,
   Modal,
   Pressable,
-  StyleSheet,
-} from "react-native";
-import tw from "tailwind-react-native-classnames";
-import { useSelector } from "react-redux";
+  StyleSheet
+} from 'react-native';
+import tw from 'tailwind-react-native-classnames';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import { StatusBar } from 'expo-status-bar';
 
 import { convertToAmPm } from "../Util.js";
 import SingleEntry from "./SingleEntry";
@@ -22,7 +23,7 @@ export const AllSleepEntries = () => {
   //console.log("entryList from allsleepEntries", entryList);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView style={styles.cardContainer}>
         {entryList
           .sort((entry1, entry2) => (entry1.date < entry2.date ? 1 : -1))
@@ -81,9 +82,10 @@ export const AllSleepEntries = () => {
                     }`}</Text>
                   </View>
                 </View>
-              </TouchableOpacity>
-            </View>
-          ))}
+            </TouchableOpacity>
+            <StatusBar style='dark' />
+          </View>
+        ))}
         <Modal
           transparent={false}
           animationType="slide"
@@ -94,7 +96,6 @@ export const AllSleepEntries = () => {
         >
           <SingleEntry entry={selectedEntry} />
           <TouchableOpacity
-            // style={tw`items-center justify-center h-20`}
             style={styles.modal}
             onPress={() => {
               setModalOpen(!modalOpen);
@@ -104,7 +105,7 @@ export const AllSleepEntries = () => {
           </TouchableOpacity>
         </Modal>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -112,12 +113,13 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.95
   },
   cardContainer: {
-    width: "90%",
-    opacity: 0.95,
+    width: '90%',
+    marginTop: 60
   },
   accountItem: {
     flexDirection: "row",
