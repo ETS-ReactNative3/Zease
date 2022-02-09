@@ -1,4 +1,4 @@
-import { database } from "./firebase";
+import { database } from './firebase';
 
 //takes in a UTC Time Date object, and returns the local time hours and minutes in a four digit string.
 export const convertToMilitaryString = (UTCTimeDate) => {
@@ -17,15 +17,13 @@ export const convertToMilitaryString = (UTCTimeDate) => {
 export const convertToAmPm = (militaryString) => {
   let militaryHoursNum = Number(militaryString.slice(0, 2));
   let hoursString =
-    militaryHoursNum > 12
-      ? String(militaryHoursNum - 12)
-      : String(militaryHoursNum);
-  if (hoursString === "00") {
-    hoursString = "12";
+    militaryHoursNum > 12 ? String(militaryHoursNum - 12) : String(militaryHoursNum);
+  if (hoursString === '00') {
+    hoursString = '12';
   }
 
   let minString = militaryString.slice(-2);
-  let AmPm = militaryHoursNum > 11 ? "PM" : "AM";
+  let AmPm = militaryHoursNum > 11 ? 'PM' : 'AM';
   return `${hoursString}:${minString} ${AmPm}`;
 };
 
@@ -33,29 +31,29 @@ export const convertToAmPm = (militaryString) => {
 export const reformatFactors = (dbFactorsObject) => {
   const categories = [
     {
-      name: "Practices",
-      factors: [],
+      name: 'Practices',
+      factors: []
     },
     {
-      name: "Tools",
-      factors: [],
+      name: 'Tools',
+      factors: []
     },
     {
-      name: "Chemicals",
-      factors: [],
-    },
+      name: 'Chemicals',
+      factors: []
+    }
   ];
   for (const factorId in dbFactorsObject) {
     let factor = dbFactorsObject[factorId];
 
     switch (dbFactorsObject[factorId].category) {
-      case "practice":
+      case 'practice':
         categories[0].factors.push([factor, factorId]);
         break;
-      case "tool":
+      case 'tool':
         categories[1].factors.push([factor, factorId]);
         break;
-      case "chemical":
+      case 'chemical':
         categories[2].factors.push([factor, factorId]);
         break;
     }
@@ -95,9 +93,9 @@ export const yesterday = () => {
 
 //takes in a date string with format of yyyy-mm-dd and returns a number with format yyyymmdd
 export const getDateNumber = (dateString) => {
-  let noDashString = "";
+  let noDashString = '';
   for (let i = 0; i < dateString.length; i++) {
-    if (dateString[i] !== "-") {
+    if (dateString[i] !== '-') {
       noDashString += dateString[i];
     }
   }
@@ -114,33 +112,33 @@ export const getDateObj = (dateString) => {
 
 export const seedFirebase = (userId) => {
   // Push sleep factors to firebase
-  const sleepFactorsRef = database.ref("sleepFactors");
+  const sleepFactorsRef = database.ref('sleepFactors');
   const sleepFactorsData = [
     // This data has already been added, so change factors or they will be duplicated
-    { name: "Caffeine", category: "chemical" },
-    { name: "Alcohol", category: "chemical" },
-    { name: "CBD", category: "chemical" },
-    { name: "Melatonin", category: "chemical" },
-    { name: "Meditated", category: "practice" },
-    { name: "Worked out", category: "practice" },
-    { name: "Ate late", category: "practice" },
-    { name: "Napped", category: "practice" },
-    { name: "No screens", category: "practice" },
-    { name: "Sleep podcast", category: "practice" },
-    { name: "Sleep mask", category: "tool" },
-    { name: "C-pap", category: "tool" },
-    { name: "Darkness blinds", category: "tool" },
+    { name: 'Caffeine', category: 'chemical' },
+    { name: 'Alcohol', category: 'chemical' },
+    { name: 'CBD', category: 'chemical' },
+    { name: 'Melatonin', category: 'chemical' },
+    { name: 'Meditated', category: 'practice' },
+    { name: 'Worked out', category: 'practice' },
+    { name: 'Ate late', category: 'practice' },
+    { name: 'Napped', category: 'practice' },
+    { name: 'No screens', category: 'practice' },
+    { name: 'Sleep podcast', category: 'practice' },
+    { name: 'Sleep mask', category: 'tool' },
+    { name: 'C-pap', category: 'tool' },
+    { name: 'Darkness blinds', category: 'tool' }
   ];
   // sleepFactorsData.forEach((factor) => sleepFactorsRef.push(factor));
   // console.log("data sent to firebase");
 
   // Fetch sleep factors from firebase
   let sleepFactors;
-  sleepFactorsRef.on("value", (snapshot) => {
+  sleepFactorsRef.on('value', (snapshot) => {
     sleepFactors = snapshot.val();
-    console.log("sleepFactors", sleepFactors);
+    console.log('sleepFactors', sleepFactors);
   });
-  console.log("sleepFactors data fetched from firebase");
+  console.log('sleepFactors data fetched from firebase');
   console.log(sleepFactors);
 
   // Set user profile data
@@ -163,28 +161,55 @@ export const seedFirebase = (userId) => {
     for (let d = 1; d <= 30; d++) {
       let formatMonth = m < 10 ? `0${m}` : `${m}`;
       let formatDay = d < 10 ? `0${d}` : `${d}`;
-      let hour = 1000 * 60 * 60
-      let startUTC = new Date()
-      startUTC.setHours(22 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0)  
-      let endUTC = new Date()
-      endUTC.setHours(7 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0)
+      let hour = 1000 * 60 * 60;
+      let startUTC = new Date();
+      startUTC.setHours(22 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0);
+      let endUTC = new Date();
+      endUTC.setHours(7 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0);
       // console.log(startUTC)
       // console.log(endUTC)
-      let selectedFactors = {}
+      let selectedFactors = {};
       Object.entries(sleepFactors).forEach(([key, val]) => {
-        if (Math.random() < 0.2) selectedFactors[key] = val
-      })
+        if (Math.random() < 0.2) selectedFactors[key] = val;
+      });
 
-      const formData = { 
+      const formData = {
         date: `2021-${formatMonth}-${formatDay}`,
         startTime: convertToMilitaryString(startUTC),
         endTime: convertToMilitaryString(endUTC),
         quality: Math.random() * 100,
         entryFactors: selectedFactors,
-        notes: "Seeded 2/8/21"
-      }
-      console.log("formData", formData)
+        notes: 'Seeded 2/8/21'
+      };
+      console.log('formData', formData);
       // sleepEntriesRef.push(formData);
     }
   }
+};
+
+//takes in a date string of "yyyy-mm-dd" and returns string "mon, d, yyyy"
+export const reformatDate = (dateString) => {
+  const year = `${dateString.slice(0, 4)}`;
+  const monthLookUp = {
+    '01': 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    10: 'Oct',
+    11: 'Nov',
+    12: 'Dec'
+  };
+  const month = monthLookUp[dateString.slice(5, 7)];
+
+  let day = dateString.slice(-2);
+  //don't display a leading zero on the date
+  if (day[0] === '0') {
+    day = day.slice(-1);
+  }
+  return `${month} ${day}, ${year}`;
 };
