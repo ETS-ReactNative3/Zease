@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  SafeAreaView,
   StyleSheet
 } from 'react-native';
 import React from 'react';
@@ -54,7 +53,8 @@ const SingleEntry = (props) => {
   }, [entry]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.contentContainer}></View>
       <Text style={tw`font-bold text-2xl text-white mb-5 text-center`}>
         Overview for {entry.date && reformatDate(entry.date)}
       </Text>
@@ -122,7 +122,7 @@ const SingleEntry = (props) => {
         </TouchableOpacity>
       )}
       <StatusBar style='light' />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
     opacity: 0.95
   },
   contentContainer: {
-    width: '80%'
+    width: '80%',
+    marginTop: 60
   },
   accountItem: {
     flexDirection: 'row',

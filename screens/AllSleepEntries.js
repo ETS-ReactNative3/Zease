@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -24,7 +23,7 @@ export const AllSleepEntries = () => {
   //console.log("entryList from allsleepEntries", entryList);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView style={styles.cardContainer}>
         {entryList.map((entry) => (
           <View key={entry.id}>
@@ -91,7 +90,7 @@ export const AllSleepEntries = () => {
           </TouchableOpacity>
         </Modal>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
