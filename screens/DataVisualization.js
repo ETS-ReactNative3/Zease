@@ -43,8 +43,6 @@ const DataVisualization = () => {
           date: entry.date,
           label: reformatDate(entry.date),
         };
-        console.log("entry.entryFactors", entry.entryFactors)
-        console.log("timeRange", timeRange)
         Object.values(entry.entryFactors).forEach((factor) => {
           formatEntry[factor.name] = true;
         });

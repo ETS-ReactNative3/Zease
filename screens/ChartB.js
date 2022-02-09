@@ -23,7 +23,7 @@ const ChartB = ({ data }) => {
     );
     xTickValues.push(tickMarkDate);
   }
-  
+
   return (
     <View>
       <VictoryChart>
@@ -57,7 +57,6 @@ const ChartB = ({ data }) => {
           />
           {/*line chart for sleep duration */}
           <VictoryLine
-            // data={getSleepLengthData(sleepEntryDbData)}
             data={data.lineDurationData}
             domain={{
               x: xDomain,
@@ -80,7 +79,6 @@ const ChartB = ({ data }) => {
           />
           {/*line chart for sleep quality */}
           <VictoryLine
-            // data={getSleepQualityData(sleepEntryDbData)}
             data={data.lineQualityData}
             domain={{
               x: xDomain,
