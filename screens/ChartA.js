@@ -11,7 +11,6 @@ import { Picker } from "@react-native-picker/picker";
 import { useSelector } from "react-redux";
 
 const ChartA = ({ data }) => {
-
   const [userFactors, setUserFactors] = useState([]);
   const [selectedFactor, setSelectedFactor] = useState("");
   const userFactorsObj = useSelector((state) => state.userFactors);

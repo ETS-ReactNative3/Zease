@@ -1,7 +1,7 @@
 import { View, Text, Switch, Pressable } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 
 import { reformatDate, calculateSleepLength, getDateObj } from "../Util";
@@ -12,23 +12,8 @@ import ChartB from "./ChartB";
 const DataVisualization = () => {
   const [viewChartA, setViewChartA] = useState(true);
   const [timeRange, setTimeRange] = useState("week");
-  const [data, setData] = useState([]);
 
-  // const userId = "p9NHo83xCbVXWo3IRSj6plw9DXc2"; // Whitney ID
-  // const userId = "AbNQWuHhkpSGbArIfJ17twjyuum1" // Alston ID
-  //get sleep entry data from firebase
-  useEffect(() => {
-    const userId = auth.currentUser.uid;
-
-    //get data from firebase. This is getting a "snapshot" of the data
-    const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
-
-    //this on method gets the value of the data at that reference.
-    sleepEntriesRef.on("value", (snapshot) => {
-      const sleepEntryData = snapshot.val();
-      setData(sleepEntryData);
-    });
-  }, []);
+  const data = useSelector((state) => state.userEntries);
 
   const structureData = (dataRaw, timeRange) => {
     const timeMap = {
@@ -47,7 +32,7 @@ const DataVisualization = () => {
     let sleepQualityMax = 0;
     let firstDate = "3022-01-01";
     let lastDate = "1022-01-01";
-    Object.values(dataRaw).forEach((entry) => {
+    dataRaw.forEach((entry) => {
       if (
         timeRange === "all" ||
         today - new Date(entry.date) < timeMap[timeRange]
@@ -58,6 +43,8 @@ const DataVisualization = () => {
           date: entry.date,
           label: reformatDate(entry.date),
         };
+        console.log("entry.entryFactors", entry.entryFactors)
+        console.log("timeRange", timeRange)
         Object.values(entry.entryFactors).forEach((factor) => {
           formatEntry[factor.name] = true;
         });
@@ -92,13 +79,6 @@ const DataVisualization = () => {
       firstDate,
       lastDate,
     };
-  };
-
-  const structuredData = {
-    week: structureData(data, "week"),
-    month: structureData(data, "month"),
-    year: structureData(data, "year"),
-    all: structureData(data, "all"),
   };
 
   return (
@@ -172,10 +152,10 @@ const DataVisualization = () => {
             </Text>
           </Pressable>
         </View>
-        {viewChartA ? (
-          <ChartA data={structuredData[timeRange]} />
+        {data.length && viewChartA ? (
+          <ChartA data={structureData(data, timeRange)} />
         ) : (
-          <ChartB data={structuredData[timeRange]} />
+          <ChartB data={structureData(data, timeRange)} />
         )}
       </View>
     </View>

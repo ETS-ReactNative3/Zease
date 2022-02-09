@@ -23,7 +23,7 @@ const ChartB = ({ data }) => {
     );
     xTickValues.push(tickMarkDate);
   }
-
+  
   return (
     <View>
       <VictoryChart>
