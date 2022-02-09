@@ -14,6 +14,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
+import { StatusBar } from 'expo-status-bar';
 
 import { reformatDate, calculateSleepLength, convertToAmPm, yesterday } from '../Util';
 
@@ -120,6 +121,7 @@ const SingleEntry = (props) => {
           <Text style={styles.buttonText}>Edit Entry</Text>
         </TouchableOpacity>
       )}
+      <StatusBar style='light' />
     </SafeAreaView>
   );
 };
