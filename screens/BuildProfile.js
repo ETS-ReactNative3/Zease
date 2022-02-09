@@ -131,136 +131,156 @@ const BuildProfile = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <Text style={tw`text-white text-3xl font-extrabold mb-2 text-center mt-4`}>
+      <ScrollView style={styles.contentContainer}>
+        <Text style={tw`text-white text-3xl font-extrabold mb-2 text-center mt-10`}>
           Welcome to Zease!
         </Text>
-        <Text style={tw`text-white text-xs font-bold mb-6 text-center`}>
+        <Text style={tw`text-white text-xs font-bold mb-10 text-center`}>
           Please complete your user profile below
         </Text>
-        <View style={tw`bg-white rounded-xl px-10 pt-6`}>
-          <View style>
-            <TextInput
-              style={styles.input}
-              placeholder='Email*'
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-            />
-            {!emailValid && <Ionicons name='alert-outline' size={20} color='red' />}
-          </View>
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder='Password*'
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry
-            />
-            {!passwordsMatch && <Ionicons name='alert-outline' size={20} color='red' />}
-          </View>
+
+        <View style={styles.accountItem}>
+          <Text style={tw`font-semibold text-white ml-1`}>{`Email Address:`}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder='Email*'
+            placeholderTextColor={'gray'}
+            backgroundColor={'white'}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+          {!emailValid && <Ionicons name='alert-outline' size={20} color='red' />}
+        </View>
+
+        <View style={styles.accountItem}>
+          <Text style={tw`font-semibold text-white ml-1`}>{`Create Your Password:`}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder='Password*'
+            placeholderTextColor={'gray'}
+            backgroundColor={'white'}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry
+          />
+          {!passwordsMatch && <Ionicons name='alert-outline' size={20} color='red' />}
+        </View>
+        <View style={styles.accountItem}>
+          <Text style={tw`font-semibold text-white ml-1`}>{`Confirm Your Password:`}</Text>
           <TextInput
             style={styles.input}
             placeholder='Confirm Password*'
+            placeholderTextColor={'gray'}
+            backgroundColor={'white'}
             value={passwordConfirm}
             onChangeText={(text) => setPasswordConfirm(text)}
             secureTextEntry
           />
+        </View>
+
+        <View style={styles.accountItem}>
+          <Text style={tw`font-semibold text-white ml-1`}>{`Enter Your Name:`}</Text>
           <TextInput
             style={styles.input}
             placeholder='Your Name*'
+            placeholderTextColor={'gray'}
+            backgroundColor={'white'}
             value={name}
             onChangeText={(text) => setName(text)}
           />
-          <View style={tw`flex-row mb-2`}>
-            <Text>{sleepGoalStart && convertToAmPm(sleepGoalStart)}</Text>
+        </View>
 
-            <DateTimePickerModal
-              isVisible={isBedTimePickerVisible}
-              mode='time'
-              onConfirm={handleBedTimeConfirm}
-              onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
-              minuteInterval={15}
-            />
-            <Button
-              title='Set Bed Time Goal'
-              onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
-            />
-          </View>
-          <View style={tw`flex-row mb-4`}>
-            <Text>{sleepGoalEnd && convertToAmPm(sleepGoalEnd)}</Text>
-            <DateTimePickerModal
-              isVisible={isWakeTimePickerVisible}
-              mode='time'
-              onConfirm={handleWakeTimeConfirm}
-              onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
-              minuteInterval={15}
-            />
-            <Button
-              title='Set Wake Up Goal'
-              onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
-            />
-          </View>
-          <View style={tw`flex-row mb-4`}>
-            <Switch
-              style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
-              value={logReminderOn}
-              onValueChange={() => setLogReminder((previousValue) => !previousValue)}
-            />
-            <Text style={tw`font-semibold text-gray-800 mt-2 ml-1`}>
-              Remind me to enter daily sleep log
-            </Text>
-          </View>
-          <View style={tw`flex-row mb-4`}>
-            <Switch
-              style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
-              value={sleepReminderOn}
-              onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
-            />
-            <Text style={tw`font-semibold text-gray-800 mt-2 ml-1`}>Remind me to go to sleep</Text>
-          </View>
+        <View style={tw`flex-row mb-2`}>
+          <Text>{sleepGoalStart && convertToAmPm(sleepGoalStart)}</Text>
+
+          <DateTimePickerModal
+            isVisible={isBedTimePickerVisible}
+            mode='time'
+            onConfirm={handleBedTimeConfirm}
+            onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+            minuteInterval={15}
+          />
+          <Button
+            title='Set Bed Time Goal'
+            onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+          />
+        </View>
+        <View style={tw`flex-row mb-4`}>
+          <Text>{sleepGoalEnd && convertToAmPm(sleepGoalEnd)}</Text>
+          <DateTimePickerModal
+            isVisible={isWakeTimePickerVisible}
+            mode='time'
+            onConfirm={handleWakeTimeConfirm}
+            onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
+            minuteInterval={15}
+          />
+          <Button
+            title='Set Wake Up Goal'
+            onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
+          />
+        </View>
+        <View style={styles.switches}>
+          <Switch
+            style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
+            value={logReminderOn}
+            onValueChange={() => setLogReminder((previousValue) => !previousValue)}
+          />
+          <Text style={tw`font-semibold text-white mt-2 ml-1`}>
+            Remind me to enter daily sleep log
+          </Text>
+        </View>
+        <View style={styles.switches}>
+          <Switch
+            style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
+            value={sleepReminderOn}
+            onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
+          />
+          <Text style={tw`font-semibold text-white mt-2 ml-1`}>Remind me to go to sleep</Text>
+        </View>
+        <View style={styles.accountItem}>
           <View style={tw`flex-row mt-5`}>
-            <Text style={tw`font-bold text-lg text-gray-800 mr-2 mb-3`}>Sleep Factors</Text>
+            <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>Sleep Factors</Text>
             <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
-              <Ionicons
-                style={tw`mt-1 text-gray-800`}
-                name='information-circle-outline'
-                size={20}
-              />
+              <Ionicons style={tw`mt-1 text-white`} name='information-circle-outline' size={20} />
             </TouchableOpacity>
           </View>
-          <Modal
-            transparent={false}
-            animationType='slide'
-            visible={isFactorInfoVisible}
-            onRequestClose={() => setFactorInfoVisibility(!isFactorInfoVisible)}
-          >
-            <View style={tw`flex-1 items-center justify-center`}>
-              <Text>
-                A sleep factor is something that has the potential to affect your sleep. When you
-                are making a daily sleep entry you will be able to select any number of the sleep
-                factors you choose here. When viewing visualizations of your sleep entries you will
-                be able to see any correlations that may exist between factors you have chosen to
-                track and the quality or duration of your sleep.
-              </Text>
-              <Pressable onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}>
-                <Text>Close</Text>
-              </Pressable>
-            </View>
-          </Modal>
+        </View>
+
+        <Modal
+          transparent={false}
+          animationType='slide'
+          visible={isFactorInfoVisible}
+          onRequestClose={() => setFactorInfoVisibility(!isFactorInfoVisible)}
+        >
+          <View style={tw`flex-1 items-center justify-center`}>
+            <Text>
+              A sleep factor is something that has the potential to affect your sleep. When you are
+              making a daily sleep entry you will be able to select any number of the sleep factors
+              you choose here. When viewing visualizations of your sleep entries you will be able to
+              see any correlations that may exist between factors you have chosen to track and the
+              quality or duration of your sleep.
+            </Text>
+            <Pressable onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}>
+              <Text>Close</Text>
+            </Pressable>
+          </View>
+        </Modal>
+        <View style={styles.accountItem}>
           {reformatFactors(sleepFactors).map((category) => {
             return <SleepFactorCategory key={category.name} category={category} />;
           })}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('LoginScreen')}
-            >
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('LoginScreen')}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -274,6 +294,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  contentContainer: {
+    width: '100%'
+  },
+  accountItem: {
+    width: '90%',
+    justifyContent: 'center',
+    marginLeft: 35
   },
   button: {
     alignItems: 'center',
@@ -293,12 +321,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   input: {
+    width: '90%',
     height: 40,
-    margin: 12,
+    marginTop: 10,
     borderWidth: 1,
     borderColor: '#1C3F52',
-    borderRadius: 2,
-    padding: 10
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 25
+  },
+  switches: {
+    flex: 1,
+    flexDirection: 'row',
+    marginLeft: 35,
+    marginBottom: 4
   }
 });
 

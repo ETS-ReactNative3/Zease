@@ -43,7 +43,7 @@ const SleepFactorSwitch = (props) => {
         value={factorRelevant}
         onValueChange={() => toggleSwitch()}
       />
-      <Text style={tw`font-semibold mt-2 ml-1 text-gray-800`}>{props.factor.name}</Text>
+      <Text style={tw`font-semibold mt-2 ml-1 text-white`}>{props.factor.name}</Text>
     </View>
   );
 };

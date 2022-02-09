@@ -29,11 +29,11 @@ const SleepFactorCategory = (props) => {
     <View>
       <TouchableOpacity style={tw`flex-row mb-2`} onPress={() => toggleExpand()}>
         {expanded ? (
-          <Ionicons name='chevron-up-outline' size={24} />
+          <Ionicons name='chevron-up-outline' size={24} color='white' />
         ) : (
-          <Ionicons name='chevron-down-outline' size={24} />
+          <Ionicons name='chevron-down-outline' size={24} color='white' />
         )}
-        <Text style={tw`text-gray-800 ml-1 mt-1 font-semibold`}>{props.category.name}</Text>
+        <Text style={tw`text-white ml-1 mt-1 font-semibold`}>{props.category.name}</Text>
       </TouchableOpacity>
       <View />
       {expanded && (
