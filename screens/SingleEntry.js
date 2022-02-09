@@ -15,27 +15,16 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
 
-import { reformatDate, calculateSleepLength, convertToAmPm, yesterday } from '../Util';
+import { reformatDate, calculateSleepLength, convertToAmPm } from '../Util';
 
 //if this view is accessed from the AllEntries list then the entry data will be passed on props from the parent component.
 //if this view is accessed from the Today button in the nav bar the entry data needs to be pulled from redux
 const SingleEntry = (props) => {
-  const [entry, setEntry] = useState(props.entry || {});
   const [factorNames, setFactorNames] = useState([]);
-  const [isYesterdaysEntry, setIsYesterdaysEntry] = useState(false);
   let newestEntry = useSelector((state) => {
     return state.newestEntry;
   });
-
-  //reset Entry on local state to newest entry if needed
-  useEffect(() => {
-    //entry will be undefined if no entry was passed to this component through props
-    //if nothing was passed through props this component is accessed from the Today tab.  This can only be accessed through the today tab if the newest entry is for yesterday's sleep
-    if (entry && !entry.date) {
-      setEntry(newestEntry);
-      setIsYesterdaysEntry(true);
-    }
-  }, [newestEntry]);
+  const entry = props.entry || newestEntry;
 
   //When the entry object is changed set the factors array using factors object from the entry object.
   useEffect(() => {
@@ -45,10 +34,6 @@ const SingleEntry = (props) => {
         factors.push(entry.entryFactors[factorId].name);
       }
       setFactorNames(factors);
-    }
-    //check if the entry's date is for yesterday (if so the edit button will be available)
-    if (entry.date === yesterday()) {
-      setIsYesterdaysEntry(true);
     }
   }, [entry]);
 
@@ -112,7 +97,7 @@ const SingleEntry = (props) => {
         </View>
       </View>
 
-      {isYesterdaysEntry && (
+      {!props.entry && (
         <TouchableOpacity
           style={styles.button}
           onPress={() => props.navigation.navigate('EditEntry')}
