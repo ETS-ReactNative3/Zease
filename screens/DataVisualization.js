@@ -17,8 +17,9 @@ import ChartB from "./ChartB";
 import ChartC from "./ChartC";
 
 const DataVisualization = () => {
-  const [viewChartA, setViewChartA] = useState(true);
+  const [selectedChart, setSelectedChart] = useState("A");
   const [timeRange, setTimeRange] = useState("week");
+  const sleepGoalStart = useSelector((state) => state.profile.sleepGoalStart);
 
   const data = useSelector((state) => state.userEntries);
 
@@ -35,15 +36,16 @@ const DataVisualization = () => {
     const scatterData = [];
     const lineDurationData = [];
     const lineQualityData = [];
-    const lineBedTimeData = [];
+
     let sleepDurationMin = 24;
     let sleepDurationMax = 0;
     let sleepQualityMin = 100;
     let sleepQualityMax = 0;
     let firstDate = "3022-01-01";
     let lastDate = "1022-01-01";
-    let earliestStartTime = 1800;
-    let latestStartTime = 0;
+    let sleepStartGoalMet = 0;
+    let sleepStartGoalMissed = 0;
+
     dataRaw.forEach((entry) => {
       if (
         timeRange === "all" ||
@@ -76,20 +78,17 @@ const DataVisualization = () => {
         );
         sleepQualityMin = Math.min(sleepQualityMin, formatEntry.sleepQuality);
         sleepQualityMax = Math.max(sleepQualityMax, formatEntry.sleepQuality);
-        earliestStartTime = Math.min(
-          earliestStartTime,
-          getBedTime(entry.startTime)
-        );
-        latestStartTime = Math.max(
-          latestStartTime,
-          getBedTime(entry.startTime)
-        );
+
         if (firstDate > entry.date) firstDate = entry.date;
         if (lastDate < entry.date) lastDate = entry.date;
-        lineBedTimeData.push({
-          x: getDateObj(entry.date),
-          y: getBedTime(entry.startTime),
-        });
+        if (
+          getBedTime(entry.startTime) > getBedTime(sleepGoalStart) - 15 &&
+          getBedTime(entry.startTime) < getBedTime(sleepGoalStart) + 15
+        ) {
+          sleepStartGoalMet++;
+        } else {
+          sleepStartGoalMissed++;
+        }
       }
     });
     return {
@@ -102,9 +101,8 @@ const DataVisualization = () => {
       sleepQualityMax,
       firstDate,
       lastDate,
-      lineBedTimeData,
-      earliestStartTime,
-      latestStartTime,
+      sleepStartGoalMet,
+      sleepStartGoalMissed,
     };
   };
 
@@ -123,10 +121,10 @@ const DataVisualization = () => {
       <View style={styles.contentContainer}>
         <View style={tw`items-center`}>
           <View style={tw`flex-row`}>
-            <Pressable onPress={() => setViewChartA(true)}>
+            <Pressable onPress={() => setSelectedChart("A")}>
               <Text
                 style={tw`w-20 px-3 py-2 my-2 ${
-                  viewChartA
+                  selectedChart === "A"
                     ? `bg-blue-500 text-white`
                     : `bg-gray-300 text-black`
                 } text-center`}
@@ -134,15 +132,26 @@ const DataVisualization = () => {
                 Scatter
               </Text>
             </Pressable>
-            <Pressable onPress={() => setViewChartA(false)}>
+            <Pressable onPress={() => setSelectedChart("B")}>
               <Text
                 style={tw`w-20 px-3 py-2 my-2 rounded-full ${
-                  !viewChartA
+                  selectedChart === "B"
                     ? `bg-blue-500 text-white`
                     : `bg-gray-300 text-black`
                 } text-center`}
               >
                 Line
+              </Text>
+            </Pressable>
+            <Pressable onPress={() => setSelectedChart("C")}>
+              <Text
+                style={tw`w-20 px-3 py-2 my-2 rounded-full ${
+                  selectedChart === "C"
+                    ? `bg-blue-500 text-white`
+                    : `bg-gray-300 text-black`
+                } text-center`}
+              >
+                Pie
               </Text>
             </Pressable>
           </View>
@@ -192,10 +201,14 @@ const DataVisualization = () => {
               </Text>
             </Pressable>
           </View>
-          {data.length && viewChartA ? (
-            <ChartC data={structureData(data, timeRange)} />
-          ) : (
+          {data.length && selectedChart === "A" && (
+            <ChartA data={structureData(data, timeRange)} />
+          )}
+          {data.length && selectedChart === "B" && (
             <ChartB data={structureData(data, timeRange)} />
+          )}
+          {data.length && selectedChart === "C" && (
+            <ChartC data={structureData(data, timeRange)} />
           )}
         </View>
       </View>

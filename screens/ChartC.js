@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import {
   VictoryChart,
+  VictoryPie,
   VictoryLabel,
   VictoryAxis,
   VictoryLine,
@@ -15,26 +16,6 @@ import { useSelector } from "react-redux";
 
 const ChartC = ({ data }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const xDomain = [getDateObj(data.firstDate), getDateObj(data.lastDate)];
-  const yDomain = [data.earliestStartTime, data.latestStartTime];
-
-  const sleepGoalStart = useSelector((state) => state.profile.sleepGoalStart);
-
-  const bedTimeGoalLineData = [
-    { x: data.firstDate, y: getBedTime(sleepGoalStart) },
-    { x: data.lastDate, y: getBedTime(sleepGoalStart) },
-  ];
-
-  let xTickValues = [];
-  const msPerDay = 1000 * 60 * 60 * 24;
-  const timeSpan = xDomain[0].getTime() - xDomain[1].getTime();
-  const tickMarkFrequency = Math.floor(timeSpan / msPerDay / 4);
-  for (let i = 0; i < 5; i++) {
-    let tickMarkDate = new Date(
-      xDomain[0].getTime() + tickMarkFrequency * i * msPerDay
-    );
-    xTickValues.push(tickMarkDate);
-  }
 
   return (
     <View>
@@ -45,52 +26,19 @@ const ChartC = ({ data }) => {
           size={25}
         />
       </TouchableOpacity>
-      <VictoryChart>
-        <VictoryLabel
-          x={25}
-          y={20}
-          style={{ fill: "#F78A03" }}
-          text={"Bed Time"}
-        />
-        <G>
-          {/*shared x axis for time */}
-          <VictoryAxis
-            scale="time"
-            standalone={false}
-            tickValues={xTickValues}
-          />
-          {/*y axis for bedTime */}
-          <VictoryAxis
-            domain={[1140, 2600]}
-            dependentAxis
-            orientation="left"
-            standalone={false}
-            style={{ axis: { stroke: "#F78A03", strokeWidth: 2 } }}
-          />
-          {/*line chart for Bed Time Data */}
-          <VictoryLine
-            data={data.lineBedTimeData}
-            domain={{
-              x: xDomain,
-              y: [1140, 2600],
-            }}
-            scale={{ x: "time", y: "linear" }}
-            standalone={false}
-            style={{ data: { stroke: "#F78A03", strokeWidth: 4 } }}
-          />
-          {/*annotation line for Bed Time Goal */}
-          <VictoryLine
-            data={bedTimeGoalLineData}
-            domain={{
-              x: xDomain,
-              y: [1140, 2600],
-            }}
-            scale={{ x: "time", y: "linear" }}
-            standalone={false}
-            style={{ data: { stroke: "#1C3F52", strokeWidth: 4 } }}
-          />
-        </G>
-      </VictoryChart>
+
+      <VictoryPie
+        padAngel={5}
+        innerRadius={0}
+        labelRadius={({ innerRadius }) => innerRadius + 35}
+        colorScale={["#F78A03", "#1C3F52"]}
+        data={[
+          { x: "Bed Time Met", y: data.sleepStartGoalMet },
+          { x: "Bed Time Missed", y: data.sleepStartGoalMissed },
+        ]}
+        style={{ labels: { fill: "white", fontSize: 16, fontEight: "bold" } }}
+      />
+
       <Modal
         transparent={false}
         animationType="slide"
@@ -101,16 +49,12 @@ const ChartC = ({ data }) => {
         <View style={tw`flex-1 items-center justify-center`}>
           <View style={tw`p-4`}>
             <Text style={tw`p-4 text-base`}>
-              This graph shows a line for when you go to sleep and for when you
-              wake up.
+              This pie chart shows how often you are going to sleep within
+              fifteen minutes of your bedtime goal.
             </Text>
             <Text style={tw`p-4 text-base`}>
-              The horizontal lines show your goals for bed time and wake up
-              time.
-            </Text>
-            <Text style={tw`p-4 text-base`}>
-              If your data lines are flatter, you are more consistently going to
-              sleep/waking up at the same time each day.
+              Toggling through the different time windows can show the progress
+              you have been making on this.
             </Text>
           </View>
           <TouchableOpacity
