@@ -103,7 +103,7 @@ export const createProfile = (newProfile, password, navigation) => {
           //pull info for the new profile from the db to update the store
           dispatch(fetchProfile());
           //send the user to the NavBar
-          navigation.navigate("NavBar");
+          navigation.navigate("Onboarding");
         });
     } catch (error) {
       console.log(

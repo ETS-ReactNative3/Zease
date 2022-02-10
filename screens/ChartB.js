@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import {
   VictoryChart,
@@ -8,9 +8,12 @@ import {
   VictoryLine,
 } from "victory-native";
 import { G } from "react-native-svg";
+import tw from "tailwind-react-native-classnames";
+import { Ionicons } from "@expo/vector-icons";
 import { getDateObj } from "../Util";
 
 const ChartB = ({ data }) => {
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const xDomain = [getDateObj(data.firstDate), getDateObj(data.lastDate)];
 
   let xTickValues = [];
@@ -26,6 +29,13 @@ const ChartB = ({ data }) => {
 
   return (
     <View>
+      <TouchableOpacity onPress={() => setShowInfoModal(true)}>
+        <Ionicons
+          style={tw`mt-1 pr-10 self-end`}
+          name="information-circle-outline"
+          size={25}
+        />
+      </TouchableOpacity>
       <VictoryChart>
         <VictoryLabel
           x={25}
@@ -91,8 +101,48 @@ const ChartB = ({ data }) => {
           />
         </G>
       </VictoryChart>
+      <Modal
+        transparent={false}
+        animationType="slide"
+        visible={showInfoModal}
+        onRequestClose={() => setShowInfoModal(!showInfoModal)}
+        style={{ backgroundColor: "#3e8cb6" }}
+      >
+        <View style={tw`flex-1 items-center justify-center`}>
+          <View style={tw`p-4`}>
+            <Text style={tw`p-4 text-base`}>
+              This graph shows a line for the quality of your sleep and for the
+              duration of your sleep.
+            </Text>
+            <Text style={tw`p-4 text-base`}>
+              If either is improving its line will slope upwards.
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowInfoModal(!showInfoModal)}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 export default ChartB;
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    backgroundColor: "#F78A03",
+    paddingVertical: 12,
+    width: 150,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+});
