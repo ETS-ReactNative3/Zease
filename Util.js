@@ -204,3 +204,15 @@ export const reformatDate = (dateString) => {
   }
   return `${month} ${day}, ${year}`;
 };
+
+//takes in 4 digit military time string for a bed time.  returns the number of minutes since midnight on the morning when the person last woke up before bed time.
+//e.g. if bed time is 11pm getBedTime("2300")=> 23*60=1380
+//e.g. if bedtime is 12:30am getBedTime("0030")=> 24*60+30= 1470
+export const getBedTime = (timeStr) => {
+  let hours = Number(timeStr.slice(0, 2));
+  if (hours < 12) {
+    hours += 24;
+  }
+  let min = Number(timeStr.slice(-2));
+  return hours * 60 + min;
+};
