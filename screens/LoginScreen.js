@@ -25,6 +25,8 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = () => {
     dispatch(login(email, password, navigation));
     dispatch(fetchDBFactors());
+    setEmail('')
+    setPassword('')
   };
 
   return (
