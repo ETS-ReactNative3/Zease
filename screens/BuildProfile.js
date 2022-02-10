@@ -203,7 +203,9 @@ const BuildProfile = ({ navigation }) => {
         </View>
 
         <View style={tw`flex-row mb-2`}>
-          <Text>{sleepGoalStart && convertToAmPm(sleepGoalStart)}</Text>
+          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+            {sleepGoalStart && convertToAmPm(sleepGoalStart)}
+          </Text>
 
           <DateTimePickerModal
             isVisible={isBedTimePickerVisible}
@@ -225,7 +227,9 @@ const BuildProfile = ({ navigation }) => {
           </View>
         </View>
         <View style={tw`flex-row mb-4`}>
-          <Text>{sleepGoalEnd && convertToAmPm(sleepGoalEnd)}</Text>
+          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+            {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
+          </Text>
           <DateTimePickerModal
             isVisible={isWakeTimePickerVisible}
             mode="time"
