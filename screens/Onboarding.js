@@ -11,37 +11,49 @@ import OnboardingSlide from "./OnboardingSlide";
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
 
-const slideDetails = [
+const slides = [
   {
-    key: 1,
-    imageUri: "../assets/onboarding/slide1.png",
-    slidetext: "This explains that first picture",
+    id: 0,
+    imageSource: require("../assets/onboarding/slide1.png"),
+    slideText: "This explains that first picture",
   },
   {
-    key: 2,
-    imageUri: "../assets/onboarding/slide2.png",
-    slidetext: "This explains that second picture",
+    id: 1,
+    imageSource: require("../assets/onboarding/slide2.png"),
+    slideText: "This explains that second picture",
   },
   {
-    key: 3,
-    imageUri: "../assets/onboarding/slide3.png",
-    slidetext: "This explains that third picture",
+    id: 2,
+    imageSource: require("../assets/onboarding/slide3.png"),
+    slideText: "This explains that third picture",
   },
   {
-    key: 4,
-    imageUri: "../assets/onboarding/slide4.png",
-    slidetext: "This explains that fourth picture",
+    id: 3,
+    imageSource: require("../assets/onboarding/slide4.png"),
+    slideText: "This explains that fourth picture",
   },
 ];
 
 const Onboarding = ({ navigation }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Text style={tw`text-white text-4xl font-black`}>
         {<Ionicons name={"bed"} size={36} color={"white"} />}onboarding here
       </Text>
-      <OnboardingSlide />
-      {slideDetails.map}
+      <OnboardingSlide slideInfo={slides[currentSlide]} />
+      <View style={tw`flex-row `}>
+        {slides.map((slide) => {
+          return (
+            <TouchableOpacity
+              key={slide.id}
+              onPress={() => setCurrentSlide(slide.id)}
+              style={styles.slideSelector}
+            />
+          );
+        })}
+      </View>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("NavBar")}
@@ -59,6 +71,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     opacity: 0.95,
+  },
+  slideSelector: {
+    borderRadius: 50,
+    backgroundColor: currentSlide === slide.id ? "#1C3F52" : "#fdf0d5",
+    height: 25,
+    width: 25,
+    margin: 15,
   },
   button: {
     alignItems: "center",

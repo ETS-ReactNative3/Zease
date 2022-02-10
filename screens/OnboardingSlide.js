@@ -11,17 +11,17 @@ import React, { useState } from "react";
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
 
-const OnboardingSlide = ({ navigation }) => {
+const OnboardingSlide = ({ slideInfo }) => {
+  const { imageSource, slideText } = slideInfo;
+  console.log("imageSource", imageSource);
   return (
     <View style={styles.container} behavior="padding">
       <Image
         style={{ width: 300, height: 300, borderRadius: 15 }}
-        source={require("../assets/onboarding/onboardingTest.png")}
+        source={imageSource}
       />
 
-      <Text style={tw`text-white text-lg font-black p-10`}>
-        Here is some text to explain that picture
-      </Text>
+      <Text style={tw`text-white text-lg font-black p-10`}>{slideText}</Text>
     </View>
   );
 };
