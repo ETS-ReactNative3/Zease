@@ -145,12 +145,10 @@ const BuildProfile = ({ navigation }) => {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView style={styles.contentContainer}>
-        <Text
-          style={tw`text-white text-3xl font-extrabold mb-2 text-center mt-10`}
-        >
+        <Text style={tw`text-white text-2xl font-bold mb-2 text-center mt-10`}>
           Welcome to Zease!
         </Text>
-        <Text style={tw`text-white text-xs font-bold mb-10 text-center`}>
+        <Text style={tw`text-white text-xs font-semibold mb-10 text-center`}>
           Please complete your user profile below
         </Text>
 
@@ -158,36 +156,51 @@ const BuildProfile = ({ navigation }) => {
           <Text
             style={tw`font-semibold text-white ml-1`}
           >{`Email Address:`}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Email*"
-            placeholderTextColor={"gray"}
-            backgroundColor={"white"}
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-          {!emailValid && (
-            <Ionicons name="alert-outline" size={20} color="red" />
-          )}
+          <View style={styles.inputRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email*"
+              placeholderTextColor={"gray"}
+              backgroundColor={"white"}
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+            {!emailValid && (
+              <Ionicons
+                name="alert-outline"
+                style={styles.icon}
+                size={30}
+                color="red"
+              />
+            )}
+          </View>
         </View>
 
         <View style={styles.accountItem}>
           <Text
             style={tw`font-semibold text-white ml-1`}
           >{`Create Your Password:`}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Password*"
-            placeholderTextColor={"gray"}
-            backgroundColor={"white"}
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            secureTextEntry
-          />
-          {!passwordsMatch && (
-            <Ionicons name="alert-outline" size={20} color="red" />
-          )}
+          <View style={styles.inputRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password*"
+              placeholderTextColor={"gray"}
+              backgroundColor={"white"}
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry
+            />
+            {!passwordsMatch && (
+              <Ionicons
+                name="alert-outline"
+                style={styles.icon}
+                size={30}
+                color="red"
+              />
+            )}
+          </View>
         </View>
+
         <View style={styles.accountItem}>
           <Text
             style={tw`font-semibold text-white ml-1`}
@@ -218,7 +231,9 @@ const BuildProfile = ({ navigation }) => {
         </View>
 
         <View style={tw`flex-row mb-2`}>
-          <Text>{sleepGoalStart && convertToAmPm(sleepGoalStart)}</Text>
+          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+            {sleepGoalStart && convertToAmPm(sleepGoalStart)}
+          </Text>
 
           <DateTimePickerModal
             isVisible={isBedTimePickerVisible}
@@ -228,16 +243,21 @@ const BuildProfile = ({ navigation }) => {
             onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
             minuteInterval={15}
           />
-          <Button
-            title="Set Bed Time Goal"
-            onPress={() => {
-              setBedTimePickerVisibility(!isBedTimePickerVisible);
-              bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
-            }}
-          />
+          <View style={styles.updateButton}>
+            <Button
+              color="#F78A03"
+              title="Set Your Bed Time Goal"
+              onPress={() => {
+                setBedTimePickerVisibility(!isBedTimePickerVisible);
+                bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
+              }}
+            />
+          </View>
         </View>
         <View style={tw`flex-row mb-4`}>
-          <Text>{sleepGoalEnd && convertToAmPm(sleepGoalEnd)}</Text>
+          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+            {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
+          </Text>
           <DateTimePickerModal
             isVisible={isWakeTimePickerVisible}
             mode="time"
@@ -248,13 +268,16 @@ const BuildProfile = ({ navigation }) => {
             }
             minuteInterval={15}
           />
-          <Button
-            title="Set Wake Up Goal"
-            onPress={() => {
-              setWakeTimePickerVisibility(!isWakeTimePickerVisible);
-              wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
-            }}
-          />
+          <View style={styles.updateButton}>
+            <Button
+              color="#F78A03"
+              title="Set Your Wake Up Goal"
+              onPress={() => {
+                setWakeTimePickerVisibility(!isWakeTimePickerVisible);
+                wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
+              }}
+            />
+          </View>
         </View>
         <View style={styles.switches}>
           <Switch
@@ -359,12 +382,14 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: "100%",
-    marginTop: 60,
+    marginTop: 80,
+    paddingLeft: 30,
+    paddingRight: 30,
   },
   accountItem: {
-    width: "90%",
+    width: "95%",
     justifyContent: "center",
-    marginLeft: 35,
+    marginLeft: 20,
   },
   button: {
     alignItems: "center",
@@ -383,6 +408,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  icon: {
+    marginTop: 10,
+  },
   input: {
     width: "90%",
     height: 40,
@@ -393,11 +421,18 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 25,
   },
+  inputRow: {
+    flexDirection: "row",
+  },
   switches: {
     flex: 1,
     flexDirection: "row",
-    marginLeft: 35,
+    marginLeft: 20,
     marginBottom: 4,
+  },
+  updateButton: {
+    flex: 1,
+    marginBottom: 10,
   },
 });
 
