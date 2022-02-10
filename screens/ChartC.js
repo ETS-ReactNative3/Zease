@@ -1,18 +1,10 @@
 import React from "react";
 import { Text, View, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
-import {
-  VictoryChart,
-  VictoryPie,
-  VictoryLabel,
-  VictoryAxis,
-  VictoryLine,
-} from "victory-native";
+import { VictoryPie } from "victory-native";
 import { G } from "react-native-svg";
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
-import { getBedTime, getDateObj } from "../Util";
-import { useSelector } from "react-redux";
 
 const ChartC = ({ data }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
