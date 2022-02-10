@@ -5,6 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Modal,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -27,8 +29,8 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = () => {
     dispatch(login(email, password, navigation));
     dispatch(fetchDBFactors());
-    setEmail('')
-    setPassword('')
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -36,12 +38,7 @@ const LoginScreen = ({ navigation }) => {
       <Text style={tw`text-white text-4xl font-black`}>
         {<Ionicons name={"bed"} size={36} color={"white"} />}ZEASE
       </Text>
-      <TouchableOpacity
-        onPress={() => setShowInfoModal(true)}
-        style={styles.button}
-      >
-        <Text style={styles.buttonText}>About</Text>
-      </TouchableOpacity>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -69,6 +66,12 @@ const LoginScreen = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setShowInfoModal(true)}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>About</Text>
+        </TouchableOpacity>
       </View>
       <StatusBar style="light" />
       <Modal
@@ -76,28 +79,34 @@ const LoginScreen = ({ navigation }) => {
         animationType="slide"
         visible={showInfoModal}
         onRequestClose={() => setShowInfoModal(!showInfoModal)}
+        style={{ backgroundColor: "#3e8cb6" }}
       >
         <View style={tw`flex-1 items-center justify-center`}>
-          <Text>
-            Zease allows you to log and track your sleep along with factors that
-            may potentially affect it, such as caffeine.
-          </Text>
-          <Text>
-            In profile creation select factors you're interested in tracking.
-            When you make an entry about last night's rest add any sleep factors
-            that were present for that sleep. When viewing visualizations of
-            your sleep entries you will be able to see any correlations that may
-            exist between factors you have chosen to track and the quality or
-            duration of your sleep.
-          </Text>
-          <Text>
-            Zease is a simple way to learn what you need to get the best night's
-            rest, and build better habits around your sleep.
-          </Text>
+          <View style={tw`p-4`}>
+            <Text style={tw`p-4 text-base`}>
+              Zease allows you to log and track your sleep along with factors
+              that may potentially affect it, such as caffeine.
+            </Text>
+            <Text style={tw`p-4 text-base`}>
+              In profile creation select factors you're interested in tracking.
+              When you make an entry about last night's rest add any sleep
+              factors that were present for that sleep. When viewing
+              visualizations of your sleep entries you will be able to see any
+              correlations that may exist between factors you have chosen to
+              track and the quality or duration of your sleep.
+            </Text>
+            <Text style={tw`p-4 text-base`}>
+              Zease is a simple way to learn what you need to get the best
+              night's rest, and build better habits around your sleep.
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowInfoModal(!showInfoModal)}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Close</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => setShowInfoModal(!showInfoModal)}>
-          Close
-        </TouchableOpacity>
       </Modal>
     </KeyboardAvoidingView>
   );

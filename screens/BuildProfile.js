@@ -302,18 +302,26 @@ const BuildProfile = ({ navigation }) => {
           onRequestClose={() => setFactorInfoVisibility(!isFactorInfoVisible)}
         >
           <View style={tw`flex-1 items-center justify-center`}>
-            <Text>
-              A sleep factor is something that has the potential to affect your
-              sleep. When you are making a daily sleep entry you will be able to
-              select any number of the sleep factors you choose here. When
-              viewing visualizations of your sleep entries you will be able to
-              see any correlations that may exist between factors you have
-              chosen to track and the quality or duration of your sleep.
-            </Text>
+            <View style={tw`p-4`}>
+              <Text style={tw`p-4 text-base`}>
+                A sleep factor is something that has the potential to affect
+                your sleep.
+              </Text>
+              <Text style={tw`p-4 text-base`}>
+                When you are making a daily sleep entry you will be able to
+                select any number of the sleep factors you choose here.
+              </Text>
+              <Text style={tw`p-4 text-base`}>
+                When viewing visualizations of your sleep entries you will be
+                able to see any correlations that may exist between factors you
+                have chosen to track and the quality or duration of your sleep.
+              </Text>
+            </View>
             <Pressable
               onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}
+              style={styles.button}
             >
-              <Text>Close</Text>
+              <Text style={styles.buttonText}>Close</Text>
             </Pressable>
           </View>
         </Modal>
