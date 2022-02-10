@@ -193,8 +193,7 @@ const AddEntry = () => {
           />
           <Text style={tw`font-semibold text-white mb-2 mt-7`}>{`Enter Any Sleep Notes`}</Text>
           <TextInput
-            // style={styles.input}
-            style={tw`font-bold text-gray-700 bg-white h-8`}
+            style={tw`text-gray-600 bg-white h-8`}
             multiline={true}
             numberOfLines={4}
             placeholder={`  Enter notes...`}
