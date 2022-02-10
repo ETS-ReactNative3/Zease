@@ -16,13 +16,13 @@ const slides = [
     id: 0,
     imageSource: require("../assets/onboarding/slide1.png"),
     slideText:
-      "Congratulations on setting up your profile!  If you ever need to update it or log out, visit the Profile tab.",
+      "Congratulations on setting up your profile!  If you need to update it or log out, visit the Profile tab.",
   },
   {
     id: 1,
     imageSource: require("../assets/onboarding/slide2.png"),
     slideText:
-      "Once you've made your first sleep entry you can review it - and any later entries - by looking at all sleep entries.  However you'll only be able to edit the entry about last night's sleep.",
+      "Once you've made your first sleep entry you can review it - and any later entries - in the All Entries tab.  However you'll only be able to edit the entry about last night's sleep.",
   },
   {
     id: 2,
