@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView
 } from 'react-native';
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -50,6 +50,9 @@ const BuildProfile = ({ navigation }) => {
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
   const [isWakeTimePickerVisible, setWakeTimePickerVisibility] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
+  
+  const bedTimeModalRef = useRef()
+  const wakeTimeModalRef = useRef()
 
   //when the page loads get the sleep factors from db
   useEffect(() => {
@@ -196,13 +199,17 @@ const BuildProfile = ({ navigation }) => {
           <DateTimePickerModal
             isVisible={isBedTimePickerVisible}
             mode='time'
+            ref = {bedTimeModalRef}
             onConfirm={handleBedTimeConfirm}
             onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
             minuteInterval={15}
           />
           <Button
             title='Set Bed Time Goal'
-            onPress={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+            onPress={() => {
+              setBedTimePickerVisibility(!isBedTimePickerVisible)
+              bedTimeModalRef.current.state.currentDate.setHours(20,0,0,0)
+            }}
           />
         </View>
         <View style={tw`flex-row mb-4`}>
@@ -210,13 +217,17 @@ const BuildProfile = ({ navigation }) => {
           <DateTimePickerModal
             isVisible={isWakeTimePickerVisible}
             mode='time'
+            ref = {wakeTimeModalRef}
             onConfirm={handleWakeTimeConfirm}
             onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
             minuteInterval={15}
           />
           <Button
             title='Set Wake Up Goal'
-            onPress={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
+            onPress={() => {
+              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
+              wakeTimeModalRef.current.state.currentDate.setHours(8,0,0,0)
+            }}
           />
         </View>
         <View style={styles.switches}>
