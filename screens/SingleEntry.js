@@ -7,15 +7,16 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  StyleSheet
-} from 'react-native';
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import tw from 'tailwind-react-native-classnames';
-import { StatusBar } from 'expo-status-bar';
+  StyleSheet,
+  ScrollView
+} from "react-native";
+import React from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import tw from "tailwind-react-native-classnames";
+import { StatusBar } from "expo-status-bar";
 
-import { reformatDate, calculateSleepLength, convertToAmPm } from '../Util';
+import { reformatDate, calculateSleepLength, convertToAmPm } from "../Util";
 
 //if this view is accessed from the AllEntries list then the entry data will be passed on props from the parent component.
 //if this view is accessed from the Today button in the nav bar the entry data needs to be pulled from redux
@@ -39,105 +40,134 @@ const SingleEntry = (props) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}></View>
-      <Text style={tw`font-bold text-2xl text-white mb-5 text-center`}>
-        Overview for {entry.date && reformatDate(entry.date)}
-      </Text>
-      <View style={styles.contentContainer}>
+      <ScrollView style={styles.contentContainer}>
+        <Text style={tw`font-bold text-2xl text-white mb-6 text-center`}>
+          Overview for {entry.date && reformatDate(entry.date)}
+        </Text>
+
         <View>
-          <View>
-            <View style={styles.accountItem}>
-              <Text style={tw`font-semibold text-white`}>{`Bed Time:               `}</Text>
-              <Text style={tw`font-extrabold text-white`}>
+          <View style={styles.accountItem}>
+            <View style={styles.header}>
+              <Text style={tw`font-semibold text-lg text-white`}>{`Bed Time:`}</Text>
+            </View>
+            <View style={styles.item}>
+              <Text style={tw`font-bold text-lg text-white`}>
                 {entry.startTime && convertToAmPm(entry.startTime)}
               </Text>
             </View>
+          </View>
 
-            <View style={styles.accountItem}>
-              <Text style={tw`font-semibold text-white`}>{`Wake Up Time:      `}</Text>
-              <Text style={tw`font-extrabold text-white`}>
+          <View style={styles.accountItem}>
+            <View style={styles.header}>
+              <Text style={tw`font-semibold text-white text-lg`}>{`Wake Up Time:`}</Text>
+            </View>
+            <View style={styles.item}>
+              <Text style={tw`font-bold text-white text-lg`}>
                 {entry.endTime && convertToAmPm(entry.endTime)}
               </Text>
             </View>
+          </View>
 
-            <View style={styles.accountItem}>
-              <Text style={tw`font-semibold text-white`}>{`Sleep Duration:    `} </Text>
-              <Text style={tw`font-extrabold text-white`}>
-                {entry.endTime && Math.floor(calculateSleepLength(entry))} hours,{' '}
+          <View style={styles.accountItem}>
+            <View style={styles.header}>
+              <Text style={tw`font-semibold text-white text-lg`}>{`Sleep Duration:`}</Text>
+            </View>
+            <View style={styles.item}>
+              <Text style={tw`font-bold text-white text-lg`}>
+                {entry.endTime && Math.floor(calculateSleepLength(entry))} hours,{" "}
                 {entry.endTime &&
                   Math.floor(
                     (calculateSleepLength(entry) - Math.floor(calculateSleepLength(entry))) * 60
-                  )}{' '}
+                  )}{" "}
                 minutes
               </Text>
             </View>
+          </View>
 
-            <View style={styles.accountItem}>
-              <Text style={tw`font-semibold text-white`}>{`Quality:                   `}</Text>
-              <Text style={tw`font-extrabold text-white`}>{entry.quality}%</Text>
+          <View style={styles.accountItem}>
+            <View style={styles.header}>
+              <Text style={tw`font-semibold text-white text-lg`}>{`Quality:`}</Text>
+            </View>
+            <View style={styles.item}>
+              <Text style={tw`font-bold text-white text-lg`}>{entry.quality}%</Text>
             </View>
           </View>
         </View>
         <View>
-          <Text style={tw`font-semibold text-white mt-10 mb-2`}>Sleep Factors:</Text>
+          <Text style={tw`font-bold text-white mt-10 mb-2 text-xl`}>Sleep Factors:</Text>
           <View>
             {factorNames.map((factor) => {
               return (
-                <Text key={factor} style={tw`font-extrabold text-white mb-1`}>
+                <Text key={factor} style={tw`font-bold text-white mb-1`}>
                   {factor}
                 </Text>
               );
             })}
           </View>
         </View>
-        <View style={styles.contentContainer}>
-          <Text style={tw`font-semibold text-white mt-10 mb-2`}>Notes:</Text>
+        <View style={styles.accountItem}>
+          <Text style={tw`font-bold text-white mt-10 mb-2 text-lg`}>Notes:</Text>
           <View>
-            <Text style={tw`font-extrabold text-white mb-1`}>{entry.notes}</Text>
+            <Text style={tw`font-bold text-white mb-1`}>{entry.notes}</Text>
           </View>
         </View>
-      </View>
 
-      {!props.entry && (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => props.navigation.navigate('EditEntry')}
-        >
-          <Text style={styles.buttonText}>Edit Entry</Text>
-        </TouchableOpacity>
-      )}
-      <StatusBar style='light' />
+        <View style={styles.buttonContainer}>
+          {!props.entry && (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => props.navigation.navigate("EditEntry")}
+            >
+              <Text style={styles.buttonText}>Edit Entry</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <StatusBar style="light" />
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1C3F52',
+    backgroundColor: "#1C3F52",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     opacity: 0.95
   },
   contentContainer: {
-    width: '80%',
-    marginTop: 60
+    width: "100%",
+    marginTop: 80,
+    paddingLeft: 30,
+    paddingRight: 30
   },
   accountItem: {
-    flexDirection: 'row',
-    paddingTop: 10
+    flexDirection: "row",
+    marginTop: 15
+  },
+  header: {
+    flex: 4
+  },
+  item: {
+    flex: 3
   },
   button: {
-    alignItems: 'center',
-    backgroundColor: '#F78A03',
+    alignItems: "center",
+    backgroundColor: "#F78A03",
     paddingVertical: 12,
     width: 150,
     marginVertical: 50,
     borderRadius: 10
   },
+  buttonContainer: {
+    marginBottom: 30,
+    alignItems: "center"
+  },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold'
+    color: "white",
+    fontWeight: "bold"
   }
 });
 

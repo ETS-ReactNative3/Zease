@@ -1,18 +1,18 @@
-import { Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useState, useEffect } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { useSelector, useDispatch } from 'react-redux';
+import { Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
 
-import DataVisualization from './DataVisualization';
-import ViewProfile from './ViewProfile';
-import AllSleepEntries from './AllSleepEntries';
-import AddEntry from './AddEntry';
-import SingleEntry from './SingleEntry';
-import { setOldestEntry } from '../store/oldestEntry';
-import { setNewestEntry } from '../store/newestEntry';
-import { yesterday, getDateNumber } from '../Util';
+import DataVisualization from "./DataVisualization";
+import ViewProfile from "./ViewProfile";
+import AllSleepEntries from "./AllSleepEntries";
+import AddEntry from "./AddEntry";
+import SingleEntry from "./SingleEntry";
+import { setOldestEntry } from "../store/oldestEntry";
+import { setNewestEntry } from "../store/newestEntry";
+import { yesterday, getDateNumber } from "../Util";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,8 +26,8 @@ export default function NavBar() {
   //if an entry was made yesterday indicate that on local state.
   useEffect(() => {
     //identify oldest and newest entries for this user.
-    let newestEntry = { date: '0' };
-    let oldestEntry = { date: '3000-00-00' };
+    let newestEntry = { date: "0" };
+    let oldestEntry = { date: "3000-00-00" };
     userEntries.forEach((entry) => {
       let currentEntryDateNum = getDateNumber(entry.date);
       if (currentEntryDateNum > getDateNumber(newestEntry.date)) {
@@ -57,32 +57,32 @@ export default function NavBar() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Today') {
-            iconName = 'today-outline';
-          } else if (route.name === 'Entries') {
-            iconName = 'list';
-          } else if (route.name === 'Analyze') {
-            iconName = 'analytics';
-          } else if (route.name === 'Profile') {
-            iconName = 'person';
+          if (route.name === "Today") {
+            iconName = "today-outline";
+          } else if (route.name === "Entries") {
+            iconName = "list";
+          } else if (route.name === "Analyze") {
+            iconName = "analytics";
+          } else if (route.name === "Profile") {
+            iconName = "person";
           }
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={32} color={color} />;
         },
-        tabBarActiveTintColor: '#F78A03',
-        tabBarInactiveTintColor: '#1C3F52',
+        tabBarActiveTintColor: "#F78A03",
+        tabBarInactiveTintColor: "#1C3F52",
         // we can decide if we want to show the default header or not
         headerShown: false
       })}
     >
-      <Tab.Screen name='Today' component={loggedYesterday ? SingleEntry : AddEntry} />
-      <Tab.Screen name='Entries' component={AllSleepEntries} />
+      <Tab.Screen name="Today" component={loggedYesterday ? SingleEntry : AddEntry} />
+      <Tab.Screen name="Entries" component={AllSleepEntries} />
 
       <Tab.Screen
-        name='Analyze'
+        name="Analyze"
         component={DataVisualization}
         // options={{ headerShown: true }}
       />
-      <Tab.Screen name='Profile' component={ViewProfile} />
+      <Tab.Screen name="Profile" component={ViewProfile} />
     </Tab.Navigator>
   );
 }
