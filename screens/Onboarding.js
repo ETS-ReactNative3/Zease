@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   slideSelector: {
     borderRadius: 50,
-    backgroundColor: currentSlide === slide.id ? "#1C3F52" : "#fdf0d5",
+    backgroundColor: "#fdf0d5",
     height: 25,
     width: 25,
     margin: 15,
