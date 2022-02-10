@@ -121,7 +121,7 @@ const DataVisualization = () => {
   if (data.length <= 1) {
     return (
       <View style={styles.container}>
-        <Text style={tw`font-semibold text-white`}>
+        <Text style={tw` font-semibold text-black`}>
           {" "}
           Come back to view the data once you have more entries!
         </Text>
