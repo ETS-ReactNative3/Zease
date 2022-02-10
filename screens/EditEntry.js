@@ -8,13 +8,13 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView
-} from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import Slider from '@react-native-community/slider';
-import MultiSelect from 'react-native-multiple-select';
-import tw from 'tailwind-react-native-classnames';
+} from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import Slider from "@react-native-community/slider";
+import MultiSelect from "react-native-multiple-select";
+import tw from "tailwind-react-native-classnames";
 
 // import { NavigationContainer } from "@react-navigation/native";
 // import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -136,28 +136,50 @@ const EditEntry = ({ navigation }) => {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView style={styles.contentContainer}>
-        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Edit Entry</Text>
+        <Text style={tw`font-bold text-2xl text-white mb-5 text-center`}>
+          Edit Your Sleep Entry
+        </Text>
 
         <View style={styles.accountItem}>
-          <Text style={tw`font-semibold text-white`}>{`Bed Time:`}</Text>
-          <Button
-            title={startTime ? convertToAmPm(startTime) : "Select"}
-            onPress={() => {
-              setStartTimePickerVisible(true);
-              bedTimeModalRef.current.state.currentDate.setHours(parseInt(startTime.slice(0,2)),parseInt(startTime.slice(-2)),0,0)
-            }}
-          />
+          <View style={styles.header}>
+            <Text style={tw`font-semibold text-white`}>{`Your Bed Time:`}</Text>
+          </View>
+          <View style={styles.updateButton}>
+            <Button
+              title={startTime ? convertToAmPm(startTime) : "Update"}
+              color="#F78A03"
+              onPress={() => {
+                setStartTimePickerVisible(true);
+                bedTimeModalRef.current.state.currentDate.setHours(
+                  parseInt(startTime.slice(0, 2)),
+                  parseInt(startTime.slice(-2)),
+                  0,
+                  0
+                );
+              }}
+            />
+          </View>
         </View>
 
         <View style={styles.accountItem}>
-          <Text style={tw`font-semibold text-white`}>{`Wake Time:`}</Text>
-          <Button
-            title={endTime ? convertToAmPm(endTime) : "Select"}
-            onPress={() => {
-              setEndTimePickerVisible(true);
-              wakeTimeModalRef.current.state.currentDate.setHours(parseInt(endTime.slice(0,2)),parseInt(endTime.slice(-2)),0,0)
-            }}
-          />
+          <View style={styles.header}>
+            <Text style={tw`font-semibold text-white`}>{`Your Wake Time:`}</Text>
+          </View>
+          <View style={styles.updateButton}>
+            <Button
+              title={endTime ? convertToAmPm(endTime) : "Update"}
+              color="#F78A03"
+              onPress={() => {
+                setEndTimePickerVisible(true);
+                wakeTimeModalRef.current.state.currentDate.setHours(
+                  parseInt(endTime.slice(0, 2)),
+                  parseInt(endTime.slice(-2)),
+                  0,
+                  0
+                );
+              }}
+            />
+          </View>
         </View>
 
         <DateTimePickerModal
@@ -170,12 +192,13 @@ const EditEntry = ({ navigation }) => {
 
         <DateTimePickerModal
           isVisible={endTimePickerVisible}
-            ref = {wakeTimeModalRef}
-            mode="time"
+          ref={wakeTimeModalRef}
+          mode="time"
           onConfirm={handleConfirmEnd}
           onCancel={hideTimePickers}
         />
-        <Text style={tw`font-semibold text-white mb-3`}>Sleep Quality:</Text>
+
+        <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Your Sleep Quality:`}</Text>
         <Slider
           step={1}
           minimumValue={0}
@@ -184,17 +207,17 @@ const EditEntry = ({ navigation }) => {
           onValueChange={handleSelectQuality}
           minimumTrackTintColor="#3395ff"
           maximumTrackTintColor="#d3d3d3"
-          thumbTintColor="#eeeeee"
+          thumbTintColor="#F78A03"
         />
-        <Text style={tw`font-semibold text-white mb-3 mt-5`}>Factors</Text>
+        <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Your Sleep Factors`}</Text>
         <MultiSelect
           hideTags
           items={userFactorsArr}
           uniqueKey="id"
           onSelectedItemsChange={onEntryFactorsChange}
           selectedItems={entryFactorsArr}
-          selectText="Select factors..."
-          searchInputPlaceholderText="Search factors..."
+          selectText={`  Select factors...`}
+          searchInputPlaceholderText={`  Select factors...`}
           ref={multiSelectRef}
           onChangeInput={(text) => console.log(text)}
           tagRemoveIconColor="#CCC"
@@ -205,15 +228,16 @@ const EditEntry = ({ navigation }) => {
           itemTextColor="#000"
           displayKey="name"
           searchInputStyle={{ color: "#CCC" }}
-          submitButtonColor="#CCC"
+          submitButtonColor="#F78A03"
           submitButtonText="Submit"
         />
-        <Text style={tw`font-semibold text-white mb-3 mt-5`}>Notes</Text>
+        <Text style={tw`font-semibold text-white mb-2 mt-7`}>{`Your Sleep Notes`}</Text>
         <TextInput
-          style={styles.input}
+          style={tw`text-gray-600 bg-white h-8`}
           multiline={true}
           numberOfLines={4}
-          placeholder="Enter notes..."
+          placeholder={`  Enter notes...`}
+          placeholderTextColor="#989898"
           onChangeText={(input) => setNotes(input)}
           value={notes}
         />
@@ -247,11 +271,19 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   contentContainer: {
-    width: '80%',
-    marginTop: 60
+    width: "100%",
+    marginTop: 80,
+    paddingLeft: 30,
+    paddingRight: 30
+  },
+  accountItem: {
+    flexDirection: "row",
+    paddingTop: 10,
+    marginBottom: 10,
+    alignItems: "baseline"
   },
   button: {
     alignItems: "center",
@@ -259,15 +291,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   buttonContainer: {
     marginTop: 40,
-    alignItems: "center",
+    alignItems: "center"
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontWeight: "bold"
+  },
+  header: {
+    flex: 1
   },
   input: {
     backgroundColor: "white",
@@ -275,6 +310,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "white",
     borderRadius: 2,
-    padding: 10,
+    padding: 10
   },
+  updateButton: {
+    flex: 1,
+    marginBottom: 10,
+    alignItems: "flex-start"
+  }
 });

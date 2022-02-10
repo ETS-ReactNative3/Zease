@@ -10,18 +10,18 @@ import {
   Pressable,
   StyleSheet,
   ScrollView
-} from 'react-native';
-import React from 'react';
-import { useEffect, useState, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import tw from 'tailwind-react-native-classnames';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Ionicons } from '@expo/vector-icons';
+} from "react-native";
+import React from "react";
+import { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import tw from "tailwind-react-native-classnames";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Ionicons } from "@expo/vector-icons";
 
-import SleepFactorCategory from './SleepFactorCategory';
-import { convertToMilitaryString, convertToAmPm, reformatFactors } from '../Util';
-import { updateProfile } from '../store/profile';
-import { fetchUserFactors } from '../store/userFactors';
+import SleepFactorCategory from "./SleepFactorCategory";
+import { convertToMilitaryString, convertToAmPm, reformatFactors } from "../Util";
+import { updateProfile } from "../store/profile";
+import { fetchUserFactors } from "../store/userFactors";
 
 const EditProfile = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -33,14 +33,10 @@ const EditProfile = ({ navigation }) => {
   let user = useSelector((state) => state.profile);
   const [email, setEmail] = useState(user.email || "");
   const [name, setName] = useState(user.name || "");
-  const [sleepGoalStart, setsleepGoalStart] = useState(
-    user.sleepGoalStart || null
-  );
+  const [sleepGoalStart, setsleepGoalStart] = useState(user.sleepGoalStart || null);
   const [sleepGoalEnd, setsleepGoalEnd] = useState(user.sleepGoalEnd || null);
   const [logReminderOn, setLogReminder] = useState(user.logReminderOn || false);
-  const [sleepReminderOn, setSleepReminder] = useState(
-    user.sleepReminderOn || false
-  );
+  const [sleepReminderOn, setSleepReminder] = useState(user.sleepReminderOn || false);
   let userFactors = useSelector((state) => state.userFactors);
 
   //form validation
@@ -48,8 +44,7 @@ const EditProfile = ({ navigation }) => {
 
   //visibility of modals
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
-    useState(false);
+  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
   const bedTimeModalRef = useRef();
@@ -91,12 +86,7 @@ const EditProfile = ({ navigation }) => {
     }
 
     //make sure that all required fields are filled in
-    if (
-      email === "" ||
-      name === "" ||
-      sleepGoalStart === null ||
-      sleepGoalEnd === null
-    ) {
+    if (email === "" || name === "" || sleepGoalStart === null || sleepGoalEnd === null) {
       Alert.alert("Error", "Please fill in all required fields.");
       validated = false;
     }
@@ -109,7 +99,7 @@ const EditProfile = ({ navigation }) => {
         sleepGoalEnd,
         userFactors,
         logReminderOn,
-        sleepReminderOn,
+        sleepReminderOn
       };
       // console.log("newUser about to be updated in db", newUser)
       dispatch(updateProfile(updatedUser));
@@ -119,48 +109,52 @@ const EditProfile = ({ navigation }) => {
 
   const handleCancel = () => {
     dispatch(fetchUserFactors());
-    navigation.navigate('NavBar');
+    navigation.navigate("NavBar");
   };
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
-        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Edit Your Profile</Text>
+        <Text style={tw`font-bold text-2xl text-white mb-6 text-center`}>Edit Your Profile</Text>
 
         <View style={styles.accountItem}>
-          <Text
-            style={tw`font-semibold text-white`}
-          >{`Name:                                     `}</Text>
-          <TextInput
-            style={tw`font-extrabold text-white`}
-            placeholder="Name"
-            value={name}
-            onChangeText={(text) => setName(text)}
-          />
+          <View style={styles.header}>
+            <Text style={tw`font-semibold text-white`}>{`Name:`}</Text>
+          </View>
+          <View style={styles.item}>
+            <TextInput
+              style={tw`font-bold text-gray-700 bg-white h-8 rounded`}
+              placeholder="Name"
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+          </View>
         </View>
 
         <View style={styles.accountItem}>
-          <Text
-            style={tw`font-semibold text-white`}
-          >{`Email:                                      `}</Text>
-          <TextInput
-            style={tw`font-extrabold text-white`}
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-          {!emailValid && (
-            <Ionicons name="alert-outline" size={20} color="red" />
-          )}
+          <View style={styles.header}>
+            <Text style={tw`font-semibold text-white`}>{`Email:`}</Text>
+          </View>
+          <View style={styles.item}>
+            <TextInput
+              style={tw`font-bold text-gray-700 bg-white h-8 rounded`}
+              placeholder="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+          </View>
+          {!emailValid && <Ionicons name="alert-outline" size={20} color="red" />}
         </View>
 
         <View style={styles.accountItem}>
-          <Text style={tw`font-semibold text-white`}>
-            {`Bed Time Goal:                    `}{" "}
-          </Text>
-          <Text style={tw`font-extrabold text-white`}>
-            {sleepGoalStart && convertToAmPm(sleepGoalStart)}
-          </Text>
+          <View style={styles.header}>
+            <Text style={tw`font-semibold text-white`}>{`Bed Time Goal:`}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={tw`font-extrabold text-white`}>
+              {sleepGoalStart && convertToAmPm(sleepGoalStart)}
+            </Text>
+          </View>
         </View>
 
         <View>
@@ -172,27 +166,32 @@ const EditProfile = ({ navigation }) => {
             onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
             minuteInterval={15}
           />
-          <Button
-            title="Update Bed Time Goal"
-            onPress={() => {
-              setBedTimePickerVisibility(!isBedTimePickerVisible);
-              bedTimeModalRef.current.state.currentDate.setHours(
-                parseInt(sleepGoalStart.slice(0, 2)),
-                parseInt(sleepGoalStart.slice(-2)),
-                0,
-                0
-              );
-            }}
-          />
+          <View style={styles.updateButton}>
+            <Button
+              title="Update Bed Time Goal"
+              color="#F78A03"
+              onPress={() => {
+                setBedTimePickerVisibility(!isBedTimePickerVisible);
+                bedTimeModalRef.current.state.currentDate.setHours(
+                  parseInt(sleepGoalStart.slice(0, 2)),
+                  parseInt(sleepGoalStart.slice(-2)),
+                  0,
+                  0
+                );
+              }}
+            />
+          </View>
         </View>
 
         <View style={styles.accountItem}>
-          <Text style={tw`font-semibold text-white`}>
-            {`Wake Up Goal:                     `}{" "}
-          </Text>
-          <Text style={tw`font-extrabold text-white`}>
-            {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
-          </Text>
+          <View style={styles.header}>
+            <Text style={tw`font-semibold text-white`}>{`Wake Up Goal:`}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={tw`font-extrabold text-white`}>
+              {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
+            </Text>
+          </View>
         </View>
 
         <View>
@@ -201,34 +200,33 @@ const EditProfile = ({ navigation }) => {
             mode="time"
             ref={wakeTimeModalRef}
             onConfirm={handleWakeTimeConfirm}
-            onCancel={() =>
-              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
-            }
+            onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
             minuteInterval={15}
           />
-          <Button
-            title="Update Wake Time Goal"
-            onPress={() => {
-              setWakeTimePickerVisibility(!isWakeTimePickerVisible);
-              wakeTimeModalRef.current.state.currentDate.setHours(
-                parseInt(sleepGoalEnd.slice(0, 2)),
-                parseInt(sleepGoalEnd.slice(-2)),
-                0,
-                0
-              );
-            }}
-          />
+          <View style={styles.updateButton}>
+            <Button
+              title="Update Wake Up Goal"
+              color="#F78A03"
+              onPress={() => {
+                setWakeTimePickerVisibility(!isWakeTimePickerVisible);
+                wakeTimeModalRef.current.state.currentDate.setHours(
+                  parseInt(sleepGoalEnd.slice(0, 2)),
+                  parseInt(sleepGoalEnd.slice(-2)),
+                  0,
+                  0
+                );
+              }}
+            />
+          </View>
         </View>
 
         <View style={tw`flex-row mb-4`}>
           <Switch
             style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
             value={logReminderOn}
-            onValueChange={() =>
-              setLogReminder((previousValue) => !previousValue)
-            }
+            onValueChange={() => setLogReminder((previousValue) => !previousValue)}
           />
-          <Text style={tw`font-semibold text-white mt-2 ml-1`}>
+          <Text style={tw`font-semibold text-white mt-2 ml-2`}>
             Remind me to enter daily sleep log
           </Text>
         </View>
@@ -236,25 +234,15 @@ const EditProfile = ({ navigation }) => {
           <Switch
             style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
             value={sleepReminderOn}
-            onValueChange={() =>
-              setSleepReminder((previousValue) => !previousValue)
-            }
+            onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
           />
-          <Text style={tw`font-semibold text-white mt-2 ml-1`}>
-            Remind me to go to sleep
-          </Text>
+          <Text style={tw`font-semibold text-white mt-2 ml-2`}>Remind me to go to sleep</Text>
         </View>
 
         <View style={tw`flex-row mt-5`}>
-          <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>
-            Sleep Factors
-          </Text>
+          <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>Sleep Factors</Text>
           <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
-            <Ionicons
-              style={tw`mt-1 text-white`}
-              name="information-circle-outline"
-              size={20}
-            />
+            <Ionicons style={tw`mt-1 text-white`} name="information-circle-outline" size={20} />
           </TouchableOpacity>
         </View>
         <Modal
@@ -265,16 +253,13 @@ const EditProfile = ({ navigation }) => {
         >
           <View style={tw`flex-1 items-center justify-center`}>
             <Text>
-              A sleep factor is something that has the potential to affect your
-              sleep. When you are making a daily sleep entry you will be able to
-              select any number of the sleep factors you choose here. When
-              viewing visualizations of your sleep entries you will be able to
-              see any correlations that may exist between factors you have
-              chosen to track and the quality or duration of your sleep.
+              A sleep factor is something that has the potential to affect your sleep. When you are
+              making a daily sleep entry you will be able to select any number of the sleep factors
+              you choose here. When viewing visualizations of your sleep entries you will be able to
+              see any correlations that may exist between factors you have chosen to track and the
+              quality or duration of your sleep.
             </Text>
-            <Pressable
-              onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}
-            >
+            <Pressable onPress={() => setFactorInfoVisibility(!isFactorInfoVisible)}>
               <Text>Close</Text>
             </Pressable>
           </View>
@@ -308,15 +293,18 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   contentContainer: {
-    width: '80%',
-    marginTop: 60
+    width: "100%",
+    marginTop: 80,
+    paddingLeft: 30,
+    paddingRight: 30
   },
   accountItem: {
     flexDirection: "row",
     paddingTop: 10,
+    marginBottom: 10
   },
   button: {
     alignItems: "center",
@@ -324,16 +312,26 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   buttonContainer: {
     marginTop: 40,
-    alignItems: "center",
+    alignItems: "center"
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontWeight: "bold"
   },
+  header: {
+    flex: 3
+  },
+  item: {
+    flex: 4
+  },
+  updateButton: {
+    marginBottom: 10,
+    alignItems: "flex-start"
+  }
 });
 
 export default EditProfile;
