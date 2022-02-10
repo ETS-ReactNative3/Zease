@@ -10,8 +10,8 @@ import {
   calculateSleepLength,
   getDateObj,
   getBedTime,
+  getWakeTime,
 } from "../Util";
-import { database, auth } from "../firebase";
 import ChartA from "./ChartA";
 import ChartB from "./ChartB";
 import ChartC from "./ChartC";
@@ -20,6 +20,7 @@ const DataVisualization = () => {
   const [selectedChart, setSelectedChart] = useState("A");
   const [timeRange, setTimeRange] = useState("week");
   const sleepGoalStart = useSelector((state) => state.profile.sleepGoalStart);
+  const sleepGoalEnd = useSelector((state) => state.profile.sleepGoalEnd);
 
   const data = useSelector((state) => state.userEntries);
 
@@ -45,7 +46,8 @@ const DataVisualization = () => {
     let lastDate = "1022-01-01";
     let sleepStartGoalMet = 0;
     let sleepStartGoalMissed = 0;
-
+    let sleepEndGoalMet = 0;
+    let sleepEndGoalMissed = 0;
     dataRaw.forEach((entry) => {
       if (
         timeRange === "all" ||
@@ -89,6 +91,14 @@ const DataVisualization = () => {
         } else {
           sleepStartGoalMissed++;
         }
+        if (
+          getWakeTime(entry.endTime) > getWakeTime(sleepGoalEnd) - 15 &&
+          getWakeTime(entry.endTime) < getWakeTime(sleepGoalEnd) + 15
+        ) {
+          sleepEndGoalMet++;
+        } else {
+          sleepEndGoalMissed++;
+        }
       }
     });
     return {
@@ -103,6 +113,8 @@ const DataVisualization = () => {
       lastDate,
       sleepStartGoalMet,
       sleepStartGoalMissed,
+      sleepEndGoalMet,
+      sleepEndGoalMissed,
     };
   };
 

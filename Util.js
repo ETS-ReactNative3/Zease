@@ -216,3 +216,9 @@ export const getBedTime = (timeStr) => {
   let min = Number(timeStr.slice(-2));
   return hours * 60 + min;
 };
+
+export const getWakeTime = (timeStr) => {
+  let hours = Number(timeStr.slice(0, 2));
+  let min = Number(timeStr.slice(-2));
+  return hours * 60 + min;
+};

@@ -1,8 +1,8 @@
 import React from "react";
 import { Text, View, TouchableOpacity, Modal, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { VictoryPie } from "victory-native";
-import { G } from "react-native-svg";
+
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -27,6 +27,17 @@ const ChartC = ({ data }) => {
         data={[
           { x: "Bed Time Met", y: data.sleepStartGoalMet },
           { x: "Bed Time Missed", y: data.sleepStartGoalMissed },
+        ]}
+        style={{ labels: { fill: "white", fontSize: 16, fontEight: "bold" } }}
+      />
+      <VictoryPie
+        padAngel={5}
+        innerRadius={0}
+        labelRadius={({ innerRadius }) => innerRadius + 35}
+        colorScale={["#F78A03", "#1C3F52"]}
+        data={[
+          { x: "Wake Time Met", y: data.sleepEndGoalMet },
+          { x: "Wake Time Missed", y: data.sleepEndGoalMissed },
         ]}
         style={{ labels: { fill: "white", fontSize: 16, fontEight: "bold" } }}
       />
