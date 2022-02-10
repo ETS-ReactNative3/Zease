@@ -75,7 +75,7 @@ const DataVisualization = () => {
     };
   };
 
-  if (data.length <= 1)
+  if (data.length <= 1) {
     return (
       <View style={styles.container}>
         <Text style={tw`font-semibold text-white`}>
@@ -84,6 +84,7 @@ const DataVisualization = () => {
         </Text>
       </View>
     );
+  }
   return (
     <View>
       <View style={styles.contentContainer}>

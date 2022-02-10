@@ -6,17 +6,17 @@ import {
   TextInput,
   Alert,
   ScrollView,
-  TouchableOpacity
-} from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import Slider from '@react-native-community/slider';
-import MultiSelect from 'react-native-multiple-select';
-import { useSelector, useDispatch } from 'react-redux';
-import tw from 'tailwind-react-native-classnames';
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import Slider from "@react-native-community/slider";
+import MultiSelect from "react-native-multiple-select";
+import { useSelector, useDispatch } from "react-redux";
+import tw from "tailwind-react-native-classnames";
 
-import { yesterday, convertToMilitaryString, convertToAmPm } from '../Util';
-import { goAddUserEntry } from '../store/userEntries';
+import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
+import { goAddUserEntry } from "../store/userEntries";
 
 const AddEntry = () => {
   const dispatch = useDispatch();
@@ -25,20 +25,19 @@ const AddEntry = () => {
   const [userFactorsArr, setUserFactorsArr] = useState([]);
 
   // Form state
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [quality, setQuality] = useState(0);
   const [entryFactorsArr, setEntryFactorsArr] = useState([]);
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState("");
 
   // Time picker state
   const [startTimePickerVisible, setStartTimePickerVisible] = useState(false);
   const [endTimePickerVisible, setEndTimePickerVisible] = useState(false);
-  // TODO: Initialize time picker to user's goal times
-  // const [startTimeUTC, setStartTimeUTC] = useState(Date.now());
-  // const [endTimeUTC, setEndTimeUTC] = useState(Date.now());
-  // const [startTimeUTC, setStartTimeUTC] = useState(new Date().setHours(20,0,0,0));
-  // const [endTimeUTC, setEndTimeUTC] = useState(new Date().setHours(7,0,0,0));
+
+  // Initialize time picker
+  const bedTimeModalRef = useRef();
+  const wakeTimeModalRef = useRef();
 
   // Sleep factor multiselect ref (used to call prototype methods)
   const multiSelectRef = useRef();
@@ -51,14 +50,12 @@ const AddEntry = () => {
 
   // Set state for sleep startTime once modal picker selection confirmed
   const handleConfirmStart = (time) => {
-    // setStartTimeUTC(time);
     setStartTime(convertToMilitaryString(time));
     hideTimePickers();
   };
 
   // Set state for sleep endTime once modal picker selection confirmed
   const handleConfirmEnd = (time) => {
-    // setEndTimeUTC(time);
     setEndTime(convertToMilitaryString(time));
     hideTimePickers();
   };
@@ -84,7 +81,7 @@ const AddEntry = () => {
   const handleSubmit = async () => {
     // Validate form data
     if (!startTime || !endTime || !quality) {
-      Alert.alert('Error', 'Please fill in all required fields!');
+      Alert.alert("Error", "Please fill in all required fields!");
       return;
     }
 
@@ -92,61 +89,65 @@ const AddEntry = () => {
     const date = yesterday();
 
     const entryFactors = {};
-    entryFactorsArr.forEach((factorId) => (entryFactors[factorId] = userFactors[factorId])); // Only grab name and category
+    entryFactorsArr.forEach(
+      (factorId) => (entryFactors[factorId] = userFactors[factorId])
+    ); // Only grab name and category
     // Set formData factors to formatted selectedItems (selected items will be array of ids)
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
-    //console.log("formData", formData);
-
     // Write form inputs to firebase.  this will also dispatch function to put set this new entry as the newest entry in redux and for this new entry to be included in userEntries.
     dispatch(goAddUserEntry(formData));
     // Success alert
-    Alert.alert('Entry submitted!');
+    Alert.alert("Entry submitted!");
     // Reset form data
-    setStartTime('');
-    setEndTime('');
+    setStartTime("");
+    setEndTime("");
     setQuality(0);
     setEntryFactorsArr([]);
-    setNotes('');
+    setNotes("");
     // TODO: Take user to SingleEntry view of submitted entry
   };
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
-        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>Add Entry</Text>
+        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>
+          Add Entry
+        </Text>
         <View>
           <View style={styles.accountItem}>
             <Text style={tw`font-semibold text-white`}>{`Bed Time:`}</Text>
             <Button
-              title={startTime ? convertToAmPm(startTime) : 'Select'}
+              title={startTime ? convertToAmPm(startTime) : "Select"}
               onPress={() => {
                 setStartTimePickerVisible(true);
+                bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
               }}
             />
           </View>
           <DateTimePickerModal
             isVisible={startTimePickerVisible}
-            mode='time'
+            mode="time"
+            ref={bedTimeModalRef}
             onConfirm={handleConfirmStart}
             onCancel={hideTimePickers}
           />
-
           <View style={styles.accountItem}>
             <Text style={tw`font-semibold text-white`}>{`Wake Time:`}</Text>
             <Button
-              title={endTime ? convertToAmPm(endTime) : 'Select'}
+              title={endTime ? convertToAmPm(endTime) : "Select"}
               onPress={() => {
                 setEndTimePickerVisible(true);
+                wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
               }}
             />
           </View>
           <DateTimePickerModal
             isVisible={endTimePickerVisible}
-            mode='time'
+            mode="time"
+            ref={wakeTimeModalRef}
             onConfirm={handleConfirmEnd}
             onCancel={hideTimePickers}
           />
-
           <Text style={tw`font-semibold text-white mb-3`}>Sleep Quality</Text>
           <Slider
             step={1}
@@ -154,39 +155,38 @@ const AddEntry = () => {
             maximumValue={100}
             value={quality}
             onValueChange={handleSelectQuality}
-            minimumTrackTintColor='#3395ff'
-            maximumTrackTintColor='#d3d3d3'
-            thumbTintColor='#eeeeee'
+            minimumTrackTintColor="#3395ff"
+            maximumTrackTintColor="#d3d3d3"
+            thumbTintColor="#eeeeee"
           />
           <Text style={tw`font-semibold text-white mb-3 mt-5`}>Factors</Text>
           <MultiSelect
             hideTags
             items={userFactorsArr}
-            uniqueKey='id'
+            uniqueKey="id"
             onSelectedItemsChange={onEntryFactorsChange}
             selectedItems={entryFactorsArr}
-            selectText='Select factors...'
-            searchInputPlaceholderText='Search factors...'
+            selectText="Select factors..."
+            searchInputPlaceholderText="Search factors..."
             ref={multiSelectRef}
             onChangeInput={(text) => console.log(text)}
-            tagRemoveIconColor='#CCC'
-            tagBorderColor='#CCC'
-            tagTextColor='#CCC'
-            selectedItemTextColor='#CCC'
-            selectedItemIconColor='#CCC'
-            itemTextColor='#000'
-            displayKey='name'
-            searchInputStyle={{ color: '#CCC' }}
-            submitButtonColor='#CCC'
-            submitButtonText='Submit'
+            tagRemoveIconColor="#CCC"
+            tagBorderColor="#CCC"
+            tagTextColor="#CCC"
+            selectedItemTextColor="#CCC"
+            selectedItemIconColor="#CCC"
+            itemTextColor="#000"
+            displayKey="name"
+            searchInputStyle={{ color: "#CCC" }}
+            submitButtonColor="#CCC"
+            submitButtonText="Submit"
           />
-
           <Text style={tw`font-semibold text-white mb-3 mt-5`}>Notes</Text>
           <TextInput
             style={styles.input}
             multiline={true}
             numberOfLines={4}
-            placeholder='Enter notes...'
+            placeholder="Enter notes..."
             onChangeText={(input) => setNotes(input)}
             value={notes}
           />
@@ -194,7 +194,7 @@ const AddEntry = () => {
             <TouchableOpacity
               style={styles.button}
               onPress={handleSubmit}
-              accessibilityLabel='Submit Edit Sleep Entry Form'
+              accessibilityLabel="Submit Edit Sleep Entry Form"
             >
               <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
@@ -209,33 +209,33 @@ export default AddEntry;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1C3F52',
+    backgroundColor: "#1C3F52",
     opacity: 0.95,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   contentContainer: {
-    width: '80%',
-    marginTop: 60
+    width: "80%",
+    marginTop: 60,
   },
   button: {
-    alignItems: 'center',
-    backgroundColor: '#F78A03',
+    alignItems: "center",
+    backgroundColor: "#F78A03",
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10
+    borderRadius: 10,
   },
   buttonContainer: {
     marginTop: 40,
-    alignItems: 'center'
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold'
+    color: "white",
+    fontWeight: "bold",
   },
   input: {
-    color: 'white'
-  }
+    color: "white",
+  },
 });
