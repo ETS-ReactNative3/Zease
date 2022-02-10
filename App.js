@@ -44,7 +44,7 @@ export default function App() {
               component={EditProfile}
             />
             <Stack.Screen
-              options={{ headerShown: false }}
+              options={{ headerShown: false, gestureEnabled: false }}
               name="NavBar"
               component={NavBar}
             />
