@@ -6,7 +6,7 @@ import {
   TextInput,
   Alert,
   ScrollView,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -89,9 +89,7 @@ const AddEntry = () => {
     const date = yesterday();
 
     const entryFactors = {};
-    entryFactorsArr.forEach(
-      (factorId) => (entryFactors[factorId] = userFactors[factorId])
-    ); // Only grab name and category
+    entryFactorsArr.forEach((factorId) => (entryFactors[factorId] = userFactors[factorId])); // Only grab name and category
     // Set formData factors to formatted selectedItems (selected items will be array of ids)
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
     // Write form inputs to firebase.  this will also dispatch function to put set this new entry as the newest entry in redux and for this new entry to be included in userEntries.
@@ -110,19 +108,24 @@ const AddEntry = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
-        <Text style={tw`font-bold text-3xl text-white mb-5 text-center`}>
-          Add Entry
-        </Text>
+        <Text style={tw`font-bold text-2xl text-white mb-6 text-center`}>Add Your Sleep Entry</Text>
+
         <View>
           <View style={styles.accountItem}>
-            <Text style={tw`font-semibold text-white`}>{`Bed Time:`}</Text>
-            <Button
-              title={startTime ? convertToAmPm(startTime) : "Select"}
-              onPress={() => {
-                setStartTimePickerVisible(true);
-                bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
-              }}
-            />
+            <View style={styles.header}>
+              <Text style={tw`font-semibold text-white`}>{`Enter Your Bed Time:`}</Text>
+            </View>
+
+            <View style={styles.updateButton}>
+              <Button
+                title={startTime ? convertToAmPm(startTime) : "Select"}
+                color="#F78A03"
+                onPress={() => {
+                  setStartTimePickerVisible(true);
+                  bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
+                }}
+              />
+            </View>
           </View>
           <DateTimePickerModal
             isVisible={startTimePickerVisible}
@@ -131,16 +134,23 @@ const AddEntry = () => {
             onConfirm={handleConfirmStart}
             onCancel={hideTimePickers}
           />
+
           <View style={styles.accountItem}>
-            <Text style={tw`font-semibold text-white`}>{`Wake Time:`}</Text>
-            <Button
-              title={endTime ? convertToAmPm(endTime) : "Select"}
-              onPress={() => {
-                setEndTimePickerVisible(true);
-                wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
-              }}
-            />
+            <View style={styles.header}>
+              <Text style={tw`font-semibold text-white`}>{`Enter Your Wake Time:`}</Text>
+            </View>
+            <View style={styles.updateButton}>
+              <Button
+                title={endTime ? convertToAmPm(endTime) : "Select"}
+                color="#F78A03"
+                onPress={() => {
+                  setEndTimePickerVisible(true);
+                  wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
+                }}
+              />
+            </View>
           </View>
+
           <DateTimePickerModal
             isVisible={endTimePickerVisible}
             mode="time"
@@ -148,7 +158,7 @@ const AddEntry = () => {
             onConfirm={handleConfirmEnd}
             onCancel={hideTimePickers}
           />
-          <Text style={tw`font-semibold text-white mb-3`}>Sleep Quality</Text>
+          <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Adjust Your Sleep Quality:`}</Text>
           <Slider
             step={1}
             minimumValue={0}
@@ -157,17 +167,17 @@ const AddEntry = () => {
             onValueChange={handleSelectQuality}
             minimumTrackTintColor="#3395ff"
             maximumTrackTintColor="#d3d3d3"
-            thumbTintColor="#eeeeee"
+            thumbTintColor="#F78A03"
           />
-          <Text style={tw`font-semibold text-white mb-3 mt-5`}>Factors</Text>
+          <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Select Your Sleep Factors`}</Text>
           <MultiSelect
             hideTags
             items={userFactorsArr}
             uniqueKey="id"
             onSelectedItemsChange={onEntryFactorsChange}
             selectedItems={entryFactorsArr}
-            selectText="Select factors..."
-            searchInputPlaceholderText="Search factors..."
+            selectText={`  Select factors...`}
+            searchInputPlaceholderText={`  Select factors...`}
             ref={multiSelectRef}
             onChangeInput={(text) => console.log(text)}
             tagRemoveIconColor="#CCC"
@@ -178,15 +188,17 @@ const AddEntry = () => {
             itemTextColor="#000"
             displayKey="name"
             searchInputStyle={{ color: "#CCC" }}
-            submitButtonColor="#CCC"
+            submitButtonColor="#F78A03"
             submitButtonText="Submit"
           />
-          <Text style={tw`font-semibold text-white mb-3 mt-5`}>Notes</Text>
+          <Text style={tw`font-semibold text-white mb-2 mt-7`}>{`Enter Any Sleep Notes`}</Text>
           <TextInput
-            style={styles.input}
+            // style={styles.input}
+            style={tw`font-bold text-gray-700 bg-white h-8`}
             multiline={true}
             numberOfLines={4}
-            placeholder="Enter notes..."
+            placeholder={`  Enter notes...`}
+            placeholderTextColor="#989898"
             onChangeText={(input) => setNotes(input)}
             value={notes}
           />
@@ -213,11 +225,19 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   contentContainer: {
-    width: "80%",
-    marginTop: 60,
+    width: "100%",
+    marginTop: 80,
+    paddingLeft: 30,
+    paddingRight: 30
+  },
+  accountItem: {
+    flexDirection: "row",
+    paddingTop: 10,
+    marginBottom: 10,
+    alignItems: "baseline"
   },
   button: {
     alignItems: "center",
@@ -225,17 +245,22 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   buttonContainer: {
     marginTop: 40,
-    alignItems: "center",
+    alignItems: "center"
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontWeight: "bold"
   },
-  input: {
-    color: "white",
+  header: {
+    flex: 1
   },
+  updateButton: {
+    flex: 1,
+    marginBottom: 10,
+    alignItems: "flex-start"
+  }
 });
