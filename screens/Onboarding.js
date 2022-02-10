@@ -6,9 +6,33 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
+import OnboardingSlide from "./OnboardingSlide";
 
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
+
+const slideDetails = [
+  {
+    key: 1,
+    imageUri: "../assets/onboarding/slide1.png",
+    slidetext: "This explains that first picture",
+  },
+  {
+    key: 2,
+    imageUri: "../assets/onboarding/slide2.png",
+    slidetext: "This explains that second picture",
+  },
+  {
+    key: 3,
+    imageUri: "../assets/onboarding/slide3.png",
+    slidetext: "This explains that third picture",
+  },
+  {
+    key: 4,
+    imageUri: "../assets/onboarding/slide4.png",
+    slidetext: "This explains that fourth picture",
+  },
+];
 
 const Onboarding = ({ navigation }) => {
   return (
@@ -16,6 +40,8 @@ const Onboarding = ({ navigation }) => {
       <Text style={tw`text-white text-4xl font-black`}>
         {<Ionicons name={"bed"} size={36} color={"white"} />}onboarding here
       </Text>
+      <OnboardingSlide />
+      {slideDetails.map}
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("NavBar")}

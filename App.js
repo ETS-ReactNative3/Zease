@@ -25,6 +25,11 @@ export default function App() {
           <Stack.Navigator>
             <Stack.Screen
               options={{ headerShown: false }}
+              name="Onboarding"
+              component={Onboarding}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
               name="LoginScreen"
               component={LoginScreen}
             />
@@ -47,11 +52,6 @@ export default function App() {
               options={{ headerShown: false }}
               name="SingleEntry"
               component={SingleEntry}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="Onboarding"
-              component={Onboarding}
             />
             <Stack.Screen
               options={{ headerShown: false }}
