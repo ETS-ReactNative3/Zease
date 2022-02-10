@@ -105,12 +105,9 @@ const SingleEntry = (props) => {
             })}
           </View>
         </View>
-        <View style={styles.accountItem}>
-          <Text style={tw`font-bold text-white mt-10 mb-2 text-lg`}>Notes:</Text>
-          <View>
-            <Text style={tw`font-bold text-white mb-1`}>{entry.notes}</Text>
-          </View>
-        </View>
+
+        <Text style={tw`font-bold text-white mt-10 mb-2 text-xl`}>Notes:</Text>
+        <Text style={tw`font-bold text-white mb-1`}>{entry.notes}</Text>
 
         <View style={styles.buttonContainer}>
           {!props.entry && (

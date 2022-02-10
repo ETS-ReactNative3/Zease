@@ -75,7 +75,22 @@ export default function NavBar() {
       })}
     >
       <Tab.Screen name="Today" component={loggedYesterday ? SingleEntry : AddEntry} />
-      <Tab.Screen name="Entries" component={AllSleepEntries} />
+      <Tab.Screen
+        name="Entries"
+        component={AllSleepEntries}
+        options={{
+          headerShown: true,
+          headerTitle: `My Daily Entries`,
+          headerTitleStyle: {
+            fontWeight: "bold"
+          },
+          headerStyle: {
+            backgroundColor: "#1C3F52",
+            opacity: 0.95
+          },
+          headerTintColor: "white"
+        }}
+      />
 
       <Tab.Screen
         name="Analyze"
