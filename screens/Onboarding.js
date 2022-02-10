@@ -55,7 +55,14 @@ const Onboarding = ({ navigation }) => {
             <TouchableOpacity
               key={slide.id}
               onPress={() => setCurrentSlide(slide.id)}
-              style={styles.slideSelector}
+              style={{
+                borderRadius: 50,
+                backgroundColor:
+                  currentSlide === slide.id ? "#F78A03" : "#fdf0d5",
+                height: 25,
+                width: 25,
+                margin: 15,
+              }}
             />
           );
         })}
