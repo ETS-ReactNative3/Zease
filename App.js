@@ -37,7 +37,7 @@ export default function App() {
               name='EditProfile'
               component={EditProfile}
             />
-            <Stack.Screen options={{ headerShown: false }} name='NavBar' component={NavBar} />
+            <Stack.Screen options={{ headerShown: false, gestureEnabled: false}} name='NavBar' component={NavBar} />
             <Stack.Screen
               options={{ headerShown: false }}
               name='SingleEntry'
