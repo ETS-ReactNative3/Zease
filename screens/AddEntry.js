@@ -123,7 +123,7 @@ const AddEntry = () => {
                 color="#F78A03"
                 onPress={() => {
                   setStartTimePickerVisible(true);
-                  if (Platform.OS !== 'android') {
+                  if (Platform.OS !== "android") {
                     bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
                   }
                 }}
@@ -148,7 +148,7 @@ const AddEntry = () => {
                 color="#F78A03"
                 onPress={() => {
                   setEndTimePickerVisible(true);
-                  if (Platform.OS !== 'android') {
+                  if (Platform.OS !== "android") {
                     wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
                   }
                 }}

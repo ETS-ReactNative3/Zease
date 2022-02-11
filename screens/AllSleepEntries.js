@@ -24,9 +24,11 @@ export const AllSleepEntries = () => {
   if (entryList.length < 1) {
     return (
       <View style={styles.container}>
-        <Text style={tw`font-semibold text-white`}>
-          Come back once you have created your first sleep entry!
-        </Text>
+        <View style={styles.contentContainer}>
+          <Text style={tw`text-gray-700 text-2xl font-bold p-10 text-center`}>
+            Come back here once you've added your first sleep entry!
+          </Text>
+        </View>
       </View>
     );
   }
