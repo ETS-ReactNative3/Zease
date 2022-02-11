@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Modal,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { Text, View, TouchableOpacity, Modal, StyleSheet, Pressable } from "react-native";
 import { useState } from "react";
 import { VictoryPie } from "victory-native";
 
@@ -23,10 +16,8 @@ const ChartC = ({ data }) => {
         <View style={tw`flex-row`}>
           <Pressable onPress={() => setSelectedPie("start")}>
             <Text
-              style={tw`w-20 px-3 py-2 my-2 ${
-                selectedPie === "start"
-                  ? `bg-blue-500 text-white`
-                  : `bg-gray-300 text-black`
+              style={tw`w-40 px-3 py-2 my-2 ${
+                selectedPie === "start" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
               } text-center`}
             >
               Bed Time
@@ -34,10 +25,8 @@ const ChartC = ({ data }) => {
           </Pressable>
           <Pressable onPress={() => setSelectedPie("end")}>
             <Text
-              style={tw`w-20 px-3 py-2 my-2 rounded-full ${
-                selectedPie === "end"
-                  ? `bg-blue-500 text-white`
-                  : `bg-gray-300 text-black`
+              style={tw`w-40 px-3 py-2 my-2 ${
+                selectedPie === "end" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
               } text-center`}
             >
               Wake Up Time
@@ -46,11 +35,7 @@ const ChartC = ({ data }) => {
         </View>
       </View>
       <TouchableOpacity onPress={() => setShowInfoModal(true)}>
-        <Ionicons
-          style={tw`mt-1 pr-10 self-end`}
-          name="information-circle-outline"
-          size={25}
-        />
+        <Ionicons style={tw`mt-1 pr-10 self-end`} name="information-circle-outline" size={25} />
       </TouchableOpacity>
 
       {selectedPie === "start" ? (
@@ -61,7 +46,7 @@ const ChartC = ({ data }) => {
           colorScale={["#F78A03", "#1C3F52"]}
           data={[
             { x: "Bed Time Met", y: data.sleepStartGoalMet },
-            { x: "Bed Time Missed", y: data.sleepStartGoalMissed },
+            { x: "Bed Time Missed", y: data.sleepStartGoalMissed }
           ]}
           style={{ labels: { fill: "white", fontSize: 16, fontEight: "bold" } }}
         />
@@ -73,7 +58,7 @@ const ChartC = ({ data }) => {
           colorScale={["#F78A03", "#1C3F52"]}
           data={[
             { x: "Wake Time Met", y: data.sleepEndGoalMet },
-            { x: "Wake Time Missed", y: data.sleepEndGoalMissed },
+            { x: "Wake Time Missed", y: data.sleepEndGoalMissed }
           ]}
           style={{ labels: { fill: "white", fontSize: 16, fontEight: "bold" } }}
         />
@@ -89,18 +74,15 @@ const ChartC = ({ data }) => {
         <View style={tw`flex-1 items-center justify-center`}>
           <View style={tw`p-4`}>
             <Text style={tw`p-4 text-base`}>
-              This pie chart shows how often you are going to sleep (or waking
-              up) within fifteen minutes of your goal.
+              This pie chart shows how often you are going to sleep (or waking up) within fifteen
+              minutes of your goal.
             </Text>
             <Text style={tw`p-4 text-base`}>
-              Toggling through the different time windows can show the progress
-              you have been making on this.
+              Toggling through the different time windows can show the progress you have been making
+              on this.
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={() => setShowInfoModal(!showInfoModal)}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={() => setShowInfoModal(!showInfoModal)} style={styles.button}>
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
@@ -118,10 +100,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
-  },
+    fontWeight: "bold"
+  }
 });

@@ -5,8 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Modal,
-  Pressable,
+  Modal
 } from "react-native";
 import React, { useState } from "react";
 
@@ -34,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container}>
       <Text style={tw`text-white text-4xl font-black`}>
         {<Ionicons name={"bed"} size={36} color={"white"} />}ZEASE
       </Text>
@@ -66,11 +65,10 @@ const LoginScreen = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setShowInfoModal(true)}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>About</Text>
+        <TouchableOpacity onPress={() => setShowInfoModal(true)} style={styles.aboutButton}>
+          <Text style={tw`text-white font-semibold underline`}>
+            Click HERE To Learn More About Zease
+          </Text>
         </TouchableOpacity>
       </View>
       <StatusBar style="light" />
@@ -84,26 +82,22 @@ const LoginScreen = ({ navigation }) => {
         <View style={tw`flex-1 items-center justify-center`}>
           <View style={tw`p-4`}>
             <Text style={tw`p-4 text-base`}>
-              Zease allows you to log and track your sleep along with factors
-              that may potentially affect it, such as caffeine.
+              Zease allows you to log and track your sleep along with factors that may potentially
+              affect it, such as caffeine.
             </Text>
             <Text style={tw`p-4 text-base`}>
-              In profile creation select factors you're interested in tracking.
-              When you make an entry about last night's rest add any sleep
-              factors that were present for that sleep. When viewing
-              visualizations of your sleep entries you will be able to see any
-              correlations that may exist between factors you have chosen to
-              track and the quality or duration of your sleep.
+              In profile creation select factors you're interested in tracking. When you make an
+              entry about last night's rest add any sleep factors that were present for that sleep.
+              When viewing visualizations of your sleep entries you will be able to see any
+              correlations that may exist between factors you have chosen to track and the quality
+              or duration of your sleep.
             </Text>
             <Text style={tw`p-4 text-base`}>
-              Zease is a simple way to learn what you need to get the best
-              night's rest, and build better habits around your sleep.
+              Zease is a simple way to learn what you need to get the best night's rest, and build
+              better habits around your sleep.
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={() => setShowInfoModal(!showInfoModal)}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={() => setShowInfoModal(!showInfoModal)} style={styles.button}>
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
@@ -118,11 +112,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    opacity: 0.95,
+    opacity: 0.95
   },
   inputContainer: {
     width: "80%",
-    marginTop: 100,
+    marginTop: 100
   },
   input: {
     backgroundColor: "white",
@@ -130,11 +124,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 12,
     borderRadius: 5,
-    marginVertical: 10,
+    marginVertical: 10
   },
+  aboutButton: {
+    marginTop: 80
+  },
+
   buttonContainer: {
     marginTop: 40,
-    alignItems: "center",
+    alignItems: "center"
   },
   button: {
     alignItems: "center",
@@ -142,12 +140,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
-  },
+    fontWeight: "bold"
+  }
 });
 
 export default LoginScreen;

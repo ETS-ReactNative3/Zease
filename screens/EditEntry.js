@@ -214,7 +214,7 @@ const EditEntry = ({ navigation }) => {
           maximumTrackTintColor="#d3d3d3"
           thumbTintColor="#F78A03"
         />
-        <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Your Sleep Factors`}</Text>
+        <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Your Sleep Factors:`}</Text>
         <MultiSelect
           hideTags
           items={userFactorsArr}
@@ -236,9 +236,9 @@ const EditEntry = ({ navigation }) => {
           submitButtonColor="#F78A03"
           submitButtonText="Submit"
         />
-        <Text style={tw`font-semibold text-white mb-2 mt-7`}>{`Your Sleep Notes`}</Text>
+        <Text style={tw`font-semibold text-white mb-3 mt-7`}>{`Your Sleep Notes:`}</Text>
         <TextInput
-          style={tw`text-gray-600 bg-white h-8`}
+          style={tw`text-gray-600 bg-white h-10`}
           multiline={true}
           numberOfLines={4}
           placeholder={`  Enter notes...`}

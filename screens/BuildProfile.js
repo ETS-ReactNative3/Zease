@@ -21,11 +21,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons } from "@expo/vector-icons";
 
 import SleepFactorCategory from "./SleepFactorCategory";
-import {
-  convertToMilitaryString,
-  convertToAmPm,
-  reformatFactors,
-} from "../Util";
+import { convertToMilitaryString, convertToAmPm, reformatFactors } from "../Util";
 import { createProfile } from "../store/profile";
 import { fetchDBFactors } from "../store/dbFactors";
 
@@ -53,8 +49,7 @@ const BuildProfile = ({ navigation }) => {
 
   //visibility of modals
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
-    useState(false);
+  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] = useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
   const bedTimeModalRef = useRef();
@@ -117,12 +112,7 @@ const BuildProfile = ({ navigation }) => {
     }
 
     //make sure that all required fields are filled in
-    if (
-      email === "" ||
-      name === "" ||
-      sleepGoalStart === null ||
-      sleepGoalEnd === null
-    ) {
+    if (email === "" || name === "" || sleepGoalStart === null || sleepGoalEnd === null) {
       Alert.alert("Error", "Please fill in all required fields.");
       validated = false;
     }
@@ -135,7 +125,7 @@ const BuildProfile = ({ navigation }) => {
         sleepGoalEnd,
         userFactors,
         logReminderOn,
-        sleepReminderOn,
+        sleepReminderOn
       };
       console.log("newUser about to be added in db", newUser);
 
@@ -154,37 +144,36 @@ const BuildProfile = ({ navigation }) => {
         </Text>
 
         <View style={styles.accountItem}>
-          <Text
-            style={tw`font-semibold text-white ml-1`}
-          >{`Email Address:`}</Text>
+          <View style={styles.headingRow}>
+            <Text style={tw`font-bold text-white ml-1`}>{`Email Address:`}</Text>
+            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+          </View>
+
           <View style={styles.inputRow}>
             <TextInput
               style={styles.input}
-              placeholder="Email*"
+              placeholder="Enter Your Email"
               placeholderTextColor={"gray"}
               backgroundColor={"white"}
               value={email}
               onChangeText={(text) => setEmail(text)}
             />
             {!emailValid && (
-              <Ionicons
-                name="alert-outline"
-                style={styles.icon}
-                size={30}
-                color="red"
-              />
+              <Ionicons name="alert-outline" style={styles.icon} size={30} color="red" />
             )}
           </View>
         </View>
 
         <View style={styles.accountItem}>
-          <Text
-            style={tw`font-semibold text-white ml-1`}
-          >{`Create Your Password:`}</Text>
+          <View style={styles.headingRow}>
+            <Text style={tw`font-semibold text-white ml-1`}>{`Password:`}</Text>
+            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+          </View>
+
           <View style={styles.inputRow}>
             <TextInput
               style={styles.input}
-              placeholder="Password*"
+              placeholder="Create Your Password"
               placeholderTextColor={"gray"}
               backgroundColor={"white"}
               value={password}
@@ -192,23 +181,20 @@ const BuildProfile = ({ navigation }) => {
               secureTextEntry
             />
             {!passwordsMatch && (
-              <Ionicons
-                name="alert-outline"
-                style={styles.icon}
-                size={30}
-                color="red"
-              />
+              <Ionicons name="alert-outline" style={styles.icon} size={30} color="red" />
             )}
           </View>
         </View>
 
         <View style={styles.accountItem}>
-          <Text
-            style={tw`font-semibold text-white ml-1`}
-          >{`Confirm Your Password:`}</Text>
+          <View style={styles.inputRow}>
+            <Text style={tw`font-semibold text-white ml-1`}>{`Confirm Password:`}</Text>
+            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+          </View>
+
           <TextInput
             style={styles.input}
-            placeholder="Confirm Password*"
+            placeholder="Confirm Your Password"
             placeholderTextColor={"gray"}
             backgroundColor={"white"}
             value={passwordConfirm}
@@ -218,12 +204,14 @@ const BuildProfile = ({ navigation }) => {
         </View>
 
         <View style={styles.accountItem}>
-          <Text
-            style={tw`font-semibold text-white ml-1`}
-          >{`Enter Your Name:`}</Text>
+          <View style={styles.headingRow}>
+            <Text style={tw`font-semibold text-white ml-1`}>{`Name:`}</Text>
+            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+          </View>
+
           <TextInput
             style={styles.input}
-            placeholder="Your Name*"
+            placeholder="Your Name"
             placeholderTextColor={"gray"}
             backgroundColor={"white"}
             value={name}
@@ -232,10 +220,6 @@ const BuildProfile = ({ navigation }) => {
         </View>
 
         <View style={tw`flex-row mb-2`}>
-          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
-            {sleepGoalStart && convertToAmPm(sleepGoalStart)}
-          </Text>
-
           <DateTimePickerModal
             isVisible={isBedTimePickerVisible}
             mode="time"
@@ -256,19 +240,17 @@ const BuildProfile = ({ navigation }) => {
               }}
             />
           </View>
+          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+            {sleepGoalStart && convertToAmPm(sleepGoalStart)}
+          </Text>
         </View>
         <View style={tw`flex-row mb-4`}>
-          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
-            {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
-          </Text>
           <DateTimePickerModal
             isVisible={isWakeTimePickerVisible}
             mode="time"
             ref={wakeTimeModalRef}
             onConfirm={handleWakeTimeConfirm}
-            onCancel={() =>
-              setWakeTimePickerVisibility(!isWakeTimePickerVisible)
-            }
+            onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
             minuteInterval={15}
           />
           <View style={styles.updateButton}>
@@ -283,14 +265,17 @@ const BuildProfile = ({ navigation }) => {
               }}
             />
           </View>
+          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+            {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
+          </Text>
         </View>
-        <View style={styles.switches}>
+
+        {/* NOTE: SWITCHES FOR NOTIFICATIONS - CAN REIMPLEMENT IF WE CAN GET NOTIFICATIONS WORKING */}
+        {/* <View style={styles.switches}>
           <Switch
             style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
             value={logReminderOn}
-            onValueChange={() =>
-              setLogReminder((previousValue) => !previousValue)
-            }
+            onValueChange={() => setLogReminder((previousValue) => !previousValue)}
           />
           <Text style={tw`font-semibold text-white mt-2 ml-1`}>
             Remind me to enter daily sleep log
@@ -300,25 +285,15 @@ const BuildProfile = ({ navigation }) => {
           <Switch
             style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
             value={sleepReminderOn}
-            onValueChange={() =>
-              setSleepReminder((previousValue) => !previousValue)
-            }
+            onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
           />
-          <Text style={tw`font-semibold text-white mt-2 ml-1`}>
-            Remind me to go to sleep
-          </Text>
-        </View>
+          <Text style={tw`font-semibold text-white mt-2 ml-1`}>Remind me to go to sleep</Text>
+        </View> */}
         <View style={styles.accountItem}>
           <View style={tw`flex-row mt-5`}>
-            <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>
-              Sleep Factors
-            </Text>
+            <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>Sleep Factors</Text>
             <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
-              <Ionicons
-                style={tw`mt-1 text-white`}
-                name="information-circle-outline"
-                size={20}
-              />
+              <Ionicons style={tw`mt-1 text-white`} name="information-circle-outline" size={20} />
             </TouchableOpacity>
           </View>
         </View>
@@ -332,17 +307,16 @@ const BuildProfile = ({ navigation }) => {
           <View style={tw`flex-1 items-center justify-center`}>
             <View style={tw`p-4`}>
               <Text style={tw`p-4 text-base`}>
-                A sleep factor is something that has the potential to affect
-                your sleep.
+                A sleep factor is something that has the potential to affect your sleep.
               </Text>
               <Text style={tw`p-4 text-base`}>
-                When you are making a daily sleep entry you will be able to
-                select any number of the sleep factors you choose here.
+                When you are making a daily sleep entry you will be able to select any number of the
+                sleep factors you choose here.
               </Text>
               <Text style={tw`p-4 text-base`}>
-                When viewing visualizations of your sleep entries you will be
-                able to see any correlations that may exist between factors you
-                have chosen to track and the quality or duration of your sleep.
+                When viewing visualizations of your sleep entries you will be able to see any
+                correlations that may exist between factors you have chosen to track and the quality
+                or duration of your sleep.
               </Text>
             </View>
             <Pressable
@@ -355,9 +329,7 @@ const BuildProfile = ({ navigation }) => {
         </Modal>
         <View style={styles.accountItem}>
           {reformatFactors(sleepFactors).map((category) => {
-            return (
-              <SleepFactorCategory key={category.name} category={category} />
-            );
+            return <SleepFactorCategory key={category.name} category={category} />;
           })}
         </View>
 
@@ -383,18 +355,18 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   contentContainer: {
     width: "100%",
     marginTop: 80,
     paddingLeft: 30,
-    paddingRight: 30,
+    paddingRight: 30
   },
   accountItem: {
     width: "95%",
     justifyContent: "center",
-    marginLeft: 20,
+    marginLeft: 20
   },
   button: {
     alignItems: "center",
@@ -402,43 +374,45 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   buttonContainer: {
     marginTop: 40,
     marginBottom: 20,
-    alignItems: "center",
+    alignItems: "center"
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontWeight: "bold"
+  },
+  headingRow: {
+    flexDirection: "row"
   },
   icon: {
-    marginTop: 10,
+    marginTop: 5
   },
   input: {
     width: "90%",
     height: 40,
-    marginTop: 10,
     borderWidth: 1,
     borderColor: "#1C3F52",
     borderRadius: 5,
     padding: 10,
-    marginBottom: 25,
+    marginBottom: 25
   },
   inputRow: {
-    flexDirection: "row",
+    flexDirection: "row"
   },
   switches: {
     flex: 1,
     flexDirection: "row",
     marginLeft: 20,
-    marginBottom: 4,
+    marginBottom: 4
   },
   updateButton: {
     flex: 1,
-    marginBottom: 10,
-  },
+    marginBottom: 10
+  }
 });
 
 export default BuildProfile;
