@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons } from "@expo/vector-icons";
+import WebDateTimePicker from "./WebDateTimePicker";
 
 import SleepFactorCategory from "./SleepFactorCategory";
 import { convertToMilitaryString, convertToAmPm, reformatFactors } from "../Util";
@@ -36,6 +37,8 @@ const EditProfile = ({ navigation }) => {
   const [name, setName] = useState(user.name || "");
   const [sleepGoalStart, setsleepGoalStart] = useState(user.sleepGoalStart || null);
   const [sleepGoalEnd, setsleepGoalEnd] = useState(user.sleepGoalEnd || null);
+  const [sleepGoalStartWeb, setSleepGoalStartWeb] = useState(null);
+  const [sleepGoalEndWeb, setSleepGoalEndWeb] = useState(null);
   const [logReminderOn, setLogReminder] = useState(user.logReminderOn || false);
   const [sleepReminderOn, setSleepReminder] = useState(user.sleepReminderOn || false);
   let userFactors = useSelector((state) => state.userFactors);
@@ -70,6 +73,16 @@ const EditProfile = ({ navigation }) => {
   const handleWakeTimeConfirm = (time) => {
     setsleepGoalEnd(convertToMilitaryString(time));
     setWakeTimePickerVisibility(false);
+  };
+
+  const handleSleepGoalStartChange = (e) => {
+    setSleepGoalStartWeb(e.target.value);
+    setsleepGoalStart(e.target.value.slice(0,2) + e.target.value.slice(-2));
+  };
+
+  const handleSleepGoalEndChange = (e) => {
+    setSleepGoalEndWeb(e.target.value);
+    setsleepGoalEnd(e.target.value.slice(0,2) + e.target.value.slice(-2));
   };
 
   //front end validation check on form data
@@ -146,7 +159,8 @@ const EditProfile = ({ navigation }) => {
           </View>
           {!emailValid && <Ionicons name="alert-outline" size={20} color="red" />}
         </View>
-
+        {Platform.OS === "ios" || Platform.OS === "android" ? (
+            <>
         <View style={styles.accountItem}>
           <View style={styles.header}>
             <Text style={tw`font-semibold text-white`}>{`Bed Time Goal:`}</Text>
@@ -224,6 +238,25 @@ const EditProfile = ({ navigation }) => {
             />
           </View>
         </View>
+        </>
+          ) : (
+            <>
+              <Text
+                style={tw`font-semibold text-white ml-1`}
+              >{`Update Your Bed Time Goal  `}</Text>
+              <WebDateTimePicker
+                value={sleepGoalStartWeb}
+                onChange={handleSleepGoalStartChange}
+              />
+              <Text
+                style={tw`font-semibold text-white ml-1`}
+              >{`Update Your Wake Up Goal  `}</Text>
+              <WebDateTimePicker
+                value={sleepGoalEndWeb}
+                onChange={handleSleepGoalEndChange}
+              />
+            </>
+          )}
 
         {/* NOTE: SWITCHES FOR NOTIFICATIONS - CAN REIMPLEMENT IF WE CAN GET NOTIFICATIONS WORKING */}
         {/* <View style={tw`flex-row mb-4`}>

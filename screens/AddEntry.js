@@ -7,7 +7,7 @@ import {
   Alert,
   ScrollView,
   TouchableOpacity,
-  Platform
+  Platform,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -15,6 +15,7 @@ import Slider from "@react-native-community/slider";
 import MultiSelect from "react-native-multiple-select";
 import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
+import WebDateTimePicker from "./WebDateTimePicker";
 
 import { yesterday, convertToMilitaryString, convertToAmPm } from "../Util";
 import { goAddUserEntry } from "../store/userEntries";
@@ -28,6 +29,8 @@ const AddEntry = () => {
   // Form state
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [startTimeWeb, setStartTimeWeb] = useState(null);
+  const [endTimeWeb, setEndTimeWeb] = useState(null);
   const [quality, setQuality] = useState(0);
   const [entryFactorsArr, setEntryFactorsArr] = useState([]);
   const [notes, setNotes] = useState("");
@@ -61,6 +64,16 @@ const AddEntry = () => {
     hideTimePickers();
   };
 
+  const handleStartTimeChange = (e) => {
+    setStartTimeWeb(e.target.value);
+    setStartTime(e.target.value.slice(0, 2) + e.target.value.slice(-2));
+  };
+
+  const handleEndTimeChange = (e) => {
+    setEndTimeWeb(e.target.value);
+    setEndTime(e.target.value.slice(0, 2) + e.target.value.slice(-2));
+  };
+
   // Set state for sleep quality when slider changes
   const handleSelectQuality = (val) => {
     setQuality(val);
@@ -90,7 +103,9 @@ const AddEntry = () => {
     const date = yesterday();
 
     const entryFactors = {};
-    entryFactorsArr.forEach((factorId) => (entryFactors[factorId] = userFactors[factorId])); // Only grab name and category
+    entryFactorsArr.forEach(
+      (factorId) => (entryFactors[factorId] = userFactors[factorId])
+    ); // Only grab name and category
     // Set formData factors to formatted selectedItems (selected items will be array of ids)
     const formData = { date, startTime, endTime, quality, entryFactors, notes };
     // Write form inputs to firebase.  this will also dispatch function to put set this new entry as the newest entry in redux and for this new entry to be included in userEntries.
@@ -109,61 +124,105 @@ const AddEntry = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
-        <Text style={tw`font-bold text-2xl text-white mb-6 text-center`}>Add Your Sleep Entry</Text>
+        <Text style={tw`font-bold text-2xl text-white mb-6 text-center`}>
+          Add Your Sleep Entry
+        </Text>
 
         <View>
-          <View style={styles.accountItem}>
-            <View style={styles.header}>
-              <Text style={tw`font-semibold text-white`}>{`Enter Your Bed Time:`}</Text>
-            </View>
-
-            <View style={styles.updateButton}>
-              <Button
-                title={startTime ? convertToAmPm(startTime) : "Select"}
-                color="#F78A03"
-                onPress={() => {
-                  setStartTimePickerVisible(true);
-                  if (Platform.OS !== 'android') {
-                    bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
-                  }
-                }}
+          {Platform.OS === "ios" || Platform.OS === "android" ? (
+            <>
+              <View style={styles.accountItem}>
+                <View style={styles.header}>
+                  <Text
+                    style={tw`font-semibold text-white`}
+                  >{`Enter Your Bed Time:`}</Text>
+                </View>
+                <View style={styles.updateButton}>
+                  <Button
+                    title={startTime ? convertToAmPm(startTime) : "Select"}
+                    color="#F78A03"
+                    onPress={() => {
+                      setStartTimePickerVisible(true);
+                      if (Platform.OS !== "android") {
+                        bedTimeModalRef.current.state.currentDate.setHours(
+                          20,
+                          0,
+                          0,
+                          0
+                        );
+                      }
+                    }}
+                  />
+                </View>
+              </View>
+              <DateTimePickerModal
+                isVisible={startTimePickerVisible}
+                mode="time"
+                ref={bedTimeModalRef}
+                onConfirm={handleConfirmStart}
+                onCancel={hideTimePickers}
               />
-            </View>
-          </View>
-          <DateTimePickerModal
-            isVisible={startTimePickerVisible}
-            mode="time"
-            ref={bedTimeModalRef}
-            onConfirm={handleConfirmStart}
-            onCancel={hideTimePickers}
-          />
-
-          <View style={styles.accountItem}>
-            <View style={styles.header}>
-              <Text style={tw`font-semibold text-white`}>{`Enter Your Wake Time:`}</Text>
-            </View>
-            <View style={styles.updateButton}>
-              <Button
-                title={endTime ? convertToAmPm(endTime) : "Select"}
-                color="#F78A03"
-                onPress={() => {
-                  setEndTimePickerVisible(true);
-                  if (Platform.OS !== 'android') {
-                    wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
-                  }
-                }}
+            </>
+          ) : (
+            <>
+              <Text
+                style={tw`font-semibold text-white ml-1`}
+              >{`Enter Your Bed Time:  `}</Text>
+              <WebDateTimePicker
+                value={startTimeWeb}
+                onChange={handleStartTimeChange}
               />
-            </View>
-          </View>
+            </>
+          )}
+          {Platform.OS === "ios" || Platform.OS === "android" ? (
+            <>
+              <View style={styles.accountItem}>
+                <View style={styles.header}>
+                  <Text
+                    style={tw`font-semibold text-white`}
+                  >{`Enter Your Wake Time:`}</Text>
+                </View>
+                <View style={styles.updateButton}>
+                  <Button
+                    title={endTime ? convertToAmPm(endTime) : "Select"}
+                    color="#F78A03"
+                    onPress={() => {
+                      setEndTimePickerVisible(true);
+                      if (Platform.OS !== "android") {
+                        wakeTimeModalRef.current.state.currentDate.setHours(
+                          8,
+                          0,
+                          0,
+                          0
+                        );
+                      }
+                    }}
+                  />
+                </View>
+              </View>
 
-          <DateTimePickerModal
-            isVisible={endTimePickerVisible}
-            mode="time"
-            ref={wakeTimeModalRef}
-            onConfirm={handleConfirmEnd}
-            onCancel={hideTimePickers}
-          />
-          <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Adjust Your Sleep Quality:`}</Text>
+              <DateTimePickerModal
+                isVisible={endTimePickerVisible}
+                mode="time"
+                ref={wakeTimeModalRef}
+                onConfirm={handleConfirmEnd}
+                onCancel={hideTimePickers}
+              />
+            </>
+          ) : (
+            <>
+              <Text
+                style={tw`font-semibold text-white ml-1`}
+              >{`Enter Your Wake Time:  `}</Text>
+              <WebDateTimePicker
+                value={endTimeWeb}
+                onChange={handleEndTimeChange}
+              />
+            </>
+          )}
+          <Text
+            style={tw`font-semibold text-white mb-4 mt-7`}
+          >{`Adjust Your Sleep Quality:`}</Text>
           <Slider
             step={1}
             minimumValue={0}
@@ -174,7 +233,9 @@ const AddEntry = () => {
             maximumTrackTintColor="#d3d3d3"
             thumbTintColor="#F78A03"
           />
-          <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Select Your Sleep Factors`}</Text>
+          <Text
+            style={tw`font-semibold text-white mb-4 mt-7`}
+          >{`Select Your Sleep Factors`}</Text>
           <MultiSelect
             hideTags
             items={userFactorsArr}
@@ -196,7 +257,9 @@ const AddEntry = () => {
             submitButtonColor="#F78A03"
             submitButtonText="Submit"
           />
-          <Text style={tw`font-semibold text-white mb-2 mt-7`}>{`Enter Any Sleep Notes`}</Text>
+          <Text
+            style={tw`font-semibold text-white mb-2 mt-7`}
+          >{`Enter Any Sleep Notes`}</Text>
           <TextInput
             style={tw`text-gray-600 bg-white h-8`}
             multiline={true}
@@ -229,19 +292,19 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   contentContainer: {
     width: "100%",
     marginTop: 80,
     paddingLeft: 30,
-    paddingRight: 30
+    paddingRight: 30,
   },
   accountItem: {
     flexDirection: "row",
     paddingTop: 10,
     marginBottom: 10,
-    alignItems: "baseline"
+    alignItems: "baseline",
   },
   button: {
     alignItems: "center",
@@ -249,22 +312,22 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10
+    borderRadius: 10,
   },
   buttonContainer: {
     marginTop: 40,
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   header: {
-    flex: 1
+    flex: 1,
   },
   updateButton: {
     flex: 1,
     marginBottom: 10,
-    alignItems: "flex-start"
-  }
+    alignItems: "flex-start",
+  },
 });

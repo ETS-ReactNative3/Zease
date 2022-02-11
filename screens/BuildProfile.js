@@ -11,7 +11,7 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 import React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -19,9 +19,14 @@ import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons } from "@expo/vector-icons";
+import WebDateTimePicker from "./WebDateTimePicker";
 
 import SleepFactorCategory from "./SleepFactorCategory";
-import { convertToMilitaryString, convertToAmPm, reformatFactors } from "../Util";
+import {
+  convertToMilitaryString,
+  convertToAmPm,
+  reformatFactors,
+} from "../Util";
 import { createProfile } from "../store/profile";
 import { fetchDBFactors } from "../store/dbFactors";
 
@@ -39,6 +44,8 @@ const BuildProfile = ({ navigation }) => {
   const [name, setName] = useState("");
   const [sleepGoalStart, setsleepGoalStart] = useState(null);
   const [sleepGoalEnd, setsleepGoalEnd] = useState(null);
+  const [sleepGoalStartWeb, setSleepGoalStartWeb] = useState(null);
+  const [sleepGoalEndWeb, setSleepGoalEndWeb] = useState(null);
   const [logReminderOn, setLogReminder] = useState(false);
   const [sleepReminderOn, setSleepReminder] = useState(false);
   let userFactors = useSelector((state) => state.userFactors);
@@ -49,7 +56,8 @@ const BuildProfile = ({ navigation }) => {
 
   //visibility of modals
   const [isBedTimePickerVisible, setBedTimePickerVisibility] = useState(false);
-  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] = useState(false);
+  const [isWakeTimePickerVisible, setWakeTimePickerVisibility] =
+    useState(false);
   const [isFactorInfoVisible, setFactorInfoVisibility] = useState(false);
 
   const bedTimeModalRef = useRef();
@@ -87,6 +95,16 @@ const BuildProfile = ({ navigation }) => {
     setWakeTimePickerVisibility(false);
   };
 
+  const handleSleepGoalStartChange = (e) => {
+    setSleepGoalStartWeb(e.target.value);
+    setsleepGoalStart(e.target.value.slice(0,2) + e.target.value.slice(-2));
+  };
+
+  const handleSleepGoalEndChange = (e) => {
+    setSleepGoalEndWeb(e.target.value);
+    setsleepGoalEnd(e.target.value.slice(0,2) + e.target.value.slice(-2));
+  };
+
   //front end validation check on form data
   const handleSubmit = async () => {
     let validated = true;
@@ -112,7 +130,12 @@ const BuildProfile = ({ navigation }) => {
     }
 
     //make sure that all required fields are filled in
-    if (email === "" || name === "" || sleepGoalStart === null || sleepGoalEnd === null) {
+    if (
+      email === "" ||
+      name === "" ||
+      sleepGoalStart === null ||
+      sleepGoalEnd === null
+    ) {
       Alert.alert("Error", "Please fill in all required fields.");
       validated = false;
     }
@@ -125,7 +148,7 @@ const BuildProfile = ({ navigation }) => {
         sleepGoalEnd,
         userFactors,
         logReminderOn,
-        sleepReminderOn
+        sleepReminderOn,
       };
       console.log("newUser about to be added in db", newUser);
 
@@ -145,8 +168,12 @@ const BuildProfile = ({ navigation }) => {
 
         <View style={styles.accountItem}>
           <View style={styles.headingRow}>
-            <Text style={tw`font-bold text-white ml-1`}>{`Email Address:`}</Text>
-            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+            <Text
+              style={tw`font-bold text-white ml-1`}
+            >{`Email Address:`}</Text>
+            <Text
+              style={tw`font-semibold text-xl text-red-600 ml-1`}
+            >{`*`}</Text>
           </View>
 
           <View style={styles.inputRow}>
@@ -159,7 +186,12 @@ const BuildProfile = ({ navigation }) => {
               onChangeText={(text) => setEmail(text)}
             />
             {!emailValid && (
-              <Ionicons name="alert-outline" style={styles.icon} size={30} color="red" />
+              <Ionicons
+                name="alert-outline"
+                style={styles.icon}
+                size={30}
+                color="red"
+              />
             )}
           </View>
         </View>
@@ -167,7 +199,9 @@ const BuildProfile = ({ navigation }) => {
         <View style={styles.accountItem}>
           <View style={styles.headingRow}>
             <Text style={tw`font-semibold text-white ml-1`}>{`Password:`}</Text>
-            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+            <Text
+              style={tw`font-semibold text-xl text-red-600 ml-1`}
+            >{`*`}</Text>
           </View>
 
           <View style={styles.inputRow}>
@@ -181,15 +215,24 @@ const BuildProfile = ({ navigation }) => {
               secureTextEntry
             />
             {!passwordsMatch && (
-              <Ionicons name="alert-outline" style={styles.icon} size={30} color="red" />
+              <Ionicons
+                name="alert-outline"
+                style={styles.icon}
+                size={30}
+                color="red"
+              />
             )}
           </View>
         </View>
 
         <View style={styles.accountItem}>
           <View style={styles.inputRow}>
-            <Text style={tw`font-semibold text-white ml-1`}>{`Confirm Password:`}</Text>
-            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+            <Text
+              style={tw`font-semibold text-white ml-1`}
+            >{`Confirm Password:`}</Text>
+            <Text
+              style={tw`font-semibold text-xl text-red-600 ml-1`}
+            >{`*`}</Text>
           </View>
 
           <TextInput
@@ -206,7 +249,9 @@ const BuildProfile = ({ navigation }) => {
         <View style={styles.accountItem}>
           <View style={styles.headingRow}>
             <Text style={tw`font-semibold text-white ml-1`}>{`Name:`}</Text>
-            <Text style={tw`font-semibold text-xl text-red-600 ml-1`}>{`*`}</Text>
+            <Text
+              style={tw`font-semibold text-xl text-red-600 ml-1`}
+            >{`*`}</Text>
           </View>
 
           <TextInput
@@ -220,54 +265,96 @@ const BuildProfile = ({ navigation }) => {
         </View>
 
         <View style={tw`flex-row mb-2`}>
-          <DateTimePickerModal
-            isVisible={isBedTimePickerVisible}
-            mode="time"
-            ref={bedTimeModalRef}
-            onConfirm={handleBedTimeConfirm}
-            onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
-            minuteInterval={15}
-          />
-          <View style={styles.updateButton}>
-            <Button
-              color="#F78A03"
-              title="Set Your Bed Time Goal"
-              onPress={() => {
-                setBedTimePickerVisibility(!isBedTimePickerVisible);
-                if (Platform.OS !== 'android') {
-                  bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
+          {Platform.OS === "ios" || Platform.OS === "android" ? (
+            <>
+              <DateTimePickerModal
+                isVisible={isBedTimePickerVisible}
+                mode="time"
+                ref={bedTimeModalRef}
+                onConfirm={handleBedTimeConfirm}
+                onCancel={() =>
+                  setBedTimePickerVisibility(!isBedTimePickerVisible)
                 }
-              }}
-            />
-          </View>
-          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
-            {sleepGoalStart && convertToAmPm(sleepGoalStart)}
-          </Text>
+                minuteInterval={15}
+              />
+              <View style={styles.updateButton}>
+                <Button
+                  color="#F78A03"
+                  title="Set Your Bed Time Goal"
+                  onPress={() => {
+                    setBedTimePickerVisibility(!isBedTimePickerVisible);
+                    if (Platform.OS !== "android") {
+                      bedTimeModalRef.current.state.currentDate.setHours(
+                        20,
+                        0,
+                        0,
+                        0
+                      );
+                    }
+                  }}
+                />
+              </View>
+              <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+                {sleepGoalStart && convertToAmPm(sleepGoalStart)}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text
+                style={tw`font-semibold text-white ml-1`}
+              >{`Set Your Bed Time Goal  `}</Text>
+              <WebDateTimePicker
+                value={sleepGoalStartWeb}
+                onChange={handleSleepGoalStartChange}
+              />
+            </>
+          )}
         </View>
         <View style={tw`flex-row mb-4`}>
-          <DateTimePickerModal
-            isVisible={isWakeTimePickerVisible}
-            mode="time"
-            ref={wakeTimeModalRef}
-            onConfirm={handleWakeTimeConfirm}
-            onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
-            minuteInterval={15}
-          />
-          <View style={styles.updateButton}>
-            <Button
-              color="#F78A03"
-              title="Set Your Wake Up Goal"
-              onPress={() => {
-                setWakeTimePickerVisibility(!isWakeTimePickerVisible);
-                if (Platform.OS !== 'android') {
-                  wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
+          {Platform.OS === "ios" || Platform.OS === "android" ? (
+            <>
+              <DateTimePickerModal
+                isVisible={isWakeTimePickerVisible}
+                mode="time"
+                ref={wakeTimeModalRef}
+                onConfirm={handleWakeTimeConfirm}
+                onCancel={() =>
+                  setWakeTimePickerVisibility(!isWakeTimePickerVisible)
                 }
-              }}
-            />
-          </View>
-          <Text style={tw`font-semibold ml-6 text-white mt-3`}>
-            {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
-          </Text>
+                minuteInterval={15}
+              />
+              <View style={styles.updateButton}>
+                <Button
+                  color="#F78A03"
+                  title="Set Your Wake Up Goal"
+                  onPress={() => {
+                    setWakeTimePickerVisibility(!isWakeTimePickerVisible);
+                    if (Platform.OS !== "android") {
+                      wakeTimeModalRef.current.state.currentDate.setHours(
+                        8,
+                        0,
+                        0,
+                        0
+                      );
+                    }
+                  }}
+                />
+              </View>
+              <Text style={tw`font-semibold ml-6 text-white mt-3`}>
+                {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text
+                style={tw`font-semibold text-white ml-1`}
+              >{`Set Your Wake Up Goal  `}</Text>
+              <WebDateTimePicker
+                value={sleepGoalEndWeb}
+                onChange={handleSleepGoalEndChange}
+              />
+            </>
+          )}
         </View>
 
         {/* NOTE: SWITCHES FOR NOTIFICATIONS - CAN REIMPLEMENT IF WE CAN GET NOTIFICATIONS WORKING */}
@@ -291,9 +378,15 @@ const BuildProfile = ({ navigation }) => {
         </View> */}
         <View style={styles.accountItem}>
           <View style={tw`flex-row mt-5`}>
-            <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>Sleep Factors</Text>
+            <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>
+              Sleep Factors
+            </Text>
             <TouchableOpacity onPress={() => setFactorInfoVisibility(true)}>
-              <Ionicons style={tw`mt-1 text-white`} name="information-circle-outline" size={20} />
+              <Ionicons
+                style={tw`mt-1 text-white`}
+                name="information-circle-outline"
+                size={20}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -307,16 +400,17 @@ const BuildProfile = ({ navigation }) => {
           <View style={tw`flex-1 items-center justify-center`}>
             <View style={tw`p-4`}>
               <Text style={tw`p-4 text-base`}>
-                A sleep factor is something that has the potential to affect your sleep.
+                A sleep factor is something that has the potential to affect
+                your sleep.
               </Text>
               <Text style={tw`p-4 text-base`}>
-                When you are making a daily sleep entry you will be able to select any number of the
-                sleep factors you choose here.
+                When you are making a daily sleep entry you will be able to
+                select any number of the sleep factors you choose here.
               </Text>
               <Text style={tw`p-4 text-base`}>
-                When viewing visualizations of your sleep entries you will be able to see any
-                correlations that may exist between factors you have chosen to track and the quality
-                or duration of your sleep.
+                When viewing visualizations of your sleep entries you will be
+                able to see any correlations that may exist between factors you
+                have chosen to track and the quality or duration of your sleep.
               </Text>
             </View>
             <Pressable
@@ -329,7 +423,9 @@ const BuildProfile = ({ navigation }) => {
         </Modal>
         <View style={styles.accountItem}>
           {reformatFactors(sleepFactors).map((category) => {
-            return <SleepFactorCategory key={category.name} category={category} />;
+            return (
+              <SleepFactorCategory key={category.name} category={category} />
+            );
           })}
         </View>
 
@@ -355,18 +451,18 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   contentContainer: {
     width: "100%",
     marginTop: 80,
     paddingLeft: 30,
-    paddingRight: 30
+    paddingRight: 30,
   },
   accountItem: {
     width: "95%",
     justifyContent: "center",
-    marginLeft: 20
+    marginLeft: 20,
   },
   button: {
     alignItems: "center",
@@ -374,22 +470,22 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10
+    borderRadius: 10,
   },
   buttonContainer: {
     marginTop: 40,
     marginBottom: 20,
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   headingRow: {
-    flexDirection: "row"
+    flexDirection: "row",
   },
   icon: {
-    marginTop: 5
+    marginTop: 5,
   },
   input: {
     width: "90%",
@@ -398,21 +494,21 @@ const styles = StyleSheet.create({
     borderColor: "#1C3F52",
     borderRadius: 5,
     padding: 10,
-    marginBottom: 25
+    marginBottom: 25,
   },
   inputRow: {
-    flexDirection: "row"
+    flexDirection: "row",
   },
   switches: {
     flex: 1,
     flexDirection: "row",
     marginLeft: 20,
-    marginBottom: 4
+    marginBottom: 4,
   },
   updateButton: {
     flex: 1,
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 });
 
 export default BuildProfile;
