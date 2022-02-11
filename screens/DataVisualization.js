@@ -122,7 +122,7 @@ const DataVisualization = () => {
               <Pressable onPress={() => setSelectedChart("A")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    selectedChart === "A" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                    selectedChart === "A" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   Scatter
@@ -131,7 +131,7 @@ const DataVisualization = () => {
               <Pressable onPress={() => setSelectedChart("B")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 rounded-full ${
-                    selectedChart === "B" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                    selectedChart === "B" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   Line
@@ -140,7 +140,7 @@ const DataVisualization = () => {
               <Pressable onPress={() => setSelectedChart("C")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 rounded-full ${
-                    selectedChart === "C" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                    selectedChart === "C" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   Pie
@@ -154,7 +154,7 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("week")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "week" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                    timeRange === "week" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   1W
@@ -163,7 +163,7 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("month")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "month" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                    timeRange === "month" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   1M
@@ -172,7 +172,7 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("year")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "year" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                    timeRange === "year" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   1Y
@@ -181,7 +181,7 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("all")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "all" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                    timeRange === "all" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   All
@@ -190,7 +190,7 @@ const DataVisualization = () => {
             </View>
           </View>
 
-          <View style={tw`bg-white`}>
+          <View style={tw`bg-gray-200`}>
             {data.length && selectedChart === "A" && (
               <ChartA data={structureData(data, timeRange)} />
             )}
