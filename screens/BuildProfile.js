@@ -264,7 +264,9 @@ const BuildProfile = ({ navigation }) => {
             {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
           </Text>
         </View>
-        <View style={styles.switches}>
+
+        {/* NOTE: SWITCHES FOR NOTIFICATIONS - CAN REIMPLEMENT IF WE CAN GET NOTIFICATIONS WORKING */}
+        {/* <View style={styles.switches}>
           <Switch
             style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
             value={logReminderOn}
@@ -281,7 +283,7 @@ const BuildProfile = ({ navigation }) => {
             onValueChange={() => setSleepReminder((previousValue) => !previousValue)}
           />
           <Text style={tw`font-semibold text-white mt-2 ml-1`}>Remind me to go to sleep</Text>
-        </View>
+        </View> */}
         <View style={styles.accountItem}>
           <View style={tw`flex-row mt-5`}>
             <Text style={tw`font-bold text-lg text-white mr-2 mb-3`}>Sleep Factors</Text>

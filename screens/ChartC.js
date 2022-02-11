@@ -25,7 +25,7 @@ const ChartC = ({ data }) => {
           </Pressable>
           <Pressable onPress={() => setSelectedPie("end")}>
             <Text
-              style={tw`w-40 px-3 py-2 my-2 rounded-full ${
+              style={tw`w-40 px-3 py-2 my-2 ${
                 selectedPie === "end" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
               } text-center`}
             >

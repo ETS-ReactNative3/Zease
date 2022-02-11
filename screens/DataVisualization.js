@@ -130,7 +130,7 @@ const DataVisualization = () => {
               </Pressable>
               <Pressable onPress={() => setSelectedChart("B")}>
                 <Text
-                  style={tw`w-20 px-3 py-2 my-2 rounded-full ${
+                  style={tw`w-20 px-3 py-2 my-2 ${
                     selectedChart === "B" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
@@ -139,7 +139,7 @@ const DataVisualization = () => {
               </Pressable>
               <Pressable onPress={() => setSelectedChart("C")}>
                 <Text
-                  style={tw`w-20 px-3 py-2 my-2 rounded-full ${
+                  style={tw`w-20 px-3 py-2 my-2 ${
                     selectedChart === "C" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
                   } text-center`}
                 >
@@ -203,7 +203,7 @@ const DataVisualization = () => {
           </View>
         </View>
       </View>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
     </View>
   );
 };

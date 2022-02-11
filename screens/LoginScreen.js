@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container}>
       <Text style={tw`text-white text-4xl font-black`}>
         {<Ionicons name={"bed"} size={36} color={"white"} />}ZEASE
       </Text>

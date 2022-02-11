@@ -55,7 +55,7 @@ const ChartA = ({ data }) => {
       </VictoryChart>
 
       <View>
-        <Text style={tw`font-semibold ml-3 mt-5`}>Select a Sleep Factor:</Text>
+        <Text style={tw`font-semibold text-xl ml-3 mt-5 text-center`}>Select a Sleep Factor:</Text>
         <Picker
           selectedValue={selectedFactor}
           onValueChange={(factor) => setSelectedFactor(factor)}
