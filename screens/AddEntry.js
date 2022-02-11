@@ -6,7 +6,8 @@ import {
   TextInput,
   Alert,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -122,7 +123,9 @@ const AddEntry = () => {
                 color="#F78A03"
                 onPress={() => {
                   setStartTimePickerVisible(true);
-                  bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
+                  if (Platform.OS !== 'android') {
+                    bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
+                  }
                 }}
               />
             </View>
@@ -145,7 +148,9 @@ const AddEntry = () => {
                 color="#F78A03"
                 onPress={() => {
                   setEndTimePickerVisible(true);
-                  wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
+                  if (Platform.OS !== 'android') {
+                    wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
+                  }
                 }}
               />
             </View>

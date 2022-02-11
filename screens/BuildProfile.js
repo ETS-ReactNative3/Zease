@@ -10,7 +10,8 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -233,7 +234,9 @@ const BuildProfile = ({ navigation }) => {
               title="Set Your Bed Time Goal"
               onPress={() => {
                 setBedTimePickerVisibility(!isBedTimePickerVisible);
-                bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
+                if (Platform.OS !== 'android') {
+                  bedTimeModalRef.current.state.currentDate.setHours(20, 0, 0, 0);
+                }
               }}
             />
           </View>
@@ -256,7 +259,9 @@ const BuildProfile = ({ navigation }) => {
               title="Set Your Wake Up Goal"
               onPress={() => {
                 setWakeTimePickerVisibility(!isWakeTimePickerVisible);
-                wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
+                if (Platform.OS !== 'android') {
+                  wakeTimeModalRef.current.state.currentDate.setHours(8, 0, 0, 0);
+                }
               }}
             />
           </View>

@@ -9,7 +9,8 @@ import {
   Modal,
   Pressable,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  Platform
 } from "react-native";
 import React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -172,12 +173,14 @@ const EditProfile = ({ navigation }) => {
               color="#F78A03"
               onPress={() => {
                 setBedTimePickerVisibility(!isBedTimePickerVisible);
-                bedTimeModalRef.current.state.currentDate.setHours(
-                  parseInt(sleepGoalStart.slice(0, 2)),
-                  parseInt(sleepGoalStart.slice(-2)),
-                  0,
-                  0
-                );
+                if (Platform.OS !== 'android') {
+                  bedTimeModalRef.current.state.currentDate.setHours(
+                    parseInt(sleepGoalStart.slice(0, 2)),
+                    parseInt(sleepGoalStart.slice(-2)),
+                    0,
+                    0
+                  );
+                }
               }}
             />
           </View>
@@ -209,12 +212,14 @@ const EditProfile = ({ navigation }) => {
               color="#F78A03"
               onPress={() => {
                 setWakeTimePickerVisibility(!isWakeTimePickerVisible);
-                wakeTimeModalRef.current.state.currentDate.setHours(
-                  parseInt(sleepGoalEnd.slice(0, 2)),
-                  parseInt(sleepGoalEnd.slice(-2)),
-                  0,
-                  0
-                );
+                if (Platform.OS !== 'android') {
+                  wakeTimeModalRef.current.state.currentDate.setHours(
+                    parseInt(sleepGoalEnd.slice(0, 2)),
+                    parseInt(sleepGoalEnd.slice(-2)),
+                    0,
+                    0
+                  );
+                }
               }}
             />
           </View>

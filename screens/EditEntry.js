@@ -7,7 +7,8 @@ import {
   Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView
+  ScrollView,
+  Platform
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -150,12 +151,14 @@ const EditEntry = ({ navigation }) => {
               color="#F78A03"
               onPress={() => {
                 setStartTimePickerVisible(true);
-                bedTimeModalRef.current.state.currentDate.setHours(
-                  parseInt(startTime.slice(0, 2)),
-                  parseInt(startTime.slice(-2)),
-                  0,
-                  0
-                );
+                if (Platform.OS !== 'android') {
+                  bedTimeModalRef.current.state.currentDate.setHours(
+                    parseInt(startTime.slice(0, 2)),
+                    parseInt(startTime.slice(-2)),
+                    0,
+                    0
+                  );
+                }
               }}
             />
           </View>
@@ -171,12 +174,14 @@ const EditEntry = ({ navigation }) => {
               color="#F78A03"
               onPress={() => {
                 setEndTimePickerVisible(true);
-                wakeTimeModalRef.current.state.currentDate.setHours(
-                  parseInt(endTime.slice(0, 2)),
-                  parseInt(endTime.slice(-2)),
-                  0,
-                  0
-                );
+                if (Platform.OS !== 'android') {
+                  wakeTimeModalRef.current.state.currentDate.setHours(
+                    parseInt(endTime.slice(0, 2)),
+                    parseInt(endTime.slice(-2)),
+                    0,
+                    0
+                  );
+                }
               }}
             />
           </View>
