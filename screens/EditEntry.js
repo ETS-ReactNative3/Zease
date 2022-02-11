@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Platform
+  Platform,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +16,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Slider from "@react-native-community/slider";
 import MultiSelect from "react-native-multiple-select";
 import tw from "tailwind-react-native-classnames";
+import WebDateTimePicker from "./WebDateTimePicker";
 
 // import { NavigationContainer } from "@react-navigation/native";
 // import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -45,6 +46,8 @@ const EditEntry = ({ navigation }) => {
   // Form state
   const [startTime, setStartTime] = useState(yesterdaysEntry.startTime || "");
   const [endTime, setEndTime] = useState(yesterdaysEntry.endTime || "");
+  const [startTimeWeb, setStartTimeWeb] = useState(null);
+  const [endTimeWeb, setEndTimeWeb] = useState(null);
   const [quality, setQuality] = useState(yesterdaysEntry.quality || 0);
   const [entryFactorsArr, setEntryFactorsArr] = useState(
     Object.keys(yesterdaysEntry.entryFactors) || []
@@ -79,6 +82,16 @@ const EditEntry = ({ navigation }) => {
   const handleConfirmEnd = (time) => {
     setEndTime(convertToMilitaryString(time));
     hideTimePickers();
+  };
+
+  const handleStartTimeChange = (e) => {
+    setStartTimeWeb(e.target.value);
+    setStartTime(e.target.value.slice(0, 2) + e.target.value.slice(-2));
+  };
+
+  const handleEndTimeChange = (e) => {
+    setEndTimeWeb(e.target.value);
+    setEndTime(e.target.value.slice(0, 2) + e.target.value.slice(-2));
   };
 
   // Set state for sleep quality when slider changes
@@ -140,70 +153,95 @@ const EditEntry = ({ navigation }) => {
         <Text style={tw`font-bold text-2xl text-white mb-5 text-center`}>
           Edit Your Sleep Entry
         </Text>
+        {Platform.OS === "ios" || Platform.OS === "android" ? (
+          <>
+            <View style={styles.accountItem}>
+              <View style={styles.header}>
+                <Text
+                  style={tw`font-semibold text-white`}
+                >{`Your Bed Time:`}</Text>
+              </View>
+              <View style={styles.updateButton}>
+                <Button
+                  title={startTime ? convertToAmPm(startTime) : "Update"}
+                  color="#F78A03"
+                  onPress={() => {
+                    setStartTimePickerVisible(true);
+                    if (Platform.OS !== "android") {
+                      bedTimeModalRef.current.state.currentDate.setHours(
+                        parseInt(startTime.slice(0, 2)),
+                        parseInt(startTime.slice(-2)),
+                        0,
+                        0
+                      );
+                    }
+                  }}
+                />
+              </View>
+            </View>
 
-        <View style={styles.accountItem}>
-          <View style={styles.header}>
-            <Text style={tw`font-semibold text-white`}>{`Your Bed Time:`}</Text>
-          </View>
-          <View style={styles.updateButton}>
-            <Button
-              title={startTime ? convertToAmPm(startTime) : "Update"}
-              color="#F78A03"
-              onPress={() => {
-                setStartTimePickerVisible(true);
-                if (Platform.OS !== 'android') {
-                  bedTimeModalRef.current.state.currentDate.setHours(
-                    parseInt(startTime.slice(0, 2)),
-                    parseInt(startTime.slice(-2)),
-                    0,
-                    0
-                  );
-                }
-              }}
+            <View style={styles.accountItem}>
+              <View style={styles.header}>
+                <Text
+                  style={tw`font-semibold text-white`}
+                >{`Your Wake Time:`}</Text>
+              </View>
+              <View style={styles.updateButton}>
+                <Button
+                  title={endTime ? convertToAmPm(endTime) : "Update"}
+                  color="#F78A03"
+                  onPress={() => {
+                    setEndTimePickerVisible(true);
+                    if (Platform.OS !== "android") {
+                      wakeTimeModalRef.current.state.currentDate.setHours(
+                        parseInt(endTime.slice(0, 2)),
+                        parseInt(endTime.slice(-2)),
+                        0,
+                        0
+                      );
+                    }
+                  }}
+                />
+              </View>
+            </View>
+
+            <DateTimePickerModal
+              isVisible={startTimePickerVisible}
+              mode="time"
+              ref={bedTimeModalRef}
+              onConfirm={handleConfirmStart}
+              onCancel={hideTimePickers}
             />
-          </View>
-        </View>
 
-        <View style={styles.accountItem}>
-          <View style={styles.header}>
-            <Text style={tw`font-semibold text-white`}>{`Your Wake Time:`}</Text>
-          </View>
-          <View style={styles.updateButton}>
-            <Button
-              title={endTime ? convertToAmPm(endTime) : "Update"}
-              color="#F78A03"
-              onPress={() => {
-                setEndTimePickerVisible(true);
-                if (Platform.OS !== 'android') {
-                  wakeTimeModalRef.current.state.currentDate.setHours(
-                    parseInt(endTime.slice(0, 2)),
-                    parseInt(endTime.slice(-2)),
-                    0,
-                    0
-                  );
-                }
-              }}
+            <DateTimePickerModal
+              isVisible={endTimePickerVisible}
+              ref={wakeTimeModalRef}
+              mode="time"
+              onConfirm={handleConfirmEnd}
+              onCancel={hideTimePickers}
             />
-          </View>
-        </View>
-
-        <DateTimePickerModal
-          isVisible={startTimePickerVisible}
-          mode="time"
-          ref={bedTimeModalRef}
-          onConfirm={handleConfirmStart}
-          onCancel={hideTimePickers}
-        />
-
-        <DateTimePickerModal
-          isVisible={endTimePickerVisible}
-          ref={wakeTimeModalRef}
-          mode="time"
-          onConfirm={handleConfirmEnd}
-          onCancel={hideTimePickers}
-        />
-
-        <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Your Sleep Quality:`}</Text>
+          </>
+        ) : (
+          <>
+            <Text
+              style={tw`font-semibold text-white ml-1`}
+            >{`Enter Your Bed Time:  `}</Text>
+            <WebDateTimePicker
+              value={startTimeWeb}
+              onChange={handleStartTimeChange}
+            />
+            <Text
+              style={tw`font-semibold text-white ml-1`}
+            >{`Enter Your Wake Time:  `}</Text>
+            <WebDateTimePicker
+              value={endTimeWeb}
+              onChange={handleEndTimeChange}
+            />
+          </>
+        )}
+        <Text
+          style={tw`font-semibold text-white mb-4 mt-7`}
+        >{`Your Sleep Quality:`}</Text>
         <Slider
           step={1}
           minimumValue={0}
@@ -214,7 +252,9 @@ const EditEntry = ({ navigation }) => {
           maximumTrackTintColor="#d3d3d3"
           thumbTintColor="#F78A03"
         />
-        <Text style={tw`font-semibold text-white mb-4 mt-7`}>{`Your Sleep Factors:`}</Text>
+        <Text
+          style={tw`font-semibold text-white mb-4 mt-7`}
+        >{`Your Sleep Factors:`}</Text>
         <MultiSelect
           hideTags
           items={userFactorsArr}
@@ -236,7 +276,9 @@ const EditEntry = ({ navigation }) => {
           submitButtonColor="#F78A03"
           submitButtonText="Submit"
         />
-        <Text style={tw`font-semibold text-white mb-3 mt-7`}>{`Your Sleep Notes:`}</Text>
+        <Text
+          style={tw`font-semibold text-white mb-3 mt-7`}
+        >{`Your Sleep Notes:`}</Text>
         <TextInput
           style={tw`text-gray-600 bg-white h-10`}
           multiline={true}
@@ -276,19 +318,19 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   contentContainer: {
     width: "100%",
     marginTop: 80,
     paddingLeft: 30,
-    paddingRight: 30
+    paddingRight: 30,
   },
   accountItem: {
     flexDirection: "row",
     paddingTop: 10,
     marginBottom: 10,
-    alignItems: "baseline"
+    alignItems: "baseline",
   },
   button: {
     alignItems: "center",
@@ -296,18 +338,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10
+    borderRadius: 10,
   },
   buttonContainer: {
     marginTop: 40,
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   header: {
-    flex: 1
+    flex: 1,
   },
   input: {
     backgroundColor: "white",
@@ -315,11 +357,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "white",
     borderRadius: 2,
-    padding: 10
+    padding: 10,
   },
   updateButton: {
     flex: 1,
     marginBottom: 10,
-    alignItems: "flex-start"
-  }
+    alignItems: "flex-start",
+  },
 });
