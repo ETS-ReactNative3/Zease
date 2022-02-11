@@ -12,7 +12,7 @@ After successfully downloading Zease, feel free to try creating a new account an
 
 [insert demo user information]
 
-If you prefer, you can also view the web version of Zease at the following address: [insert web link here]
+If you prefer, you can also view the web version of Zease [HERE](https://zease.vercel.app/)
 
 ## Demo
 
