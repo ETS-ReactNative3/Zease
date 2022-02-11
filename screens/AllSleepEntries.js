@@ -95,7 +95,7 @@ export const AllSleepEntries = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <StatusBar style="dark" />
+              <StatusBar style="light" />
             </View>
           ))}
         <Modal
