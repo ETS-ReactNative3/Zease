@@ -106,10 +106,12 @@ const DataVisualization = () => {
   if (data.length <= 1) {
     return (
       <View style={styles.container}>
-        <Text style={tw` font-semibold text-black`}>
-          {" "}
-          Come back to view the data once you have more entries!
-        </Text>
+        <View style={styles.contentContainer}>
+          <Text style={tw`text-white text-2xl font-bold p-10 text-center`}>
+            Come back here tomorrow once you've added another entry to start viewing your sleep
+            data!
+          </Text>
+        </View>
       </View>
     );
   }
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: "100%",
-    marginTop: 80,
+    marginTop: 200,
     paddingLeft: 30,
     paddingRight: 30
   },
