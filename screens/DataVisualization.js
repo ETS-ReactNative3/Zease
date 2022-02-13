@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: "100%",
-    marginTop: 200,
+    marginTop: 80,
     paddingLeft: 30,
     paddingRight: 30
   },
