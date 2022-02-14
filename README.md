@@ -8,7 +8,7 @@ Download the Expo Go App on either your iOS or Android device and scan this QR c
 
 [insert QR Code here]
 
-After successfully downloading Zease, feel free to try creating a new account and experiencing our new user onboarding flow.  If you'd like to experience Zease in the same manner as a current user who has already uploaded sleep entries for some time, please feel free to log in with one of the demo users below:
+After successfully downloading Zease, feel free to try creating a new account and experiencing our new user onboarding flow. If you'd like to experience Zease in the same manner as a current user who has already uploaded sleep entries for some time, please feel free to log in with one of the demo users below:
 
 [insert demo user information]
 
@@ -17,6 +17,7 @@ If you prefer, you can also view the web version of Zease [HERE](https://zease.v
 ## Demo
 
 [insert titled gifs with key app flows]
+![](./ZeazeGifTest.gif)
 
 ## Features
 
@@ -53,5 +54,3 @@ If you prefer, you can also view the web version of Zease [HERE](https://zease.v
 [INSERT LINKEDIN HERE]
 
 [GitHub](https://github.com/sammy-k)
-
-

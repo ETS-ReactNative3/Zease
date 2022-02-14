@@ -77,12 +77,12 @@ const EditProfile = ({ navigation }) => {
 
   const handleSleepGoalStartChange = (e) => {
     setSleepGoalStartWeb(e.target.value);
-    setsleepGoalStart(e.target.value.slice(0,2) + e.target.value.slice(-2));
+    setsleepGoalStart(e.target.value.slice(0, 2) + e.target.value.slice(-2));
   };
 
   const handleSleepGoalEndChange = (e) => {
     setSleepGoalEndWeb(e.target.value);
-    setsleepGoalEnd(e.target.value.slice(0,2) + e.target.value.slice(-2));
+    setsleepGoalEnd(e.target.value.slice(0, 2) + e.target.value.slice(-2));
   };
 
   //front end validation check on form data
@@ -139,7 +139,7 @@ const EditProfile = ({ navigation }) => {
             <TextInput
               style={tw`font-bold text-gray-700 bg-white h-8 rounded`}
               placeholder="Name"
-              value={name}
+              value={`  ${name}`}
               onChangeText={(text) => setName(text)}
             />
           </View>
@@ -153,110 +153,100 @@ const EditProfile = ({ navigation }) => {
             <TextInput
               style={tw`font-bold text-gray-700 bg-white h-8 rounded`}
               placeholder="Email"
-              value={email}
+              value={`  ${email}`}
               onChangeText={(text) => setEmail(text)}
             />
           </View>
           {!emailValid && <Ionicons name="alert-outline" size={20} color="red" />}
         </View>
         {Platform.OS === "ios" || Platform.OS === "android" ? (
-            <>
-        <View style={styles.accountItem}>
-          <View style={styles.header}>
-            <Text style={tw`font-semibold text-white`}>{`Bed Time Goal:`}</Text>
-          </View>
-          <View style={styles.item}>
-            <Text style={tw`font-extrabold text-white`}>
-              {sleepGoalStart && convertToAmPm(sleepGoalStart)}
-            </Text>
-          </View>
-        </View>
+          <>
+            <View style={styles.accountItem}>
+              <View style={styles.header}>
+                <Text style={tw`font-semibold text-white`}>{`Bed Time Goal:`}</Text>
+              </View>
+              <View style={styles.item}>
+                <Text style={tw`font-extrabold text-white`}>
+                  {sleepGoalStart && convertToAmPm(sleepGoalStart)}
+                </Text>
+              </View>
+            </View>
 
-        <View>
-          <DateTimePickerModal
-            isVisible={isBedTimePickerVisible}
-            mode="time"
-            ref={bedTimeModalRef}
-            onConfirm={handleBedTimeConfirm}
-            onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
-            minuteInterval={15}
-          />
-          <View style={styles.updateButton}>
-            <Button
-              title="Update Bed Time Goal"
-              color="#F78A03"
-              onPress={() => {
-                setBedTimePickerVisibility(!isBedTimePickerVisible);
-                if (Platform.OS !== 'android') {
-                  bedTimeModalRef.current.state.currentDate.setHours(
-                    parseInt(sleepGoalStart.slice(0, 2)),
-                    parseInt(sleepGoalStart.slice(-2)),
-                    0,
-                    0
-                  );
-                }
-              }}
-            />
-          </View>
-        </View>
-
-        <View style={styles.accountItem}>
-          <View style={styles.header}>
-            <Text style={tw`font-semibold text-white`}>{`Wake Up Goal:`}</Text>
-          </View>
-          <View style={styles.item}>
-            <Text style={tw`font-extrabold text-white`}>
-              {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
-            </Text>
-          </View>
-        </View>
-
-        <View>
-          <DateTimePickerModal
-            isVisible={isWakeTimePickerVisible}
-            mode="time"
-            ref={wakeTimeModalRef}
-            onConfirm={handleWakeTimeConfirm}
-            onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
-            minuteInterval={15}
-          />
-          <View style={styles.updateButton}>
-            <Button
-              title="Update Wake Up Goal"
-              color="#F78A03"
-              onPress={() => {
-                setWakeTimePickerVisibility(!isWakeTimePickerVisible);
-                if (Platform.OS !== 'android') {
-                  wakeTimeModalRef.current.state.currentDate.setHours(
-                    parseInt(sleepGoalEnd.slice(0, 2)),
-                    parseInt(sleepGoalEnd.slice(-2)),
-                    0,
-                    0
-                  );
-                }
-              }}
-            />
-          </View>
-        </View>
-        </>
-          ) : (
-            <>
-              <Text
-                style={tw`font-semibold text-white ml-1`}
-              >{`Update Your Bed Time Goal  `}</Text>
-              <WebDateTimePicker
-                value={sleepGoalStartWeb}
-                onChange={handleSleepGoalStartChange}
+            <View>
+              <DateTimePickerModal
+                isVisible={isBedTimePickerVisible}
+                mode="time"
+                ref={bedTimeModalRef}
+                onConfirm={handleBedTimeConfirm}
+                onCancel={() => setBedTimePickerVisibility(!isBedTimePickerVisible)}
+                minuteInterval={15}
               />
-              <Text
-                style={tw`font-semibold text-white ml-1`}
-              >{`Update Your Wake Up Goal  `}</Text>
-              <WebDateTimePicker
-                value={sleepGoalEndWeb}
-                onChange={handleSleepGoalEndChange}
+              <View style={styles.updateButton}>
+                <Button
+                  title="Update Bed Time Goal"
+                  color="#F78A03"
+                  onPress={() => {
+                    setBedTimePickerVisibility(!isBedTimePickerVisible);
+                    if (Platform.OS !== "android") {
+                      bedTimeModalRef.current.state.currentDate.setHours(
+                        parseInt(sleepGoalStart.slice(0, 2)),
+                        parseInt(sleepGoalStart.slice(-2)),
+                        0,
+                        0
+                      );
+                    }
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={styles.accountItem}>
+              <View style={styles.header}>
+                <Text style={tw`font-semibold text-white`}>{`Wake Up Goal:`}</Text>
+              </View>
+              <View style={styles.item}>
+                <Text style={tw`font-extrabold text-white`}>
+                  {sleepGoalEnd && convertToAmPm(sleepGoalEnd)}
+                </Text>
+              </View>
+            </View>
+
+            <View>
+              <DateTimePickerModal
+                isVisible={isWakeTimePickerVisible}
+                mode="time"
+                ref={wakeTimeModalRef}
+                onConfirm={handleWakeTimeConfirm}
+                onCancel={() => setWakeTimePickerVisibility(!isWakeTimePickerVisible)}
+                minuteInterval={15}
               />
-            </>
-          )}
+              <View style={styles.updateButton}>
+                <Button
+                  title="Update Wake Up Goal"
+                  color="#F78A03"
+                  onPress={() => {
+                    setWakeTimePickerVisibility(!isWakeTimePickerVisible);
+                    if (Platform.OS !== "android") {
+                      wakeTimeModalRef.current.state.currentDate.setHours(
+                        parseInt(sleepGoalEnd.slice(0, 2)),
+                        parseInt(sleepGoalEnd.slice(-2)),
+                        0,
+                        0
+                      );
+                    }
+                  }}
+                />
+              </View>
+            </View>
+          </>
+        ) : (
+          <>
+            <Text style={tw`font-semibold text-white ml-1`}>{`Update Your Bed Time Goal  `}</Text>
+            <WebDateTimePicker value={sleepGoalStartWeb} onChange={handleSleepGoalStartChange} />
+            <Text style={tw`font-semibold text-white ml-1`}>{`Update Your Wake Up Goal  `}</Text>
+            <WebDateTimePicker value={sleepGoalEndWeb} onChange={handleSleepGoalEndChange} />
+          </>
+        )}
 
         {/* NOTE: SWITCHES FOR NOTIFICATIONS - CAN REIMPLEMENT IF WE CAN GET NOTIFICATIONS WORKING */}
         {/* <View style={tw`flex-row mb-4`}>
