@@ -51,8 +51,8 @@ const Onboarding = ({ navigation }) => {
               style={{
                 borderRadius: 50,
                 backgroundColor: currentSlide === slide.id ? "#F78A03" : "#A9A9A9",
-                height: 10,
-                width: 10,
+                height: 15,
+                width: 15,
                 margin: 15
               }}
             />
