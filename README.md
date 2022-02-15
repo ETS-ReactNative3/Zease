@@ -25,16 +25,18 @@ After accessing Zease, you can create a new account and experience our new user 
 
 **DEMO USER 1**
 
-_email_: Whitney@gmail.com
+_email_: Whitney@gmail.com 
+
 _password_: 123456
 
 **DEMO USER 2**
 
 _email_: Randall@yahoo.com
+
 _password_: 123456
 
 <br/><br/>
-<br/><br/>
+
 
 ## Demo
 
