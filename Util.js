@@ -203,7 +203,7 @@ export const seedFirebase = (userId) => {
     },
     notes: ''
   };
-  sleepEntriesRef.push(formData);
+  // sleepEntriesRef.push(formData);
 };
 
 //takes in a date string of "yyyy-mm-dd" and returns string "mon, d, yyyy"
