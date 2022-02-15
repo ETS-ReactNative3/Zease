@@ -1,6 +1,6 @@
 # Zease
 
-Welcome to Zease! Zease is a mobile application (iOS and Android) that allows users to track their sleep habits over time and view detailed information about their sleep habits including data visualizations.
+Welcome to Zease! Zease is a mobile application (iOS and Android) that allows users to track their sleep habits over time and view detailed information about their sleep including data visualizations.
 <br/><br/>
 
 ## Try it for yourself!
@@ -15,10 +15,13 @@ npm install
 expo start
 ```
 
-Scan QR Code with your device to use Zease!
-<br/><br/>
+Scan the QR Code provided by your terminal with your device to use Zease!
+<br/><br/> 
 
-After accessing Zease, feel free to try creating a new account and experiencing our new user onboarding flow. If you'd like to experience Zease in the same manner as a current user who has already uploaded sleep entries for some time, please feel free to log in with one of the demo users below:
+If you prefer, you can also view the web version of Zease [HERE](https://zease.vercel.app/)
+<br/><br/> 
+
+After accessing Zease, you can create a new account and experience our new user onboarding flow. If you'd like to experience Zease in the same manner as a current user who has already uploaded sleep entries for some time, please feel free to log in with one of the demo users below:
 
 **DEMO USER 1**
 
@@ -30,7 +33,6 @@ _password_: 123456
 _email_: Randall@yahoo.com
 _password_: 123456
 
-If you prefer, you can also view the web version of Zease [HERE](https://zease.vercel.app/)
 <br/><br/>
 <br/><br/>
 
@@ -53,9 +55,10 @@ If you prefer, you can also view the web version of Zease [HERE](https://zease.v
 - A user can create an account.
 - A user can add multiple criteria to their account including their bed time and wake up goals, and any factors that may be impacting their sleep from multiple categories.
 - A user who has just created an account can see an onboarding tutorial with detailed information on how to use the app.
-- A logged in user can add a daily sleep entry
+- A logged in user can add a daily sleep entry.
+- A logged in user can edit their sleep entry from the previous night.
 - A logged in user can view a list of all of their sleep entries, and can select from that list to see expanded data about a specific entry.
-- A logged in user can view multiple data visualizations over providing graphical information about their sleep habits.
+- A logged in user can view multiple data visualizations providing graphical information about their sleep habits.
 - A logged in user can view and edit their profile.
   <br/><br/>
   <br/><br/>
@@ -83,6 +86,8 @@ If you prefer, you can also view the web version of Zease [HERE](https://zease.v
 [LinkedIn](https://www.linkedin.com/in/alston-white/)
 
 [GitHub](https://github.com/EAHYoder)
+
+[Portfolio](liz-yoder.netlify.app/)
 <br/><br/>
 
 **Alston White**
