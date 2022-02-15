@@ -5,11 +5,20 @@ Welcome to Zease! Zease is a mobile application (iOS and Android) that allows us
 
 ## Try it for yourself!
 
-Download the Expo Go App on either your iOS or Android device and scan this QR code:
+Download the Expo Go App on either your iOS or Android device and do the following:
 
-![](./screenshots/expoqr.png)
+```
+npm install --global expo-cli
+cd <directory>
+git clone https://github.com/Pikachu-Pack-2111/Zease
+npm install
+expo start
+```
 
-After successfully downloading Zease, feel free to try creating a new account and experiencing our new user onboarding flow. If you'd like to experience Zease in the same manner as a current user who has already uploaded sleep entries for some time, please feel free to log in with one of the demo users below:
+Scan QR Code with your device to use Zease!
+<br/><br/>
+
+After accessing Zease, feel free to try creating a new account and experiencing our new user onboarding flow. If you'd like to experience Zease in the same manner as a current user who has already uploaded sleep entries for some time, please feel free to log in with one of the demo users below:
 
 **DEMO USER 1**
 
@@ -89,3 +98,7 @@ If you prefer, you can also view the web version of Zease [HERE](https://zease.v
 
 [GitHub](https://github.com/sammy-k)
 <br/><br/>
+
+```
+
+```
