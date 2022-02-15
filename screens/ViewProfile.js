@@ -23,12 +23,10 @@ const AddEntry = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const handleEdit = () => {
-    console.log("Edit profile");
     navigation.navigate("EditProfile");
   };
 
   const handleLogOut = async () => {
-    console.log("Logging out");
     dispatch(logout(navigation));
   };
 

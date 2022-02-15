@@ -116,7 +116,6 @@ const AddEntry = () => {
     setQuality(0);
     setEntryFactorsArr([]);
     setNotes("");
-    // TODO: Take user to SingleEntry view of submitted entry
   };
 
   return (
