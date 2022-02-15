@@ -27,8 +27,15 @@ If you prefer, you can also view the web version of Zease [HERE](https://zease.v
 
 ## Demo
 
-[insert titled gifs with key app flows]
-![](./ZeazeGifTest.gif)
+**NEW USER EXPERIENCE**
+
+![](./new_user.gif)
+<br/><br/>
+<br/><br/>
+
+**REGULAR USER EXPERIENCE**
+
+![](./regular_user.gif)
 <br/><br/>
 <br/><br/>
 
