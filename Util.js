@@ -67,7 +67,7 @@ export const reformatFactors = (dbFactorsObject) => {
 //this takes in a sleep entry.  It used the starttime and endTime properties on the entry to calculate the number of hours of sleep
 export const calculateSleepLength = (entry) => {
   let startHrs = Number(entry.startTime.slice(0, 2));
-  let startMin = Number(entry.startTime.slice(3));
+  let startMin = Number(entry.startTime.slice(-2));
   let sleepMinBeforeMidnight = (23 - startHrs) * 60 + (60 - startMin);
   //this line accounts for entries when they user went to sleep after midnight.
   if (startHrs < 10) {
@@ -75,9 +75,8 @@ export const calculateSleepLength = (entry) => {
   }
 
   let endHrs = Number(entry.endTime.slice(0, 2));
-  let endMin = Number(entry.endTime.slice(3));
+  let endMin = Number(entry.endTime.slice(-2));
   let sleepMinAfterMidnight = endHrs * 60 + endMin;
-
   return (sleepMinBeforeMidnight + sleepMinAfterMidnight) / 60;
 };
 
@@ -147,16 +146,17 @@ export const seedFirebase = (userId) => {
   // userRef.set(userProfileData);
   // console.log("data sent to firebase");
 
-  // const sleepEntriesRef = database.ref(`sleepEntries/${userId}`);
-  // for (let m = 1; m <= 12; m++) {
-  //   for (let d = 1; d <= 30; d++) {
+
+  // const sleepEntriesRef = database.ref(`sleepEntries/Buwp1YulAROMlJbyslLNI4uhAcS2`);
+  // for (let m = 2; m <= 2; m++) {
+  //   for (let d = 1; d <= 13; d++) {
   //     let formatMonth = m < 10 ? `0${m}` : `${m}`;
   //     let formatDay = d < 10 ? `0${d}` : `${d}`;
   //     let hour = 1000 * 60 * 60;
   //     let startUTC = new Date();
-  //     startUTC.setHours(22 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0);
+  //     startUTC.setHours(22 + Math.random() * 1, Math.random() * 60, Math.random() * 60, 0);
   //     let endUTC = new Date();
-  //     endUTC.setHours(7 + Math.random() * 3, Math.random() * 60, Math.random() * 60, 0);
+  //     endUTC.setHours(6 + Math.random() * 1, Math.random() * 60, Math.random() * 60, 0);
   //     // console.log(startUTC)
   //     // console.log(endUTC)
   //     let selectedFactors = {};
@@ -170,12 +170,40 @@ export const seedFirebase = (userId) => {
   //       endTime: convertToMilitaryString(endUTC),
   //       quality: Math.random() * 100,
   //       entryFactors: selectedFactors,
-  //       notes: 'Seeded 2/8/21'
+  //       notes: ''
   //     };
   //     console.log('formData', formData);
   //     // sleepEntriesRef.push(formData);
   //   }
   // }
+
+  const sleepEntriesRef = database.ref(`sleepEntries/Buwp1YulAROMlJbyslLNI4uhAcS2`);
+  const formData = {
+    date: `2022-01-09`,
+    startTime: "2300",
+    endTime: "0700",
+    quality: 82,
+    entryFactors: {
+      "-Mv-TSUutg9CNFimTQ7A": {
+        category: "chemical",
+        name: "Caffeine"
+      },
+      // "-Mv-TSV-PPLQpGZlW2JY": {
+      //   category: "chemical",
+      //   name: "Alcohol"
+      // },
+      "-Mv-TSVAzz2Xv9zKJO7U": {
+        category: "practice",
+        name: "Meditated"
+      },
+      "-Mv-TSVAzz2Xv9zKJO7V": {
+        category: "practice",
+        name: "Worked out"
+      }
+    },
+    notes: ''
+  };
+  sleepEntriesRef.push(formData);
 };
 
 //takes in a date string of "yyyy-mm-dd" and returns string "mon, d, yyyy"

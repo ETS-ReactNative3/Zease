@@ -19,8 +19,6 @@ const DataVisualization = () => {
   const data = useSelector((state) => state.userEntries);
 
   const structureData = (dataRaw, timeRange) => {
-    console.log("structuring data");
-    console.log("data", dataRaw);
     const timeMap = {
       week: 7 * (1000 * 60 * 60 * 24),
       month: 30 * (1000 * 60 * 60 * 24),
