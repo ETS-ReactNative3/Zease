@@ -1,6 +1,8 @@
 # Zease
 
 Welcome to Zease! Zease is a mobile application (iOS and Android) that allows users to track their sleep habits over time and view detailed information about their sleep including data visualizations.
+
+You can watch our app presentation [HERE](https://www.youtube.com/watch?v=Vi0ANkiJmTQ&list=PLx0iOsdUOUmnZ41wPTSftv8Mpk-PiZqaR&index=2&t=2s)
 <br/><br/>
 
 ## Try it for yourself!
@@ -85,16 +87,16 @@ _password_: 123456
 
 **Liz Yoder**
 
-[LinkedIn](https://www.linkedin.com/in/alston-white/)
+[LinkedIn](https://www.linkedin.com/in/liz-yoder/)
 
 [GitHub](https://github.com/EAHYoder)
 
-[Portfolio](liz-yoder.netlify.app/)
+[Portfolio](http://liz-yoder.netlify.app)
 <br/><br/>
 
 **Alston White**
 
-[LinkedIn](https://www.linkedin.com/in/liz-yoder/)
+[LinkedIn](https://www.linkedin.com/in/alston-white/)
 
 [GitHub](https://github.com/alstonwhite)
 <br/><br/>
