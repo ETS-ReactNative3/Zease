@@ -106,6 +106,8 @@ _password_: 123456
 [LinkedIn](https://www.linkedin.com/in/sammy-kanan-750ba14/)
 
 [GitHub](https://github.com/sammy-k)
+
+[Portfolio](https://samkanan.netlify.app/)
 <br/><br/>
 
 ```
