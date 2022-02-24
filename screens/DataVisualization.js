@@ -5,7 +5,13 @@ import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import { StatusBar } from "expo-status-bar";
 
-import { reformatDate, calculateSleepLength, getDateObj, getBedTime, getWakeTime } from "../Util";
+import {
+  reformatDate,
+  calculateSleepLength,
+  getDateObj,
+  getBedTime,
+  getWakeTime,
+} from "../Util";
 import ChartA from "./ChartA";
 import ChartB from "./ChartB";
 import ChartC from "./ChartC";
@@ -15,6 +21,7 @@ const DataVisualization = () => {
   const [timeRange, setTimeRange] = useState("week");
   const sleepGoalStart = useSelector((state) => state.profile.sleepGoalStart);
   const sleepGoalEnd = useSelector((state) => state.profile.sleepGoalEnd);
+  let margin = useSelector((state) => state.pieChartSliderMargin);
 
   const data = useSelector((state) => state.userEntries);
 
@@ -22,7 +29,7 @@ const DataVisualization = () => {
     const timeMap = {
       week: 7 * (1000 * 60 * 60 * 24),
       month: 30 * (1000 * 60 * 60 * 24),
-      year: 365 * (1000 * 60 * 60 * 24)
+      year: 365 * (1000 * 60 * 60 * 24),
     };
     const today = new Date();
     today.setHours(0, 0, 0);
@@ -41,12 +48,15 @@ const DataVisualization = () => {
     let sleepEndGoalMet = 0;
     let sleepEndGoalMissed = 0;
     dataRaw.forEach((entry) => {
-      if (timeRange === "all" || today - new Date(entry.date) < timeMap[timeRange]) {
+      if (
+        timeRange === "all" ||
+        today - new Date(entry.date) < timeMap[timeRange]
+      ) {
         let formatEntry = {
           sleepDuration: calculateSleepLength(entry),
           sleepQuality: entry.quality,
           date: entry.date,
-          label: reformatDate(entry.date)
+          label: reformatDate(entry.date),
         };
         if (entry.entryFactors) {
           Object.values(entry.entryFactors).forEach((factor) => {
@@ -56,27 +66,33 @@ const DataVisualization = () => {
         scatterData.push(formatEntry);
         lineDurationData.push({
           x: getDateObj(entry.date),
-          y: calculateSleepLength(entry)
+          y: calculateSleepLength(entry),
         });
         lineQualityData.push({ x: getDateObj(entry.date), y: entry.quality });
-        sleepDurationMin = Math.min(sleepDurationMin, formatEntry.sleepDuration);
-        sleepDurationMax = Math.max(sleepDurationMax, formatEntry.sleepDuration);
+        sleepDurationMin = Math.min(
+          sleepDurationMin,
+          formatEntry.sleepDuration
+        );
+        sleepDurationMax = Math.max(
+          sleepDurationMax,
+          formatEntry.sleepDuration
+        );
         sleepQualityMin = Math.min(sleepQualityMin, formatEntry.sleepQuality);
         sleepQualityMax = Math.max(sleepQualityMax, formatEntry.sleepQuality);
 
         if (firstDate > entry.date) firstDate = entry.date;
         if (lastDate < entry.date) lastDate = entry.date;
         if (
-          getBedTime(entry.startTime) > getBedTime(sleepGoalStart) - 15 &&
-          getBedTime(entry.startTime) < getBedTime(sleepGoalStart) + 15
+          getBedTime(entry.startTime) > getBedTime(sleepGoalStart) - margin &&
+          getBedTime(entry.startTime) < getBedTime(sleepGoalStart) + margin
         ) {
           sleepStartGoalMet++;
         } else {
           sleepStartGoalMissed++;
         }
         if (
-          getWakeTime(entry.endTime) > getWakeTime(sleepGoalEnd) - 15 &&
-          getWakeTime(entry.endTime) < getWakeTime(sleepGoalEnd) + 15
+          getWakeTime(entry.endTime) > getWakeTime(sleepGoalEnd) - margin &&
+          getWakeTime(entry.endTime) < getWakeTime(sleepGoalEnd) + margin
         ) {
           sleepEndGoalMet++;
         } else {
@@ -97,7 +113,7 @@ const DataVisualization = () => {
       sleepStartGoalMet,
       sleepStartGoalMissed,
       sleepEndGoalMet,
-      sleepEndGoalMissed
+      sleepEndGoalMissed,
     };
   };
 
@@ -106,8 +122,8 @@ const DataVisualization = () => {
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           <Text style={tw`text-white text-2xl font-bold p-10 text-center`}>
-            Come back here tomorrow once you've added another entry to start viewing your sleep
-            data!
+            Come back here tomorrow once you've added another entry to start
+            viewing your sleep data!
           </Text>
         </View>
       </View>
@@ -122,7 +138,9 @@ const DataVisualization = () => {
               <Pressable onPress={() => setSelectedChart("A")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    selectedChart === "A" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
+                    selectedChart === "A"
+                      ? `bg-yellow-500 text-white`
+                      : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   Scatter
@@ -131,7 +149,9 @@ const DataVisualization = () => {
               <Pressable onPress={() => setSelectedChart("B")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    selectedChart === "B" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
+                    selectedChart === "B"
+                      ? `bg-yellow-500 text-white`
+                      : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   Line
@@ -140,7 +160,9 @@ const DataVisualization = () => {
               <Pressable onPress={() => setSelectedChart("C")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    selectedChart === "C" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
+                    selectedChart === "C"
+                      ? `bg-yellow-500 text-white`
+                      : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   Pie
@@ -154,7 +176,9 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("week")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "week" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
+                    timeRange === "week"
+                      ? `bg-yellow-500 text-white`
+                      : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   1W
@@ -163,7 +187,9 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("month")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "month" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
+                    timeRange === "month"
+                      ? `bg-yellow-500 text-white`
+                      : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   1M
@@ -172,7 +198,9 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("year")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "year" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
+                    timeRange === "year"
+                      ? `bg-yellow-500 text-white`
+                      : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   1Y
@@ -181,7 +209,9 @@ const DataVisualization = () => {
               <Pressable onPress={() => setTimeRange("all")}>
                 <Text
                   style={tw`w-20 px-3 py-2 my-2 ${
-                    timeRange === "all" ? `bg-yellow-500 text-white` : `bg-gray-200 text-black`
+                    timeRange === "all"
+                      ? `bg-yellow-500 text-white`
+                      : `bg-gray-200 text-black`
                   } text-center`}
                 >
                   All
@@ -214,17 +244,17 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     flex: 1,
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
   },
   contentContainer: {
     width: "100%",
     marginTop: 80,
     paddingLeft: 30,
-    paddingRight: 30
+    paddingRight: 30,
   },
   buttonContainer: {
-    marginBottom: 15
-  }
+    marginBottom: 15,
+  },
 });
 
 export default DataVisualization;

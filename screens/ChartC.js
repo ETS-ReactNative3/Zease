@@ -1,14 +1,30 @@
 import React from "react";
-import { Text, View, TouchableOpacity, Modal, StyleSheet, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  Pressable,
+} from "react-native";
 import { useState } from "react";
 import { VictoryPie } from "victory-native";
-
+import Slider from "@react-native-community/slider";
+import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
+import { setMargin } from "./pieChartSliderMargin";
 
 const ChartC = ({ data }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedPie, setSelectedPie] = useState("start");
+
+  const dispatch = useDispatch();
+  let margin = useSelector((state) => state.pieChartSliderMargin);
+
+  const handleSelectMargin = (val) => {
+    dispatch(setMargin(val));
+  };
 
   return (
     <View>
@@ -17,7 +33,9 @@ const ChartC = ({ data }) => {
           <Pressable onPress={() => setSelectedPie("start")}>
             <Text
               style={tw`w-40 px-3 py-2 my-2 ${
-                selectedPie === "start" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                selectedPie === "start"
+                  ? `bg-yellow-500 text-white`
+                  : `bg-gray-300 text-black`
               } text-center`}
             >
               Bed Time
@@ -26,7 +44,9 @@ const ChartC = ({ data }) => {
           <Pressable onPress={() => setSelectedPie("end")}>
             <Text
               style={tw`w-40 px-3 py-2 my-2 ${
-                selectedPie === "end" ? `bg-yellow-500 text-white` : `bg-gray-300 text-black`
+                selectedPie === "end"
+                  ? `bg-yellow-500 text-white`
+                  : `bg-gray-300 text-black`
               } text-center`}
             >
               Wake Up Time
@@ -35,7 +55,11 @@ const ChartC = ({ data }) => {
         </View>
       </View>
       <TouchableOpacity onPress={() => setShowInfoModal(true)}>
-        <Ionicons style={tw`mt-1 pr-10 self-end`} name="information-circle-outline" size={25} />
+        <Ionicons
+          style={tw`mt-1 pr-10 self-end`}
+          name="information-circle-outline"
+          size={25}
+        />
       </TouchableOpacity>
 
       {selectedPie === "start" ? (
@@ -46,7 +70,7 @@ const ChartC = ({ data }) => {
           colorScale={["#F78A03", "#1C3F52"]}
           data={[
             { x: "Bed Time Met", y: data.sleepStartGoalMet },
-            { x: "Bed Time Missed", y: data.sleepStartGoalMissed }
+            { x: "Bed Time Missed", y: data.sleepStartGoalMissed },
           ]}
           style={{ labels: { fill: "white", fontSize: 16, fontEight: "bold" } }}
         />
@@ -58,11 +82,25 @@ const ChartC = ({ data }) => {
           colorScale={["#F78A03", "#1C3F52"]}
           data={[
             { x: "Wake Time Met", y: data.sleepEndGoalMet },
-            { x: "Wake Time Missed", y: data.sleepEndGoalMissed }
+            { x: "Wake Time Missed", y: data.sleepEndGoalMissed },
           ]}
           style={{ labels: { fill: "white", fontSize: 16, fontEight: "bold" } }}
         />
       )}
+
+      <Text
+        style={tw`font-semibold text-white mb-4 mt-7`}
+      >{`Adjust margin for meeting wake up or bedtime goal (min):`}</Text>
+      <Slider
+        step={1}
+        minimumValue={1}
+        maximumValue={30}
+        value={margin}
+        onValueChange={handleSelectMargin}
+        minimumTrackTintColor="#3395ff"
+        maximumTrackTintColor="#d3d3d3"
+        thumbTintColor="#F78A03"
+      />
 
       <Modal
         transparent={false}
@@ -74,15 +112,18 @@ const ChartC = ({ data }) => {
         <View style={tw`flex-1 items-center justify-center`}>
           <View style={tw`p-4`}>
             <Text style={tw`p-4 text-base`}>
-              This pie chart shows how often you are going to sleep (or waking up) within fifteen
-              minutes of your goal.
+              This pie chart shows how often you are going to sleep (or waking
+              up) within fifteen minutes of your goal.
             </Text>
             <Text style={tw`p-4 text-base`}>
-              Toggling through the different time windows can show the progress you have been making
-              on this.
+              Toggling through the different time windows can show the progress
+              you have been making on this.
             </Text>
           </View>
-          <TouchableOpacity onPress={() => setShowInfoModal(!showInfoModal)} style={styles.button}>
+          <TouchableOpacity
+            onPress={() => setShowInfoModal(!showInfoModal)}
+            style={styles.button}
+          >
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
@@ -100,10 +141,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: 150,
     marginVertical: 10,
-    borderRadius: 10
+    borderRadius: 10,
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
