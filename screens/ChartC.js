@@ -13,7 +13,7 @@ import Slider from "@react-native-community/slider";
 import { useSelector, useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import { Ionicons } from "@expo/vector-icons";
-import { setMargin } from "./pieChartSliderMargin";
+import { setMargin } from "../store/pieChartSliderMargin";
 
 const ChartC = ({ data }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
